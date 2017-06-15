@@ -1,5 +1,7 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,7 +15,9 @@ import org.repodriller.scm.CommitVisitor;
 import org.repodriller.scm.SCMRepository;
 
 public class ProductModificationsVisitor implements CommitVisitor {
-
+	 
+	
+	 
 	public void process(SCMRepository repo, Commit commit, PersistenceMechanism writer) {
 		
 		for(Modification m : commit.getModifications()) {// POR CADA MODIFICACION DE UN COMMIT
@@ -32,23 +36,28 @@ public class ProductModificationsVisitor implements CommitVisitor {
 				System.out.println("ProductBranch-- File name--- Feature changed ---Operation ---LOCs");
 				System.out.println("------------------------------------------------------------------");
 				
+				
 				while (counter<=numberOfBlock){//analyze those lines that appeared in the file
 						addedNewLines = parsedDiff.getBlocks().get(counter-1).getLinesInNewFile();
 						sourceCodeFile= m.getSourceCode();
 						
 						AnalyzeFeatureDetail analyzeFeatureDetail = new AnalyzeFeatureDetail(sourceCodeFile,addedNewLines);
+						
 						ArrayList<FeatureModificationDetail> list = analyzeFeatureDetail.computeFeatureChanged(sourceCodeFile, addedNewLines);
 						Iterator<FeatureModificationDetail> it= list.iterator();
 						FeatureModificationDetail aux ;
 						while (it.hasNext()){
 							aux = it.next();
 							System.out.println(commit.getBranches()+"  "+m.getFileName()+" "+aux.getFeatureModifiedName()+" " +aux.getOperation()+ " "+ aux.getNumLinesOfCode());
+							
+							//MyStudy.writer1.append(	commit.getBranches()+","+aux.getFeatureModifiedName()+","+aux.getNumLinesOfCode());
+						
 							writer.write(
-									commit.getBranches()+";",
-									m.getFileName()+";",
+									commit.getBranches(),
+									//m.getFileName()+,
 									
-									aux.getFeatureModifiedName()+";",
-									aux.getOperation()+";",
+									aux.getFeatureModifiedName(),
+									//aux.getOperation(),
 									aux.getNumLinesOfCode()
 									//m.getType()
 									//m.getAdded(),
@@ -59,10 +68,10 @@ public class ProductModificationsVisitor implements CommitVisitor {
 					}	
 				
 					counter=1;
+					
 					while (counter<=numberOfBlock){//analyze those lines that disapeared in the old file
 						
 						deletedInOld = parsedDiff.getBlocks().get(counter-1).getLinesInOldFile();
-						
 						sourceCodeFile= m.getSourceCode();
 						
 						AnalyzeFeatureDetail analyzeFeatureDetail = new AnalyzeFeatureDetail(sourceCodeFile,deletedInOld);
@@ -72,14 +81,19 @@ public class ProductModificationsVisitor implements CommitVisitor {
 						while (it.hasNext()){
 							aux = it.next();
 							System.out.println(commit.getBranches()+"  "+m.getFileName()+" "+aux.getFeatureModifiedName()+" " +aux.getOperation()+ " "+ aux.getNumLinesOfCode());
+							
+						//	MyStudy.writer1.append(	commit.getBranches()+","+aux.getFeatureModifiedName()+","+aux.getNumLinesOfCode());
+							
 							writer.write(
-									commit.getBranches()+";",
-									m.getNewPath()+";",
-									m.getFileName()+";",
+									commit.getBranches(),
+									//m.getFileName()+,
 									
-									aux.getFeatureModifiedName()+";",
-									aux.getOperation()+";",
+									aux.getFeatureModifiedName(),
+								//	aux.getOperation(),
 									aux.getNumLinesOfCode()
+									//m.getType()
+									//m.getAdded(),
+									//m.getRemoved()
 									);
 						}
 						counter++;

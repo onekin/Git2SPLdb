@@ -21,7 +21,7 @@ public class AnalyzeFeatureDetail {
 		try {
 			
 			ArrayList <FeatureModificationDetail>	featureModificationDetailList  = new  ArrayList <FeatureModificationDetail> (); 
-	        File auxFile= new File("/Users/Onekin/Desktop/aux.txt");
+	        File auxFile= new File("/Users/Onekin/Desktop/aux.txt"); //csvFilePath
 	        PrintWriter writer = new PrintWriter(auxFile);
 	        writer.print(sourceCodeFile);
 	        writer.close();
@@ -46,11 +46,9 @@ public class AnalyzeFeatureDetail {
 	        	featureName= map.get(lineNumber);
 	        	
 		       	if(modType!="KEPT"){
-		        	//	System.out.println("feature changed: "+featureName+ " mod-type: "+modType);
+		        //	System.out.println("feature changed: "+featureName+ " mod-type: "+modType+ " line num:"+lineNumber);
 		  	        	featureModificationDetailList.add(new FeatureModificationDetail(featureName, modType, 1));
 		       	}
-	        	
-	        	
 	        }
 		
 			return featureModificationDetailList;
