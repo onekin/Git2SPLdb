@@ -1,6 +1,6 @@
-package customs_concepts;
 
-public class settings {
+
+public class Settings {
 	
 	final String productBranchPatternName="product";
 	final String coreAssetsBranchPatternName="master";
