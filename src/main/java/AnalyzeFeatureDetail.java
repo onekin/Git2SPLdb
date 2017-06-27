@@ -16,12 +16,12 @@ public class AnalyzeFeatureDetail {
 	}
 	
 	public ArrayList <FeatureModificationDetail> computeFeatureChanged(String sourceCodeFile, List<DiffLine> newLines) {	
-		//Lista de modificaciones de un archivo. Para una modificacion, quŽ feature cambia y cuanto
+		//Lista de modificaciones de un archivo. Para una modificacion, quï¿½ feature cambia y cuanto
 	
 		try {
 			
 			ArrayList <FeatureModificationDetail>	featureModificationDetailList  = new  ArrayList <FeatureModificationDetail> (); 
-	        File auxFile= new File("/Users/Onekin/Desktop/aux.txt"); //csvFilePath
+	        File auxFile= new File("/Users/leticia/Desktop/aux.txt"); //csvFilePath
 	        PrintWriter writer = new PrintWriter(auxFile);
 	        writer.print(sourceCodeFile);
 	        writer.close();

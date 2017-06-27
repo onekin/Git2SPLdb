@@ -16,12 +16,21 @@ import org.repodriller.scm.SCMRepository;
 
 public class ProductModificationsVisitor implements CommitVisitor {
 	 
-	
+	public static boolean headerFlag = false;
 	 
 	public void process(SCMRepository repo, Commit commit, PersistenceMechanism writer) {
 		
+		if(headerFlag==false){
+			
+			headerFlag=true;
+			writer.write(
+					"source","target","value"
+					);
+		}
+		
+		
 		for(Modification m : commit.getModifications()) {// POR CADA MODIFICACION DE UN COMMIT
-
+			
 			String parentSha;
 			if(! commit.getBranches().contains("master")){//analyses all branches that are not master
 				parentSha=commit.getParent();
@@ -52,6 +61,7 @@ public class ProductModificationsVisitor implements CommitVisitor {
 							
 							//MyStudy.writer1.append(	commit.getBranches()+","+aux.getFeatureModifiedName()+","+aux.getNumLinesOfCode());
 						
+							if( (aux.getFeatureModifiedName()!="none") && (aux.getFeatureModifiedName()!=null))
 							writer.write(
 									commit.getBranches(),
 									//m.getFileName()+,
@@ -83,7 +93,7 @@ public class ProductModificationsVisitor implements CommitVisitor {
 							System.out.println(commit.getBranches()+"  "+m.getFileName()+" "+aux.getFeatureModifiedName()+" " +aux.getOperation()+ " "+ aux.getNumLinesOfCode());
 							
 						//	MyStudy.writer1.append(	commit.getBranches()+","+aux.getFeatureModifiedName()+","+aux.getNumLinesOfCode());
-							
+							if( (aux.getFeatureModifiedName()!="none") && (aux.getFeatureModifiedName()!=null))
 							writer.write(
 									commit.getBranches(),
 									//m.getFileName()+,
