@@ -32,11 +32,17 @@ public class ProductModificationsVisitor implements CommitVisitor {
 		for(Modification m : commit.getModifications()) {// POR CADA MODIFICACION DE UN COMMIT
 			
 			String parentSha;
+			String fileName;
 			if(! commit.getBranches().contains("master")){//analyses all branches that are not master
 				parentSha=commit.getParent();
+				//
+				fileName=m.getOldPath() + "/" + m.getFileName();
+				System.out.println("changed file: "+fileName);
 				
 				DiffParser parsedDiff = new DiffParser(m.getDiff());
 				int numberOfBlock= parsedDiff.getBlocks().size();//who many block in the diff
+				
+				
 				int counter=1;
 				List<DiffLine> addedNewLines,deletedInOld;
 				String sourceCodeFile;
@@ -52,7 +58,7 @@ public class ProductModificationsVisitor implements CommitVisitor {
 						
 						AnalyzeFeatureDetail analyzeFeatureDetail = new AnalyzeFeatureDetail(sourceCodeFile,addedNewLines);
 						
-						ArrayList<FeatureModificationDetail> list = analyzeFeatureDetail.computeFeatureChanged(sourceCodeFile, addedNewLines);
+						ArrayList<FeatureModificationDetail> list = analyzeFeatureDetail.computeFeatureChanged(sourceCodeFile, addedNewLines, m.getFileName(), m.getOldPath()) ;
 						Iterator<FeatureModificationDetail> it= list.iterator();
 						FeatureModificationDetail aux ;
 						while (it.hasNext()){
@@ -61,18 +67,29 @@ public class ProductModificationsVisitor implements CommitVisitor {
 							
 							//MyStudy.writer1.append(	commit.getBranches()+","+aux.getFeatureModifiedName()+","+aux.getNumLinesOfCode());
 						
-							if( (aux.getFeatureModifiedName()!="none") && (aux.getFeatureModifiedName()!=null))
-							writer.write(
-									commit.getBranches(),
-									//m.getFileName()+,
-									
-									aux.getFeatureModifiedName(),
-									//aux.getOperation(),
-									aux.getNumLinesOfCode()
-									//m.getType()
-									//m.getAdded(),
-									//m.getRemoved()
-									);
+							if( (aux.getFeatureModifiedName()!="none") && (aux.getFeatureModifiedName()!=null)){
+								writer.write(
+										commit.getBranches(),
+										//m.getFileName()+,
+										
+										aux.getFeatureModifiedName(),
+										//aux.getOperation(),
+										aux.getNumLinesOfCode()
+										//m.getType()
+										//m.getAdded(),
+										//m.getRemoved()
+										);
+								
+								writer.write(//ENTRY FOR FEATURE-FILE, value
+										
+										aux.getFeatureModifiedName(),
+										m.getFileName(),
+										aux.getNumLinesOfCode()
+										
+										//m.getAdded(),
+										//m.getRemoved()
+										);
+							}
 						}
 						counter++;
 					}	
@@ -85,7 +102,7 @@ public class ProductModificationsVisitor implements CommitVisitor {
 						sourceCodeFile= m.getSourceCode();
 						
 						AnalyzeFeatureDetail analyzeFeatureDetail = new AnalyzeFeatureDetail(sourceCodeFile,deletedInOld);
-						ArrayList<FeatureModificationDetail> list = analyzeFeatureDetail.computeFeatureChanged(sourceCodeFile, deletedInOld);
+						ArrayList<FeatureModificationDetail> list = analyzeFeatureDetail.computeFeatureChanged(sourceCodeFile, deletedInOld, m.getFileName(), m.getOldPath());
 						Iterator<FeatureModificationDetail> it= list.iterator();
 						FeatureModificationDetail aux ;
 						while (it.hasNext()){
@@ -93,8 +110,9 @@ public class ProductModificationsVisitor implements CommitVisitor {
 							System.out.println(commit.getBranches()+"  "+m.getFileName()+" "+aux.getFeatureModifiedName()+" " +aux.getOperation()+ " "+ aux.getNumLinesOfCode());
 							
 						//	MyStudy.writer1.append(	commit.getBranches()+","+aux.getFeatureModifiedName()+","+aux.getNumLinesOfCode());
-							if( (aux.getFeatureModifiedName()!="none") && (aux.getFeatureModifiedName()!=null))
-							writer.write(
+							if( (aux.getFeatureModifiedName()!="none") && (aux.getFeatureModifiedName()!=null)){
+							
+								writer.write(//WRITE FOR PRODUCT-FEATURE
 									commit.getBranches(),
 									//m.getFileName()+,
 									
@@ -105,6 +123,16 @@ public class ProductModificationsVisitor implements CommitVisitor {
 									//m.getAdded(),
 									//m.getRemoved()
 									);
+								writer.write(//ENTRY FOR FEATURE-FILE, value
+									
+									aux.getFeatureModifiedName(),
+									m.getFileName(),
+									aux.getNumLinesOfCode()
+							
+									//m.getAdded(),
+									//m.getRemoved()
+									);
+							}
 						}
 						counter++;
 					}

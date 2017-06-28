@@ -16,21 +16,38 @@ import org.repodriller.scm.GitRepository;
 
 public class MyStudy implements Study {
 
+    public static String inputGitRepo; // Users/Onekin/Documents/workspace/WeatherStationSPL
+	public static String pathToCSV; //Users/Onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resource/alluvial/sankey.csv
+	public static String pathToAuxWorkSpace; //Users/Onekin/temp/aux.txt
 	
-    public final String path="/Users/leticia/Documents/workspace/" ;
+	/**Settings*/
+	public static String productBranchPatternName="product";
+	public static String coreAssetsBranchPatternName="master";
+	public static String coreAssetsReleaseName="baseline";
+	public static String productsReleaseName="product";
+	final static String annotationPatternBeginning="PV:IFCOND(pv:hasFeature"; //PV:IFCOND(pv:hasFeature('FeatureName'))
+	final static String annotationPatternEnd="PV:ENDCOND";
 
 	
 	public static void main(String[] args) {
-		new RepoDriller().start(new MyStudy());
+		System.out.println ("Parameter lengh: "+args.length);
+		System.out.println ("Parameter to string: "+args.toString());
+		if(args.length==3){
+			inputGitRepo=args[0];
+			pathToCSV=args[1];
+			pathToAuxWorkSpace = args[2];
+			new RepoDriller().start(new MyStudy());
+		}
+		else System.out.println ("You need to provide me with the setting parameters");
 	}
 
 	public void execute() {
 			new RepositoryMining()
 			
-			.in(GitRepository.singleProject(path+"WeatherStationSPL"))
+			.in(GitRepository.singleProject(inputGitRepo))
 			.through(Commits.all())
 			.filters()
-			.process(new ProductModificationsVisitor(), new CSVFile(path+"SPLCustomsWithRepoDriller/src/main/resources/alluvial/sankey.csv"))
+			.process(new ProductModificationsVisitor(), new CSVFile(pathToCSV))
 			.mine();
 
 			

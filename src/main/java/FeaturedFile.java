@@ -9,12 +9,13 @@ import java.util.HashMap;
 
 public class FeaturedFile {
 	
-	final static String annotationPatternBeginning="PV:IFCOND(pv:hasFeature"; //PV:IFCOND(pv:hasFeature('FeatureName'))
-	final static String annotationPatternEnd="PV:ENDCOND";
+
 
 	HashMap <Integer,String> featureToCodeMapping = new HashMap<Integer, String>();
 	
 	File file;
+	String fileName;
+	String path;
 	
 	public FeaturedFile(File file){
 		this.file=file;
@@ -34,7 +35,7 @@ public class FeaturedFile {
 		String featureName="none";
 		
 		while ((line = br.readLine()) != null){
-			if (line.contains(annotationPatternBeginning)){
+			if (line.contains(MyStudy.annotationPatternBeginning)){
 				foundAnnotationBegining=true;
 				foundAnnotationEnd=false;
 				
@@ -42,7 +43,7 @@ public class FeaturedFile {
 				featureName=line.split("pv:hasFeature")[1];
 				
 			}else{
-				if (line.contains(annotationPatternEnd)){
+				if (line.contains(MyStudy.annotationPatternEnd)){
 					foundAnnotationBegining=false;
 					foundAnnotationEnd=true;
 				

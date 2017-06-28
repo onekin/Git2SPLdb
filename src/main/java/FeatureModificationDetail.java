@@ -4,14 +4,18 @@ public class FeatureModificationDetail {
 	String featureModifiedName;
 	String operation;
 	Integer numLinesOfCode;
+	String fileName;
+	String filePath;
 	
 
 	
 	
-	public FeatureModificationDetail(String featureName, String modType, int i) {
+	public FeatureModificationDetail(String featureName, String modType, int i, String fileName, String filePath) {
 		this.featureModifiedName=featureName;
 		this.operation=modType;
 		this.numLinesOfCode=i;
+		this.fileName=fileName;
+		this.filePath=filePath;
 	}
 
 
