@@ -14,11 +14,12 @@ import org.repodriller.persistence.csv.CSVFile;
 
 import org.repodriller.scm.GitRepository;
 
-public class MyStudy implements Study {
+public class Customs implements Study {
 
     public static String inputGitRepo; // Users/Onekin/Documents/workspace/WeatherStationSPL
 	public static String pathToCSV; //Users/Onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resource/alluvial/sankey.csv
 	public static String pathToAuxWorkSpace; //Users/Onekin/temp/aux.txt
+	public static String pathToWhereCustomizationsAreComputed;//"input"
 	
 	/**Settings*/
 	public static String productBranchPatternName="product";
@@ -28,7 +29,7 @@ public class MyStudy implements Study {
 	final static String annotationPatternBeginning="PV:IFCOND(pv:hasFeature"; //PV:IFCOND(pv:hasFeature('FeatureName'))
 	final static String annotationPatternEnd="PV:ENDCOND";
 	
-	public static String pathToWhereCustomizationsAreComputed;//"input"
+
 
 	
 	public static void main(String[] args) {
@@ -39,7 +40,7 @@ public class MyStudy implements Study {
 			pathToCSV=args[1];
 			pathToAuxWorkSpace = args[2];
 			pathToWhereCustomizationsAreComputed=args[3];
-			new RepoDriller().start(new MyStudy());
+			new RepoDriller().start(new Customs());
 		}
 		else System.out.println ("You need to provide me with the setting parameters");
 	}
@@ -50,7 +51,7 @@ public class MyStudy implements Study {
 			.in(GitRepository.singleProject(inputGitRepo))
 			.through(Commits.all())
 			.filters()
-			.process(new ProductModificationsVisitor(), new CSVFile(pathToCSV))
+			.process(new CustomizationsPerFeatureProcess(), new CSVFile(pathToCSV))
 			.mine();
 	}
 }

@@ -1,5 +1,5 @@
 
-public class FeatureModificationDetail {
+public class ModificationDetail{
 	
 	String featureModifiedName;
 	String operation;
@@ -10,7 +10,7 @@ public class FeatureModificationDetail {
 
 	
 	
-	public FeatureModificationDetail(String featureName, String modType, int i, String fileName, String filePath) {
+	public ModificationDetail(String featureName, String modType, int i, String fileName, String filePath) {
 		this.featureModifiedName=featureName;
 		this.operation=modType;
 		this.numLinesOfCode=i;

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class FeaturedFile {
+public class AnnotatedFile {
 	
 
 
@@ -17,7 +17,7 @@ public class FeaturedFile {
 	String fileName;
 	String path;
 	
-	public FeaturedFile(File file){
+	public AnnotatedFile(File file){
 		this.file=file;
 	}
 	
@@ -35,7 +35,7 @@ public class FeaturedFile {
 		String featureName="none";
 		
 		while ((line = br.readLine()) != null){
-			if (line.contains(MyStudy.annotationPatternBeginning)){
+			if (line.contains(Customs.annotationPatternBeginning)){
 				foundAnnotationBegining=true;
 				foundAnnotationEnd=false;
 				
@@ -43,7 +43,7 @@ public class FeaturedFile {
 				featureName=line.split("pv:hasFeature")[1];
 				
 			}else{
-				if (line.contains(MyStudy.annotationPatternEnd)){
+				if (line.contains(Customs.annotationPatternEnd)){
 					foundAnnotationBegining=false;
 					foundAnnotationEnd=true;
 				

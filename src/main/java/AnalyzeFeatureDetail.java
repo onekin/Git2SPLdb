@@ -15,18 +15,18 @@ public class AnalyzeFeatureDetail {
 	public AnalyzeFeatureDetail(String sourceCodeFile, List<DiffLine> newLines) {
 	}
 	
-	public ArrayList <FeatureModificationDetail> computeFeatureChanged(String sourceCodeFile, List<DiffLine> newLines, String fileName, String filePath) {	
+	public ArrayList <ModificationDetail> computeFeatureChanged(String sourceCodeFile, List<DiffLine> newLines, String fileName, String filePath) {	
 		//Lista de modificaciones de un archivo. Para una modificacion, qu� feature cambia y cuanto
 	
 		try {
 			
-			ArrayList <FeatureModificationDetail>	featureModificationDetailList  = new  ArrayList <FeatureModificationDetail> (); 
-	        File auxFile= new File(MyStudy.pathToAuxWorkSpace); //csvFilePath
+			ArrayList <ModificationDetail>	featureModificationDetailList  = new  ArrayList <ModificationDetail> (); 
+	        File auxFile= new File(Customs.pathToAuxWorkSpace); //csvFilePath
 	        PrintWriter writer = new PrintWriter(auxFile);
 	        writer.print(sourceCodeFile);
 	        writer.close();
 	        
-			FeaturedFile featureFile= new FeaturedFile(auxFile);
+			AnnotatedFile featureFile= new AnnotatedFile(auxFile);
 	        
 	        HashMap<Integer, String> map;
 			
@@ -47,7 +47,7 @@ public class AnalyzeFeatureDetail {
 	        	
 		       	if(modType!="KEPT"){
 		        //	System.out.println("feature changed: "+featureName+ " mod-type: "+modType+ " line num:"+lineNumber);
-		  	        	featureModificationDetailList.add(new FeatureModificationDetail(featureName, modType, 1, fileName, filePath));
+		  	        	featureModificationDetailList.add(new ModificationDetail(featureName, modType, 1, fileName, filePath));
 		       	}
 	        }
 		
