@@ -27,15 +27,18 @@ public class MyStudy implements Study {
 	public static String productsReleaseName="product";
 	final static String annotationPatternBeginning="PV:IFCOND(pv:hasFeature"; //PV:IFCOND(pv:hasFeature('FeatureName'))
 	final static String annotationPatternEnd="PV:ENDCOND";
+	
+	public static String pathToWhereCustomizationsAreComputed;//"input"
 
 	
 	public static void main(String[] args) {
 		System.out.println ("Parameter lengh: "+args.length);
 		System.out.println ("Parameter to string: "+args.toString());
-		if(args.length==3){
+		if(args.length==4){
 			inputGitRepo=args[0];
 			pathToCSV=args[1];
 			pathToAuxWorkSpace = args[2];
+			pathToWhereCustomizationsAreComputed=args[3];
 			new RepoDriller().start(new MyStudy());
 		}
 		else System.out.println ("You need to provide me with the setting parameters");
@@ -49,11 +52,5 @@ public class MyStudy implements Study {
 			.filters()
 			.process(new ProductModificationsVisitor(), new CSVFile(pathToCSV))
 			.mine();
-
-			
-		
-		 
-		
-
 	}
 }
