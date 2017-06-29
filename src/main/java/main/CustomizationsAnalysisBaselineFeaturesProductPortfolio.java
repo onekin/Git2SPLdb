@@ -1,3 +1,4 @@
+package main;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,7 +15,7 @@ import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.scm.CommitVisitor;
 import org.repodriller.scm.SCMRepository;
 
-public class CustomizationsPerFeatureProcess implements CommitVisitor {
+public class CustomizationsAnalysisBaselineFeaturesProductPortfolio implements CommitVisitor {
 	 
 	public static boolean headerFlag = false;
 	 
@@ -60,9 +61,9 @@ public class CustomizationsPerFeatureProcess implements CommitVisitor {
 						
 						AnalyzeFeatureDetail analyzeFeatureDetail = new AnalyzeFeatureDetail(sourceCodeFile,addedNewLines);
 						
-						ArrayList<ModificationDetail> list = analyzeFeatureDetail.computeFeatureChanged(sourceCodeFile, addedNewLines, m.getFileName(), m.getOldPath()) ;
-						Iterator<ModificationDetail> it= list.iterator();
-						ModificationDetail aux ;
+						ArrayList<CustomizationDetail> list = analyzeFeatureDetail.computeFeatureChanged(sourceCodeFile, addedNewLines, m.getFileName(), m.getOldPath()) ;
+						Iterator<CustomizationDetail> it= list.iterator();
+						CustomizationDetail aux ;
 						while (it.hasNext()){
 							aux = it.next();
 							System.out.println(commit.getBranches()+"  "+m.getFileName()+" "+aux.getFeatureModifiedName()+" " +aux.getOperation()+ " "+ aux.getNumLinesOfCode());
@@ -81,9 +82,9 @@ public class CustomizationsPerFeatureProcess implements CommitVisitor {
 						deletedInOld = parsedDiff.getBlocks().get(counter-1).getLinesInOldFile();
 						sourceCodeFile= m.getSourceCode();
 						AnalyzeFeatureDetail analyzeFeatureDetail = new AnalyzeFeatureDetail(sourceCodeFile,deletedInOld);
-						ArrayList<ModificationDetail> list = analyzeFeatureDetail.computeFeatureChanged(sourceCodeFile, deletedInOld, m.getFileName(), m.getOldPath());
-						Iterator<ModificationDetail> it= list.iterator();
-						ModificationDetail aux ;
+						ArrayList<CustomizationDetail> list = analyzeFeatureDetail.computeFeatureChanged(sourceCodeFile, deletedInOld, m.getFileName(), m.getOldPath());
+						Iterator<CustomizationDetail> it= list.iterator();
+						CustomizationDetail aux ;
 						while (it.hasNext()){
 							aux = it.next();
 							System.out.println(commit.getBranches()+"  "+m.getFileName()+" "+aux.getFeatureModifiedName()+" " +aux.getOperation()+ " "+ aux.getNumLinesOfCode());

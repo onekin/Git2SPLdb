@@ -1,3 +1,4 @@
+package SPLconcepts;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,20 +7,24 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
-public class AnnotatedFile {
-	
+import main.Customs;
 
 
-	HashMap <Integer,String> featureToCodeMapping = new HashMap<Integer, String>();
+public class CoreAssetFileAnnotated extends CoreAssetFile{
 	
 	File file;
 	String fileName;
 	String path;
 	
-	public AnnotatedFile(File file){
+	HashMap <Integer,String> featureToCodeMapping = new HashMap<Integer, String>();
+	ArrayList<String> featureList= new ArrayList<String>();
+	
+	
+	
+	public CoreAssetFileAnnotated(File file){
 		this.file=file;
 	}
+	
 	
 	
 	public HashMap <Integer,String>  readFileToGetFeatureMap(File file) throws IOException {//Read the file lineByLine
@@ -30,22 +35,17 @@ public class AnnotatedFile {
 	 
 		String line = null;
 		int counter=1;
-		boolean foundAnnotationBegining=false;
-		boolean foundAnnotationEnd=false;
 		String featureName="none";
 		
 		while ((line = br.readLine()) != null){
 			if (line.contains(Customs.annotationPatternBeginning)){
-				foundAnnotationBegining=true;
-				foundAnnotationEnd=false;
-				
+
+			
 				featureToCodeMapping.put(counter,featureName);
 				featureName=line.split("pv:hasFeature")[1];
-				
+				featureList.add(featureName);
 			}else{
 				if (line.contains(Customs.annotationPatternEnd)){
-					foundAnnotationBegining=false;
-					foundAnnotationEnd=true;
 				
 					featureToCodeMapping.put(counter,featureName);
 					featureName="none";

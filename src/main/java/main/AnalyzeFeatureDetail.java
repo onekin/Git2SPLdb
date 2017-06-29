@@ -1,3 +1,4 @@
+package main;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -7,6 +8,11 @@ import java.util.Iterator;
 import java.util.List;
 import org.repodriller.domain.DiffLine;
 
+import SPLconcepts.CoreAssetFileAnnotated;
+
+
+
+
 
 
 public class AnalyzeFeatureDetail {
@@ -15,18 +21,18 @@ public class AnalyzeFeatureDetail {
 	public AnalyzeFeatureDetail(String sourceCodeFile, List<DiffLine> newLines) {
 	}
 	
-	public ArrayList <ModificationDetail> computeFeatureChanged(String sourceCodeFile, List<DiffLine> newLines, String fileName, String filePath) {	
+	public ArrayList <CustomizationDetail> computeFeatureChanged(String sourceCodeFile, List<DiffLine> newLines, String fileName, String filePath) {	
 		//Lista de modificaciones de un archivo. Para una modificacion, qu� feature cambia y cuanto
 	
 		try {
 			
-			ArrayList <ModificationDetail>	featureModificationDetailList  = new  ArrayList <ModificationDetail> (); 
+			ArrayList <CustomizationDetail>	featureModificationDetailList  = new  ArrayList <CustomizationDetail> (); 
 	        File auxFile= new File(Customs.pathToAuxWorkSpace); //csvFilePath
 	        PrintWriter writer = new PrintWriter(auxFile);
 	        writer.print(sourceCodeFile);
 	        writer.close();
 	        
-			AnnotatedFile featureFile= new AnnotatedFile(auxFile);
+			CoreAssetFileAnnotated featureFile= new CoreAssetFileAnnotated(auxFile);
 	        
 	        HashMap<Integer, String> map;
 			
@@ -47,7 +53,7 @@ public class AnalyzeFeatureDetail {
 	        	
 		       	if(modType!="KEPT"){
 		        //	System.out.println("feature changed: "+featureName+ " mod-type: "+modType+ " line num:"+lineNumber);
-		  	        	featureModificationDetailList.add(new ModificationDetail(featureName, modType, 1, fileName, filePath));
+		  	        	featureModificationDetailList.add(new CustomizationDetail(featureName, modType, 1, fileName, filePath));
 		       	}
 	        }
 		

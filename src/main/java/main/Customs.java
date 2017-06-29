@@ -1,3 +1,4 @@
+package main;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,8 +27,8 @@ public class Customs implements Study {
 	public static String coreAssetsBranchPatternName="master";
 	public static String coreAssetsReleaseName="baseline";
 	public static String productsReleaseName="product";
-	final static String annotationPatternBeginning="PV:IFCOND(pv:hasFeature"; //PV:IFCOND(pv:hasFeature('FeatureName'))
-	final static String annotationPatternEnd="PV:ENDCOND";
+	public final static String annotationPatternBeginning="PV:IFCOND(pv:hasFeature"; //PV:IFCOND(pv:hasFeature('FeatureName'))
+	public final static String annotationPatternEnd="PV:ENDCOND";
 	
 
 
@@ -51,7 +52,7 @@ public class Customs implements Study {
 			.in(GitRepository.singleProject(inputGitRepo))
 			.through(Commits.all())
 			.filters()
-			.process(new CustomizationsPerFeatureProcess(), new CSVFile(pathToCSV))
+			.process(new CustomizationsAnalysisBaselineFeaturesProductPortfolio(), new CSVFile(pathToCSV))
 			.mine();
 	}
 }

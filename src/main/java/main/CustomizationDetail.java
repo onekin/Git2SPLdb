@@ -1,5 +1,6 @@
+package main;
 
-public class ModificationDetail{
+public class CustomizationDetail{
 	
 	String featureModifiedName;
 	String operation;
@@ -10,7 +11,7 @@ public class ModificationDetail{
 
 	
 	
-	public ModificationDetail(String featureName, String modType, int i, String fileName, String filePath) {
+	public CustomizationDetail(String featureName, String modType, int i, String fileName, String filePath) {
 		this.featureModifiedName=featureName;
 		this.operation=modType;
 		this.numLinesOfCode=i;
