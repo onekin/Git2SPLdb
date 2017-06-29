@@ -17,6 +17,9 @@ public class Main implements Study {
 		
 		
 		// lanzas el preprocessing
+		//1. analizar el master branch
+		//2.
+		
 		//lanzas el computo de Feature-Product overview
 		//lanzas el computo de mapTree 
 		

@@ -19,13 +19,16 @@ public class CustomizationsAnalysisBaselineFeaturesProductPortfolio implements C
 	 
 	public static boolean headerFlag = false;
 	 
+	
+	
+	//lista de customizationss
+	
 	public void process(SCMRepository repo, Commit commit, PersistenceMechanism writer) {
 		
 		if(headerFlag==false){
 			headerFlag=true;
 			writer.write("source","target","value");
 		}
-		
 		
 		for (Modification m : commit.getModifications()) {// POR CADA MODIFICACION DE UN COMMIT
 			
