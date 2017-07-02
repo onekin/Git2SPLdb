@@ -2,14 +2,16 @@ package SPLconcepts;
 
 import java.util.ArrayList;
 
+import org.repodriller.domain.Commit;
+
 public class ProductPortfolio {
 
 	CoreAssetBaseline derivedFrom;
 	ArrayList<Product> products;
 	
-	public ProductPortfolio(CoreAssetBaseline derivedFrom) {
+	public ProductPortfolio(CoreAssetBaseline ca) {
 		super();
-		this.derivedFrom = derivedFrom;
+		this.derivedFrom = ca;
 		
 	}
 	

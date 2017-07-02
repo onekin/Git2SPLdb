@@ -1,6 +1,7 @@
 package SPLconcepts;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.repodriller.domain.Commit;
@@ -22,6 +23,16 @@ public class SPL {
 	}
 	
 
+	public CoreAssetBaseline getCoreAssetBaselineFromCommit (Commit co){
+		Iterator<CoreAssetBaseline> it = coreAssetBaselines.iterator();
+		while (it.hasNext()){
+			CoreAssetBaseline ca = it.next();
+			if (ca.getCommit() == co)
+				return ca;
+		}
+		return null;
+	}
+	
 	public void setCoreAssetBaselines(ArrayList<CoreAssetBaseline> baselines){
 		this.coreAssetBaselines=baselines;
 	}

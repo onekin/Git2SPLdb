@@ -1,19 +1,20 @@
 package SPLconcepts;
 
 public class CustomizationEffort{
-	
+
   SourceCodeFile productFile;
   SourceCodeFile coreAssetFile;
-  Feature featureModified;
+  String featureNameModified;
+  //Feature featureModified;
   
-  int addedLines;
-  int deletedLines;
-  int churn;
+  int addedLines = 0;
+  int deletedLines = 0;
+  int churn = 0;
   
-  public CustomizationEffort(SourceCodeFile productFile, SourceCodeFile coreAssetFile ,  Feature featureModified){
+  public CustomizationEffort(SourceCodeFile productFile, SourceCodeFile coreAssetFile,  String featureNameModified){
 	  this.productFile = productFile;
 	  this.coreAssetFile = coreAssetFile;
-	  this.featureModified = featureModified;
+	  this.featureNameModified = featureNameModified;
   }
 	
 	public SourceCodeFile getProductFile() {
@@ -32,12 +33,12 @@ public class CustomizationEffort{
 		this.coreAssetFile = coreAssetFile;
 	}
 	
-	public Feature getFeatureModified() {
-		return featureModified;
+	public String getFeatureNameModified() {
+		return featureNameModified;
 	}
 	
-	public void setFeatureModified(Feature featureModified) {
-		this.featureModified = featureModified;
+	public void setFeatureNameModified(String featureModified) {
+		this.featureNameModified = featureModified;
 	}
 	
 	public int getAddedLines() {

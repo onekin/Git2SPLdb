@@ -3,6 +3,7 @@ package preprocessing;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import main.AnalyzeFeatureDetail;
 import main.CustomizationDetail;
@@ -16,97 +17,62 @@ import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.scm.CommitVisitor;
 import org.repodriller.scm.SCMRepository;
 
+import SPLconcepts.CoreAssetBaseline;
+import SPLconcepts.CustomizationEffort;
 import SPLconcepts.Product;
 import SPLconcepts.ProductPortfolio;
 import SPLconcepts.ProductRelease;
 
 public class MineProductPortfolios implements CommitVisitor {
+	
 	boolean headerFlag=false;
 	
-	ProductPortfolio pr;
+	ProductPortfolio pp;
 	ArrayList<ProductPortfolio> portfolios;
+	Product product;
+	ProductRelease pr;
+	
+	Commit currentCommit = null;
+	ArrayList <String> listOfAnalyzedProductBranches = new ArrayList<String> ();
+	ArrayList <CoreAssetBaseline> listOfAnalyzedCoreAssetBaselines = new ArrayList <CoreAssetBaseline>(); 
 
-	//these commits are already filetered core asset releases
-	//mine product branches whose parents in only
+	//these commits are already filtered core asset releases
+	//mine "product" branches whose parents is only a core asset baseline
 	public void process(SCMRepository repo, Commit commit, PersistenceMechanism writer) {
+
+		//note: each commit is a coreAssetBAseline; then each commit has a productPortfolio attached.
+		pp = new ProductPortfolio(Main.spl.getCoreAssetBaselineFromCommit(commit));
 		
 		String productBranchName;
 		Product p;
 		ProductRelease release;
-		
-		for (Modification m : commit.getModifications()) {// POR CADA MODIFICACION DE UN COMMIT
-			
-			//Analyses all branches that are not master and contain "product" 
-			if( (!commit.getBranches().contains(Customs.coreAssetsBranchPatternName)) 
-				//	&& (commit.getBranches().contains("product"))
-					&& (m.getNewPath().startsWith(Customs.pathToWhereCustomizationsAreComputed)))
-			{
-				String parentSha;
-				String fileName;
-		
-				parentSha=commit.getParent();
-				//
-				fileName=m.getNewPath() + "/" + m.getFileName();
-				System.out.println("changed file: "+fileName);
+		CustomizationEffort custEffort;
+
+		//let's see if commits belong to product branches
+		if (isCommitIntoProductBranch(commit) ){
+			if (commit.getBranches().contains(Customs.coreAssetsBranchPatternName)){ //this is the origin of the product
+				Iterator<String> it = commit.getBranches().iterator();
+				String brName = it.next();
+				p = new Product(commit, commit.getBranches(), pp)
 				
-				DiffParser parsedDiff = new DiffParser(m.getDiff());
-				int numberOfBlock= parsedDiff.getBlocks().size();//who many block in the diff
-				
-				
-				int counter=1;
-				List<DiffLine> addedNewLines,deletedInOld;
-				String sourceCodeFile;
-				
-				System.out.println("\n\n\n------------------Commit:"+commit.getHash()+"---------");
-				System.out.println("ProductBranch-- File name--- Feature changed ---Operation ---LOCs");
-				System.out.println("------------------------------------------------------------------");
-				
-				
-				while (counter<=numberOfBlock){//analyze those lines that appeared in the file
-						addedNewLines = parsedDiff.getBlocks().get(counter-1).getLinesInNewFile();
-						sourceCodeFile= m.getSourceCode();
-						
-						AnalyzeFeatureDetail analyzeFeatureDetail = new AnalyzeFeatureDetail(sourceCodeFile,addedNewLines);
-						
-						ArrayList<CustomizationDetail> list = analyzeFeatureDetail.computeFeatureChanged(sourceCodeFile, addedNewLines, m.getFileName(), m.getOldPath()) ;
-						Iterator<CustomizationDetail> it= list.iterator();
-						CustomizationDetail aux ;
-						while (it.hasNext()){
-							aux = it.next();
-							System.out.println(commit.getBranches()+"  "+m.getFileName()+" "+aux.getFeatureModifiedName()+" " +aux.getOperation()+ " "+ aux.getNumLinesOfCode());
-							if( (aux.getFeatureModifiedName()!="none") && (aux.getFeatureModifiedName()!=null)){
-								writer.write(commit.getBranches(),aux.getFeatureModifiedName(),aux.getNumLinesOfCode());
-								//ENTRY FOR FEATURE-FILE, value
-								writer.write(aux.getFeatureModifiedName(),m.getFileName(),aux.getNumLinesOfCode());
-							}
-						}
-						counter++;
-					}	
-					
-				counter=1;//restart counter
-					
-					while (counter<=numberOfBlock){//analyze those lines that disapeared in the old file
-						deletedInOld = parsedDiff.getBlocks().get(counter-1).getLinesInOldFile();
-						sourceCodeFile= m.getSourceCode();
-						AnalyzeFeatureDetail analyzeFeatureDetail = new AnalyzeFeatureDetail(sourceCodeFile,deletedInOld);
-						ArrayList<CustomizationDetail> list = analyzeFeatureDetail.computeFeatureChanged(sourceCodeFile, deletedInOld, m.getFileName(), m.getOldPath());
-						Iterator<CustomizationDetail> it= list.iterator();
-						CustomizationDetail aux ;
-						while (it.hasNext()){
-							aux = it.next();
-							System.out.println(commit.getBranches()+"  "+m.getFileName()+" "+aux.getFeatureModifiedName()+" " +aux.getOperation()+ " "+ aux.getNumLinesOfCode());
-							if( (aux.getFeatureModifiedName()!="none") && (aux.getFeatureModifiedName()!=null)){
-								//WRITE FOR PRODUCT-FEATURE
-								writer.write(commit.getBranches(),aux.getFeatureModifiedName(),aux.getNumLinesOfCode());
-								//ENTRY FOR FEATURE-FILE, value
-								writer.write(aux.getFeatureModifiedName(), m.getFileName(), aux.getNumLinesOfCode());
-							}
-						}
-						counter++;
-					}
-				}
+			}
 		}
-}
+		
+		
+		
+		
+	}
+
+	public boolean isCommitIntoProductBranch(Commit co){
+		Set<String> branches = co.getBranches();
+		Iterator<String> it = branches.iterator();
+		while (it.hasNext()){
+			if (it.next().toString().startsWith(Main.productBranchPatternName))
+				return true;
+		}
+		return false;
+		
+	}
 
 	public String name() {
 		// TODO Auto-generated method stub

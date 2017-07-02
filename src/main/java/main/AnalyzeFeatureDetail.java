@@ -10,11 +10,6 @@ import org.repodriller.domain.DiffLine;
 
 import SPLconcepts.CoreAssetFileAnnotated;
 
-
-
-
-
-
 public class AnalyzeFeatureDetail {
 
 	
