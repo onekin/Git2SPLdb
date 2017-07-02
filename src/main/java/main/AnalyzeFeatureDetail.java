@@ -32,13 +32,13 @@ public class AnalyzeFeatureDetail {
 	        writer.print(sourceCodeFile);
 	        writer.close();
 	        
-			CoreAssetFileAnnotated featureFile= new CoreAssetFileAnnotated(auxFile);
+			AnnotatedFile featureFile= new AnnotatedFile(auxFile);
 	        
 	        HashMap<Integer, String> map;
 			
 			map = featureFile.readFileToGetFeatureMap(auxFile);
 			 
-	        Iterator<DiffLine> diffLineIterator = newLines.iterator();//iteratate diffs 
+	        Iterator<DiffLine> diffLineIterator = newLines.iterator(); //iteratate diffs 
 	        
 	        int lineNumber=0;
 	        String modType=null;

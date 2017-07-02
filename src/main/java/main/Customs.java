@@ -18,7 +18,7 @@ import org.repodriller.scm.GitRepository;
 public class Customs implements Study {
 
     public static String inputGitRepo; // Users/Onekin/Documents/workspace/WeatherStationSPL
-	public static String pathToCSV; //Users/Onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resource/alluvial/sankey.csv
+	public static String pathToResources; //Users/Onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resource/alluvial/sankey.csv
 	public static String pathToAuxWorkSpace; //Users/Onekin/temp/aux.txt
 	public static String pathToWhereCustomizationsAreComputed;//"input"
 	
@@ -38,7 +38,7 @@ public class Customs implements Study {
 		System.out.println ("Parameter to string: "+args.toString());
 		if(args.length==4){
 			inputGitRepo=args[0];
-			pathToCSV=args[1];
+			pathToResources=args[1];
 			pathToAuxWorkSpace = args[2];
 			pathToWhereCustomizationsAreComputed=args[3];
 			new RepoDriller().start(new Customs());
@@ -52,7 +52,7 @@ public class Customs implements Study {
 			.in(GitRepository.singleProject(inputGitRepo))
 			.through(Commits.all())
 			.filters()
-			.process(new CustomizationsAnalysisBaselineFeaturesProductPortfolio(), new CSVFile(pathToCSV))
+			.process(new CustomizationsAnalysisBaselineFeaturesProductPortfolio(), new CSVFile(pathToResources+"alluvial/sankey.csv"))
 			.mine();
 	}
 }
