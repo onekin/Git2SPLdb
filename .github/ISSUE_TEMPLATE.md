@@ -1,12 +1,14 @@
-###Short description about the issues
-
-###Expected behavior and actual behavior.
+## Short description about the issues
 
 
-###Rationale: enhancement or bug-fix
+## Expected behavior and actual behavior.
 
 
-###Which is the feature that impacts this issue
+## Rationale
+- [ ]  Enhancement
+- [ ]  BugFix
+
+## Which is the feature that impacts this issue
 
 
-
+## Considerations
