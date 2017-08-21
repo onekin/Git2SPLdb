@@ -1,6 +1,6 @@
 
 target/*
-*.csv
+csv
 .DS_Store
 .DS_Store?
 /target/
