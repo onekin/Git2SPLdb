@@ -62,5 +62,10 @@ public ProductPortfolio getProductPortfolio(int i) {
 		
 		return productPortfolios.get(i);
 	}
+
+public ArrayList<ProductPortfolio> getProductPortfolioList() {
+	
+	return this.productPortfolios;
+}
 	
 }

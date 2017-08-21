@@ -7,28 +7,35 @@ import org.repodriller.domain.DiffLine;
 
 public class CustomizationEffort{
 
-  String customizationId;
+  int customizationId;
   SourceCodeFile productFile;
   SourceCodeFile coreAssetFile;
   String featureNameModified;
+  ProductRelease inRelease=null;
   //Feature featureModified;
   
   int addedLines = 0;
   int deletedLines = 0;
 
-  public CustomizationEffort(String customizationId){
-	  
-  }
-  
-  
-  public CustomizationEffort(String customizationId, String featureNameModified, String modType, int amount,  SourceCodeFile productFile, SourceCodeFile coreAssetFile){
+  public CustomizationEffort(int customizationId, ProductRelease inRelease, String featureNameModified, SourceCodeFile productFile, SourceCodeFile coreAsseCodeFile){
 	  this.customizationId = customizationId;
+	  this.inRelease = inRelease;
 	  this.productFile = productFile;
-	  this.coreAssetFile = coreAssetFile;
+	  this.coreAssetFile = coreAsseCodeFile;
 	  this.featureNameModified = featureNameModified;
   }
-	
+  
 
+
+
+
+	public void  addAddedLines(int amount){
+		addedLines = addedLines +amount;
+	}
+	
+	public void  addDeletedLines(int amount){
+		deletedLines = deletedLines +amount;
+	}
 
 	public SourceCodeFile getProductFile() {
 		return productFile;

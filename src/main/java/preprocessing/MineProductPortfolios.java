@@ -52,6 +52,7 @@ public class MineProductPortfolios implements CommitVisitor {
 		
 		CoreAssetBaseline originB = Main.spl.getCoreAssetBaselineFromCommit(commit);
 		pp = new ProductPortfolio(originB , portfoliocount);
+	
 		
 		Product p;
 
@@ -65,6 +66,8 @@ public class MineProductPortfolios implements CommitVisitor {
 				  if (brName.contains(Main.productBranchPatternName)){
 					  p = new Product(commit, brName, pp);
 					  p.computeAllReleases();
+					  pp.addProductToPortfolio(p);
+					  
 					  
 					  for (int i=0; i< p.getReleases().size(); i++){
 						  writer.write(
@@ -78,29 +81,8 @@ public class MineProductPortfolios implements CommitVisitor {
 
 				}
 				portfoliocount++;
+				Main.spl.getProductPortfolioList().add(pp);
 				
-				//mine Customizations for each Product
-				/*
-				ArrayList<String> commitList = new ArrayList <String>();
-				commitList.add(commit.getHash());
-				new RepositoryMining()
-				.in(GitRepository.singleProject(Main.productRepo))
-				.through(commitList)//(Commits.list(Main.spl.getCoreAssetBaselinesAsCommitsHashes()))
-				.filters()
-				.process(new MineProductPortfolios(), new CSVFile (Main.pathToResources+"/customizations.csv"))
-				.mine();
-				*/
-				/*
-				for(int i=0; i<p.getReleases().size();i++){
-					writer.write(
-							pp.getPortfolioID(),//"Series "+portfoliocount+".X",
-							pp.getDerivedFrom(), //derived from coreAssetBaseline
-							p.getBranchName(),
-						"tag",//	p.getReleases().get(0).getTag(),
-						"date" )//	p.getReleases().get(0).getReleaseDate())
-							;
-				}
-				*/
 			
 			}
 		}

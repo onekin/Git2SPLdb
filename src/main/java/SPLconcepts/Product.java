@@ -16,7 +16,7 @@ public class Product {
 
 	
 	String releaseBranchName=null;
-	ArrayList<ProductRelease> releases=null;
+	ArrayList<ProductRelease> releases= new ArrayList<ProductRelease>();
 	ProductPortfolio inPortfolio=null;
 	
 	ArrayList<RevCommit> commitList=null;
@@ -97,8 +97,7 @@ public class Product {
 					        commits.add(object);
 					        System.out.println("release for product" +this.releaseBranchName+ "is commit: "+object.getName()+ "  name:"+tag.getName());
 					        ProductRelease pr = new ProductRelease (tag.getName(),this, new Date ( 1000L * co.getCommitTime()), co);
-
-					        addProductRelease(pr);
+					       this.releases.add(pr);
 
 					    }
 					}

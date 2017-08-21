@@ -77,14 +77,20 @@ public class Main implements Study {
 		mineCoreAssetBaselines();
 		mineProductPorfolios();
 		
+		System.out.println("TXIBATO 1");
+		System.out.println("Main.spl.getProductPortfoliosSize() ="+Main.spl.getProductPortfoliosSize());
+		System.out.println(Main.spl.getProductPortfolio(0).getProductFromPortfolio(0));
+		
 		for(int i=0; i< Main.spl.getProductPortfoliosSize(); i++){
 			for (int j=0; j < spl.getProductPortfolio(i).getNumberOfProductsInPortfolio();j++){//for each product in porfolio, execute mineCustomizations
-				for (int z=0; z < spl.getProductPortfolio(i).getProductFromPortfolio(j).getReleases().size(); z++)
+				for (int z=0; z < spl.getProductPortfolio(i).
+						getProductFromPortfolio(j).
+						getReleases().size(); z++)
 					mineCustomizationEffort(spl.getProductPortfolio(i).getProductFromPortfolio(j).getReleases().get(z));
 					
 			}
 		}
-		
+		System.out.println("TXIBATO 2");
 		//(optional)save to EMF model 
 		
 		//2. Transform to csv files
@@ -129,7 +135,7 @@ public class Main implements Study {
 		.in(GitRepository.singleProject(productRepo))
 		.through((CommitRange) commitIDs)
 		.filters()
-		.process(new MineProductCustomizations(), new CSVFile (pathToResources+"/spl-data/customizations.csv"))
+		.process(new MineProductCustomizations(productRelease), new CSVFile (pathToResources+"/spl-data/customizations.csv"))
 		.mine();
 		
 	}

@@ -2,6 +2,7 @@ package SPLconcepts;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -32,37 +33,55 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 		this.content = content;
 	}
 	
+	public CoreAssetFileAnnotated(String fileName) {
+		this.fileName=fileName;
+	
+	}
+	
 
 	
 
 
-	public HashMap <Integer,String>  readFileToGetFeatureMap(File file) throws IOException {//Read the file lineByLine
-		FileInputStream fis = new FileInputStream(file);
-	 
-		//Construct BufferedReader from InputStreamReader
-		BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-		String line = null;
-		int counter=1;
-		String featureName="none";
+	public CoreAssetFileAnnotated(File auxFile) {
+		this.file = auxFile;
+		this.path = auxFile.getPath();
+	}
+
+	public HashMap <Integer,String>  readFileToGetFeatureMap(File file) {//Read the file lineByLine
 		
-		while ((line = br.readLine()) != null){
-			if (line.contains(Customs.annotationPatternBeginning)){		
-				featureToCodeMapping.put(counter,featureName);
-				featureName=line.split("pv:hasFeature")[1];
-				featureList.add(featureName);
-			}else{
-				if (line.contains(Customs.annotationPatternEnd)){
-				
+		FileInputStream fis;
+		try {
+			fis = new FileInputStream(file);
+			//Construct BufferedReader from InputStreamReader
+			BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+			String line = null;
+			int counter=1;
+			String featureName="none";
+			
+			while ((line = br.readLine()) != null){
+				if (line.contains(Customs.annotationPatternBeginning)){		
 					featureToCodeMapping.put(counter,featureName);
-					featureName="none";
+					featureName=line.split("pv:hasFeature")[1];
+					featureList.add(featureName);
+				}else{
+					if (line.contains(Customs.annotationPatternEnd)){
+					
+						featureToCodeMapping.put(counter,featureName);
+						featureName="none";
+					}
+					else{
+						featureToCodeMapping.put(counter,featureName);
+					}
 				}
-				else{
-					featureToCodeMapping.put(counter,featureName);
-				}
+				counter ++;
 			}
-			counter ++;
+			br.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		br.close();
+	 
+		
 		return featureToCodeMapping;
 	}
 

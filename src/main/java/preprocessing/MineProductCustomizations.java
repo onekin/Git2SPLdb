@@ -14,8 +14,15 @@ import org.repodriller.scm.SCMRepository;
 import org.repodriller.domain.DiffLine;
 
 import SPLconcepts.CustomizationEffort;
+import SPLconcepts.ProductRelease;
 
 public class MineProductCustomizations implements CommitVisitor {
+
+	private ProductRelease productRelease;
+
+	public MineProductCustomizations(ProductRelease productRelease) {
+		this.productRelease = productRelease;
+	}
 
 	public String name() {
 		// TODO Auto-generated method stub
@@ -27,21 +34,19 @@ public class MineProductCustomizations implements CommitVisitor {
 		
 		for (Modification m : commit.getModifications()) {// POR CADA MODIFICACION DE UN COMMIT
 			
-			//Analyses all branches that are not master and contain "product" 
-			if( (!commit.getBranches().contains(Main.coreAssetsBranchPatternName)) 
-				//	&& (commit.getBranches().contains("product"))
-					&& (m.getNewPath().startsWith(Main.pathToWhereCustomizationsAreComputed)))
+			//If modofications are performed to files in path  "pathToWhereCustomizationsAreComputed"
+			if(  m.getNewPath().startsWith(Main.pathToWhereCustomizationsAreComputed))
 			{
 				String parentSha;
 				String fileName;
 		
 				parentSha=commit.getParent();
-				//
+				
 				fileName=m.getNewPath() + "/" + m.getFileName();
 				System.out.println("changed file: "+fileName);
 				
 				DiffParser parsedDiff = new DiffParser(m.getDiff());
-				int numberOfBlock= parsedDiff.getBlocks().size();//who many block in the diff
+				int numberOfBlock= parsedDiff.getBlocks().size();//how many blocks in the diff
 				
 				
 				int counter=1;
@@ -59,16 +64,16 @@ public class MineProductCustomizations implements CommitVisitor {
 						
 						
 						
-						ArrayList<CustomizationEffort> list = FeatureAnalysisUtils.computeFeatureChanged(sourceCodeFile, addedNewLines, m.getFileName(), m.getOldPath()) ;
+						ArrayList<CustomizationEffort> list = FeatureAnalysisUtils.computeFeatureChanged(sourceCodeFile, addedNewLines, m.getFileName(), m.getOldPath(),productRelease) ;
 						Iterator<CustomizationEffort> it= list.iterator();
 						CustomizationEffort aux ;
 						while (it.hasNext()){
 							aux = it.next();
-							System.out.println(commit.getBranches()+"  "+m.getFileName()+" "+aux.getFeatureModifiedName()+" " +aux.getOperation()+ " "+ aux.getNumLinesOfCode());
-							if( (aux.getFeatureModifiedName()!="none") && (aux.getFeatureModifiedName()!=null)){
-								writer.write(commit.getBranches(),aux.getFeatureModifiedName(),aux.getNumLinesOfCode());
+							System.out.println(commit.getBranches()+"  "+m.getFileName()+" "+aux.getFeatureNameModified()+ " "+ aux.getChurn());
+							if( (aux.getFeatureNameModified()!="none") && (aux.getFeatureNameModified()!=null)){
+								writer.write(commit.getBranches(),aux.getFeatureNameModified(),aux.getChurn());
 								//ENTRY FOR FEATURE-FILE, value
-								writer.write(aux.getFeatureModifiedName(),m.getFileName(),aux.getNumLinesOfCode());
+								writer.write(aux.getFeatureNameModified(),m.getFileName(),aux.getChurn());
 							}
 						}
 						counter++;
@@ -79,18 +84,18 @@ public class MineProductCustomizations implements CommitVisitor {
 					while (counter<=numberOfBlock){//analyze those lines that disapeared in the old file
 						deletedInOld = parsedDiff.getBlocks().get(counter-1).getLinesInOldFile();
 						sourceCodeFile= m.getSourceCode();
-						AnalyzeFeatureDetail analyzeFeatureDetail = new AnalyzeFeatureDetail(sourceCodeFile,deletedInOld);
-						ArrayList<CustomizationEffort> list = analyzeFeatureDetail.computeFeatureChanged(sourceCodeFile, deletedInOld, m.getFileName(), m.getOldPath());
+						
+						ArrayList<CustomizationEffort> list = FeatureAnalysisUtils.computeFeatureChanged(sourceCodeFile, deletedInOld, m.getFileName(), m.getOldPath(), productRelease);
 						Iterator<CustomizationEffort> it= list.iterator();
 						CustomizationEffort aux ;
 						while (it.hasNext()){
 							aux = it.next();
-							System.out.println(commit.getBranches()+"  "+m.getFileName()+" "+aux.getFeatureModifiedName()+" " +aux.getOperation()+ " "+ aux.getNumLinesOfCode());
-							if( (aux.getFeatureModifiedName()!="none") && (aux.getFeatureModifiedName()!=null)){
+							System.out.println(commit.getBranches()+"  "+m.getFileName()+" "+aux.getFeatureNameModified()+"  "+ aux.getChurn());
+							if( (aux.getFeatureNameModified()!="none") && (aux.getFeatureNameModified()!=null)){
 								//WRITE FOR PRODUCT-FEATURE
-								writer.write(commit.getBranches(),aux.getFeatureModifiedName(),aux.getNumLinesOfCode());
+								writer.write(commit.getBranches(),aux.getFeatureNameModified(),aux.getChurn());
 								//ENTRY FOR FEATURE-FILE, value
-								writer.write(aux.getFeatureModifiedName(), m.getFileName(), aux.getNumLinesOfCode());
+								writer.write(aux.getFeatureNameModified(), m.getFileName(), aux.getChurn());
 							}
 						}
 						counter++;

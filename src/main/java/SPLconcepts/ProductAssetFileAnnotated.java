@@ -1,6 +1,7 @@
 package SPLconcepts;
 
 import java.io.File;
+import java.util.HashMap;
 
 import org.repodriller.scm.RepositoryFile;
 
@@ -44,6 +45,11 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 	public RepositoryFile getRepoFile() {
 		// TODO Auto-generated method stub
 		return repoFile;
+	}
+
+	public HashMap<Integer, String> readFileToGetFeatureMap(File auxFile) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

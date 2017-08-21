@@ -31,7 +31,7 @@ public class ProductPortfolio {
 	}
 	
 	public Product getProductFromPortfolio(int i){
-		if(i>0 && (i<products.size()))
+		if(i>=0 && (i<products.size()))
 		  return products.get(i);
 	return null;
 	}

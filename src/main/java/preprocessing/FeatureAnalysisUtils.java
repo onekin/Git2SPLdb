@@ -10,26 +10,27 @@ import java.util.List;
 
 import org.repodriller.domain.DiffLine;
 
-import OldMain.AnnotatedFile;
-import OldMain.CustomizationDetail;
-import OldMain.Customs;
+
+import SPLconcepts.CoreAssetFileAnnotated;
 import SPLconcepts.CustomizationEffort;
+import SPLconcepts.ProductRelease;
+import SPLconcepts.SourceCodeFile;
 
 public class FeatureAnalysisUtils {
 	
 	
-	public static ArrayList <CustomizationEffort> computeFeatureChanged(String sourceCodeFile, List<DiffLine> newLines, String fileName, String filePath) {	
+	public static ArrayList <CustomizationEffort> computeFeatureChanged(String sourceCodeFile, List<DiffLine> newLines, String fileName, String filePath, ProductRelease inRelease) {	
 		//Lista de modificaciones de un archivo. Para una modificacion, que feature cambia y cuanto
 	
 		try {
 			
 			ArrayList <CustomizationEffort>	featureModificationDetailList  = new  ArrayList <CustomizationEffort> (); 
-	        File auxFile= new File(Customs.pathToAuxWorkSpace); //csvFilePath
+	        File auxFile= new File(Main.pathToAuxWorkSpace); //csvFilePath
 	        PrintWriter writer = new PrintWriter(auxFile);
 	        writer.print(sourceCodeFile);
 	        writer.close();
 	        
-			AnnotatedFile featureFile= new AnnotatedFile(auxFile);
+			SourceCodeFile  featureFile= new CoreAssetFileAnnotated(auxFile);
 	        
 	        HashMap<Integer, String> map;
 			
@@ -41,6 +42,7 @@ public class FeatureAnalysisUtils {
 	        String modType=null;
 	        DiffLine aux=null;
 	        String featureName = null;
+	        int addedLines=0, deletedLines=0;
 	       
 	        while (diffLineIterator.hasNext()){//for each diff know which lines where added/deleted and SUM
 	        	aux= diffLineIterator.next();
@@ -49,8 +51,12 @@ public class FeatureAnalysisUtils {
 	        	featureName= map.get(lineNumber);
 	        	
 		       	if(modType!="KEPT"){
-		        //	System.out.println("feature changed: "+featureName+ " mod-type: "+modType+ " line num:"+lineNumber);
-		  	        	featureModificationDetailList.add(new CustomizationEffort(featureName, modType, 1, fileName, filePath));
+		        	System.out.println("feature changed: "+featureName+ " mod-type: "+modType+ " line num:"+lineNumber);
+		        	CustomizationEffort cust = new CustomizationEffort(Utils.getNewCustomizationId(),inRelease ,featureName, new CoreAssetFileAnnotated(fileName), new CoreAssetFileAnnotated(fileName));
+		        	if(modType=="ADDED" ) cust.addAddedLines(1);
+		       		else cust.addDeletedLines(1);
+		        	 featureModificationDetailList.add(cust);
+		       				
 		       	}
 	        }
 		

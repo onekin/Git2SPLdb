@@ -14,9 +14,10 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 
-import SPLconcepts.ProductRelease;
 
 public class Utils {
+	
+	static int customizationCounter = 0;
 
 	
 	static public List getCommitHashesBetweenTwoTags(String baselineTag, String productReleaseTag) {
@@ -71,6 +72,9 @@ public class Utils {
 		
 	}
 		  
-		
+		static public int getNewCustomizationId(){
+			customizationCounter ++;
+			return customizationCounter;
+		}
 	
 }
