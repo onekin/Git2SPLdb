@@ -36,9 +36,9 @@ public class Main implements Study {
 		System.out.println ("Parameter lengh: "+args.length);
 		System.out.println ("Parameter to string: "+args.toString());
 		/**
-		 * /Users/leticia/Documents/workspace/WeatherStationSPL
-			/Users/leticia/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resources
-			/Users/leticia/Desktop/aux.txt
+		 * /Users/onekin/Documents/workspace/WeatherStationSPL
+			/Users/onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resources
+			/Users/onekin/Desktop/aux.txt
 			"input"
 		 * 
 		 * */
@@ -58,6 +58,15 @@ public class Main implements Study {
 	public void execute() {
 
 		// 1: Mine coreAsset baselines
+		
+		mineCoreAssetBaselines();
+		mineProductPorfolios();
+		mineCustomizationEffort();
+	}
+
+
+
+	private void mineCoreAssetBaselines() {
 		new RepositoryMining()
 		.in(GitRepository.singleProject(coreAssetsRepo))
 		.through(Commits.all())
@@ -66,9 +75,10 @@ public class Main implements Study {
 		.mine();
 		System.out.println("Finished processing CoreAsset Baselines");
 		System.out.println(spl.getCoreAssetBaseline(0).getCoreAsset(0).getContent());
-	
 		
-		//2: Mine product portfolios
+	}
+
+	private void mineProductPorfolios() {
 		//if(hasFeature(singleRepository))
 		new RepositoryMining()
 		.in(GitRepository.singleProject(productRepo))
@@ -77,8 +87,10 @@ public class Main implements Study {
 		.process(new MineProductPortfolios(), new CSVFile (pathToResources+"/spl-data/portfolios.csv"))
 		.mine();
 		
-
-		//3: mine customization effort 
+	}
+	
+	private void mineCustomizationEffort() {
+		// TODO Auto-generated method stub
 		
 	}
 

@@ -25,9 +25,12 @@ public class SPL {
 	
 	public CoreAssetBaseline getCoreAssetBaselineFromCommit (Commit co){
 		Iterator<CoreAssetBaseline> it = coreAssetBaselines.iterator();
+		CoreAssetBaseline ca=null;
 		while (it.hasNext()){
-			CoreAssetBaseline ca = it.next();
-			if (ca.getCommit() == co)
+			System.out.println("In getCoreAssetBaselineFromCommit; Commit hash: " +co.getHash());
+			 ca = it.next();
+			 System.out.println(ca.getCommit().getHash());
+			if (ca.getCommit().getHash().equals(co.getHash()))
 				return ca;
 		}
 		return null;

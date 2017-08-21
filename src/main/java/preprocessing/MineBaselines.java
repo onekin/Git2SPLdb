@@ -61,6 +61,8 @@ public class MineBaselines implements CommitVisitor {
 	
 	public boolean isCommitTagged(SCMRepository repo, Commit c){
 	//	repo.
+		c.getHash();
+		
 		return false;
 		
 	}

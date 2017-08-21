@@ -39,35 +39,78 @@ public class MineProductPortfolios implements CommitVisitor {
 	Commit currentCommit = null;
 	ArrayList <String> listOfAnalyzedProductBranches = new ArrayList<String> ();
 	ArrayList <CoreAssetBaseline> listOfAnalyzedCoreAssetBaselines = new ArrayList <CoreAssetBaseline>(); 
+	Integer portfoliocount=1;
 
 	//these commits are already filtered core asset releases
 	//mine "product" branches whose parents is only a core asset baseline
 	public void process(SCMRepository repo, Commit commit, PersistenceMechanism writer) {
-
-		//note: each commit is a coreAssetBAseline; then each commit has a productPortfolio attached.
-		pp = new ProductPortfolio(Main.spl.getCoreAssetBaselineFromCommit(commit));
+		if(headerFlag==false){
+			headerFlag=true;
+			writer.write("Portfolio-ID","DerivedFrom-baselineID","ProductName", "ReleaseName", "ReleaseDate");
+		}
 		
-		String productBranchName;
+		//note: each "commit" is a coreAssetBAseline; then each commit has a productPortfolio attached.
+		
+		CoreAssetBaseline originB = Main.spl.getCoreAssetBaselineFromCommit(commit);
+		pp = new ProductPortfolio(originB , portfoliocount);
+		
 		Product p;
 		ProductRelease release;
 		CustomizationEffort custEffort;
+		
+		
 
 		//let's see if commits belong to product branches
 		if (isCommitIntoProductBranch(commit) ){
-			if (commit.getBranches().contains(Customs.coreAssetsBranchPatternName)){ //this is the origin of the product
+			if (commit.getBranches().contains(Customs.coreAssetsBranchPatternName)){ //this commit is the origin of the product
 				Iterator<String> it = commit.getBranches().iterator();
-				String brName =it.next();
-				p = new Product(commit, brName, pp);
-				p.computeAllItsReleases();
-				//
+				String brName;
+				while(it.hasNext()){
+					
+				  brName =it.next();
+				  if (brName.contains(Main.productBranchPatternName)){
+					  p = new Product(commit, brName, pp);
+					  p.computeAllItsReleases();
+					  
+					  for (int i=0; i< p.getReleases().size(); i++){
+						  writer.write(
+								  pp.getPortfolioID(),//"Series "+portfoliocount+".X",
+								  pp.getDerivedFrom().getCommit().getHash(), //derived from coreAssetBaseline
+								  p.getBranchName(),
+								  p.getReleases().get(i).getIdRelease(),
+								  p.getReleases().get(i).getReleaseDate());
+					  }
+				  }
+
+				}
+
 				//mine Customizations for each Product
+				/*
+				ArrayList<String> commitList = new ArrayList <String>();
+				commitList.add(commit.getHash());
 				new RepositoryMining()
 				.in(GitRepository.singleProject(Main.productRepo))
-				.through((CommitRange) commit)//(Commits.list(Main.spl.getCoreAssetBaselinesAsCommitsHashes()))
+				.through(commitList)//(Commits.list(Main.spl.getCoreAssetBaselinesAsCommitsHashes()))
 				.filters()
-				.process(new MineProductPortfolios(), new CSVFile (Main.pathToResources+"/customizationss.csv"))
+				.process(new MineProductPortfolios(), new CSVFile (Main.pathToResources+"/customizations.csv"))
 				.mine();
+				*/
+				/*
+				for(int i=0; i<p.getReleases().size();i++){
+					writer.write(
+							pp.getPortfolioID(),//"Series "+portfoliocount+".X",
+							pp.getDerivedFrom(), //derived from coreAssetBaseline
+							p.getBranchName(),
+						"tag",//	p.getReleases().get(0).getTag(),
+						"date" )//	p.getReleases().get(0).getReleaseDate())
+							;
+				}
+				*/
+				portfoliocount++;
 			}
+		}
+		else {
+			
 		}
 	}
 

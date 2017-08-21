@@ -1,0 +1,7 @@
+Portfolio-ID,DerivedFrom-baselineID,ProductName,ReleaseName,ReleaseDate
+Series 1.X,aeb6c62a7eacd35303bd9872c692ad135a7d2907,productNewYork,refs/tags/productNewYork-v1.0,Sat Jun 24 20:38:29 CEST 2017
+Series 1.X,aeb6c62a7eacd35303bd9872c692ad135a7d2907,productBilbao,refs/tags/productBilbao-v1.0,Mon Aug 21 12:09:25 CEST 2017
+Series 1.X,aeb6c62a7eacd35303bd9872c692ad135a7d2907,productBilbao,refs/tags/Baseline-v2.0,Wed Aug 16 10:55:40 CEST 2017
+Series 1.X,aeb6c62a7eacd35303bd9872c692ad135a7d2907,productBerlin,refs/tags/productBerline-v1.0,Sat Jun 24 20:28:07 CEST 2017
+Series 1.X,aeb6c62a7eacd35303bd9872c692ad135a7d2907,productDonosti,refs/tags/productDonosti-v1.0,Sat Jun 24 20:35:47 CEST 2017
+Series 2.X,ac7e948232d3317ae340b1612c5396ee702872db,productBilbao,refs/tags/productBilbao-v1.0,Mon Aug 21 12:09:25 CEST 2017
