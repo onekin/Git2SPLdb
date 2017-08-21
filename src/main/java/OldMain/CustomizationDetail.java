@@ -1,4 +1,4 @@
-package main;
+package OldMain;
 
 public class CustomizationDetail{
 	
@@ -34,22 +34,13 @@ public class CustomizationDetail{
 		return operation;
 	}
 
-
-
-
 	public void setOperation(String operation) {
 		this.operation = operation;
 	}
 
-
-
-
 	public Integer getNumLinesOfCode() {
 		return numLinesOfCode;
 	}
-
-
-
 
 	public void setNumLinesOfCode(Integer numLinesOfCode) {
 		this.numLinesOfCode = numLinesOfCode;

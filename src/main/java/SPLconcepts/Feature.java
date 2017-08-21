@@ -3,8 +3,6 @@ package SPLconcepts;
 import java.util.ArrayList;
 
 public class Feature {
-
-	
 	String name;
 	String idFeature;
 	

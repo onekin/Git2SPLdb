@@ -2,13 +2,15 @@ package preprocessing;
 
 
 import java.util.List;
-import main.Customs;
+
 import org.repodriller.domain.Commit;
 
 import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.scm.CommitVisitor;
 import org.repodriller.scm.RepositoryFile;
 import org.repodriller.scm.SCMRepository;
+
+import OldMain.Customs;
 import SPLconcepts.CoreAssetBaseline;
 import SPLconcepts.CoreAssetFileAnnotated;
 import SPLconcepts.SourceCodeFile;
@@ -22,7 +24,7 @@ public class MineBaselines implements CommitVisitor {
 		
 		if(headerFlag==false){
 			headerFlag=true;
-			writer.write("Baseline-ID","Release date","CoreAsset");
+			writer.write("Baseline-ID","Release date","CoreAssetName");
 		}
 				
 		if(commit.getBranches().contains(Customs.coreAssetsBranchPatternName)) {		

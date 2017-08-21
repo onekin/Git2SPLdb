@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="ASCII"?>
+<spl_custom:SPL xmlns:spl_custom="customs" idSPL="TestSPL">
+  <baselines idBaseline="Baseline-v1.0" ReleaseDate="2017, 08, 01" productPortfolio="/4" feature="/1 /2"/>
+</spl_custom:SPL>

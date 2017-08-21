@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 import org.repodriller.scm.RepositoryFile;
 
-import main.Customs;
+import OldMain.Customs;
 
 
 public class CoreAssetFileAnnotated implements SourceCodeFile{

@@ -1,4 +1,4 @@
-package main;
+package OldMain;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 import org.repodriller.scm.RepositoryFile;
 
-import main.Customs;
+import OldMain.Customs;
 
 
 public class CoreAssetFileAnnotated {

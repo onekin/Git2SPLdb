@@ -7,13 +7,13 @@ import org.repodriller.domain.Commit;
 public class Product {
 
 	Commit originCommit =null;
-	String branchName=null;
+	String releaseBranchName=null;
 	ArrayList<ProductRelease> releases=null;
 	ProductPortfolio inPortfolio=null;
 
-	public Product(Commit originCommit, String branchName, ProductPortfolio inPortfolio){
+	public Product(Commit originCommit, String releaseBranchName, ProductPortfolio inPortfolio){
 		this.originCommit = originCommit;
-		this.branchName = branchName;	
+		this.releaseBranchName = releaseBranchName;	
 		this.inPortfolio = inPortfolio;
 	}
 	
@@ -32,11 +32,11 @@ public class Product {
 	}
 
 	public String getBranchName() {
-		return branchName;
+		return releaseBranchName;
 	}
 
 	public void setBranchName(String branchName) {
-		this.branchName = branchName;
+		this.releaseBranchName = branchName;
 	}
 
 	public ArrayList<ProductRelease> getReleases() {
@@ -54,6 +54,12 @@ public class Product {
 	public void setInPortfolio(ProductPortfolio inPortfolio) {
 		this.inPortfolio = inPortfolio;
 	}
-	
+
+	public void computeAllItsReleases() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 	
 }

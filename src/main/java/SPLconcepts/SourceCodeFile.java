@@ -8,7 +8,7 @@ import org.repodriller.scm.RepositoryFile;
 public interface SourceCodeFile {
 	
 	
-	File file = null;
+	//File file = null;
 	RepositoryFile repoFile = null;
 	String fileName=null;
 	String path = null;

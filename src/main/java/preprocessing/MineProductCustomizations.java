@@ -1,41 +1,36 @@
-package main;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+package preprocessing;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import OldMain.AnalyzeFeatureDetail;
+
 import org.repodriller.domain.Commit;
-import org.repodriller.domain.DiffLine;
 import org.repodriller.domain.DiffParser;
 import org.repodriller.domain.Modification;
 import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.scm.CommitVisitor;
 import org.repodriller.scm.SCMRepository;
+import org.repodriller.domain.DiffLine;
 
-public class CustomizationsAnalysisBaselineFeaturesProductPortfolio implements CommitVisitor {
-	 
-	public static boolean headerFlag = false;
-	 
-	
-	
-	//lista de customizationss
-	
+import SPLconcepts.CustomizationEffort;
+/*
+public class MineProductCustomizations implements CommitVisitor {
+
+	public String name() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public void process(SCMRepository repo, Commit commit, PersistenceMechanism writer) {
-		
-		if(headerFlag==false){
-			headerFlag=true;
-			writer.write("source","target","value");
-		}
 		
 		for (Modification m : commit.getModifications()) {// POR CADA MODIFICACION DE UN COMMIT
 			
-			//analyses all branches that are not master and contain "product" 
-			if( (!commit.getBranches().contains(Customs.coreAssetsBranchPatternName)) 
+			//Analyses all branches that are not master and contain "product" 
+			if( (!commit.getBranches().contains(Main.coreAssetsBranchPatternName)) 
 				//	&& (commit.getBranches().contains("product"))
-					&& (m.getNewPath().startsWith(Customs.pathToWhereCustomizationsAreComputed)))
+					&& (m.getNewPath().startsWith(Main.pathToWhereCustomizationsAreComputed)))
 			{
 				String parentSha;
 				String fileName;
@@ -62,11 +57,11 @@ public class CustomizationsAnalysisBaselineFeaturesProductPortfolio implements C
 						addedNewLines = parsedDiff.getBlocks().get(counter-1).getLinesInNewFile();
 						sourceCodeFile= m.getSourceCode();
 						
-						AnalyzeFeatureDetail analyzeFeatureDetail = new AnalyzeFeatureDetail(sourceCodeFile,addedNewLines);
+						CustomizationEffort analyzeFeatureDetail = new CustomizationEffort(sourceCodeFile,addedNewLines);
 						
-						ArrayList<CustomizationDetail> list = analyzeFeatureDetail.computeFeatureChanged(sourceCodeFile, addedNewLines, m.getFileName(), m.getOldPath()) ;
-						Iterator<CustomizationDetail> it= list.iterator();
-						CustomizationDetail aux ;
+						ArrayList<CustomizationEffort> list = analyzeFeatureDetail.computeFeatureChanged(sourceCodeFile, addedNewLines, m.getFileName(), m.getOldPath()) ;
+						Iterator<CustomizationEffort> it= list.iterator();
+						CustomizationEffort aux ;
 						while (it.hasNext()){
 							aux = it.next();
 							System.out.println(commit.getBranches()+"  "+m.getFileName()+" "+aux.getFeatureModifiedName()+" " +aux.getOperation()+ " "+ aux.getNumLinesOfCode());
@@ -85,9 +80,9 @@ public class CustomizationsAnalysisBaselineFeaturesProductPortfolio implements C
 						deletedInOld = parsedDiff.getBlocks().get(counter-1).getLinesInOldFile();
 						sourceCodeFile= m.getSourceCode();
 						AnalyzeFeatureDetail analyzeFeatureDetail = new AnalyzeFeatureDetail(sourceCodeFile,deletedInOld);
-						ArrayList<CustomizationDetail> list = analyzeFeatureDetail.computeFeatureChanged(sourceCodeFile, deletedInOld, m.getFileName(), m.getOldPath());
-						Iterator<CustomizationDetail> it= list.iterator();
-						CustomizationDetail aux ;
+						ArrayList<CustomizationEffort> list = analyzeFeatureDetail.computeFeatureChanged(sourceCodeFile, deletedInOld, m.getFileName(), m.getOldPath());
+						Iterator<CustomizationEffort> it= list.iterator();
+						CustomizationEffort aux ;
 						while (it.hasNext()){
 							aux = it.next();
 							System.out.println(commit.getBranches()+"  "+m.getFileName()+" "+aux.getFeatureModifiedName()+" " +aux.getOperation()+ " "+ aux.getNumLinesOfCode());
@@ -101,12 +96,8 @@ public class CustomizationsAnalysisBaselineFeaturesProductPortfolio implements C
 						counter++;
 					}
 				}
-		}
-}
-
-	public String name() {
-		// TODO Auto-generated method stub
-		return null;
+		
 	}
-}
 
+}
+*/

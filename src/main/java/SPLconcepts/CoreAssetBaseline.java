@@ -16,7 +16,7 @@ public class CoreAssetBaseline{//extends Commit
 	public ArrayList<Feature> features = new ArrayList<Feature>();
 	public ArrayList<SourceCodeFile> coreAssetFiles = new ArrayList<SourceCodeFile>();
 	
-	public CoreAssetBaseline (Commit c, Calendar calendar ){
+	public CoreAssetBaseline (Commit c, Calendar calendar){
 		commit = c;
 		releaseDate = calendar;
 	}
@@ -80,8 +80,6 @@ public class CoreAssetBaseline{//extends Commit
 	public void setCoreAssetFiles(ArrayList<SourceCodeFile> coreAssetFiles) {
 		this.coreAssetFiles = coreAssetFiles;
 	}
-	
-	
 	
 	
 }

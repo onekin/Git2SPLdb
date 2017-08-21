@@ -19,10 +19,10 @@ public class SPL {
 		for (int i=0; i< coreAssetBaselines.size() ;i++){
 			commitList.add(coreAssetBaselines.get(i).getCommit().getHash());
 		}
+		
 		return commitList;
 	}
 	
-
 	public CoreAssetBaseline getCoreAssetBaselineFromCommit (Commit co){
 		Iterator<CoreAssetBaseline> it = coreAssetBaselines.iterator();
 		while (it.hasNext()){

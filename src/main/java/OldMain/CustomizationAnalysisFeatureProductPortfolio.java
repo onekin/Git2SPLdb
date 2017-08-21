@@ -1,4 +1,4 @@
-package main;
+package OldMain;
 
 import org.repodriller.domain.Commit;
 import org.repodriller.persistence.PersistenceMechanism;
