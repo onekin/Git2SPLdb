@@ -58,4 +58,9 @@ public class SPL {
 		return coreAssetBaselines.get(i);
 	}
 	
+public ProductPortfolio getProductPortfolio(int i) {
+		
+		return productPortfolios.get(i);
+	}
+	
 }

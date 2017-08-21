@@ -6,19 +6,23 @@ import java.util.Date;
 
 import org.repodriller.domain.Commit;
 
+import preprocessing.Utils;
+
 public class CoreAssetBaseline{//extends Commit
 	
 	
 	Commit commit;
 	String tag;
-	Calendar releaseDate;
+	Date releaseDate;
 	
 	public ArrayList<Feature> features = new ArrayList<Feature>();
 	public ArrayList<SourceCodeFile> coreAssetFiles = new ArrayList<SourceCodeFile>();
 	
-	public CoreAssetBaseline (Commit c, Calendar calendar){
-		commit = c;
-		releaseDate = calendar;
+	public CoreAssetBaseline (Commit c, Date calendar, String tag){
+		this.commit = c;
+		this.releaseDate = calendar;
+		//Parsing the tag: pattern origin/
+		this.tag = Utils.extractRefName(tag, 2);
 	}
 	
 	public void addFeature(Feature f){
@@ -57,11 +61,11 @@ public class CoreAssetBaseline{//extends Commit
 		this.tag = tag;
 	}
 	
-	public Calendar getReleaseDate() {
+	public Date getReleaseDate() {
 		return releaseDate;
 	}
 	
-	public void setReleaseDate(Calendar releaseDate) {
+	public void setReleaseDate(Date releaseDate) {
 		this.releaseDate = releaseDate;
 	}
 	

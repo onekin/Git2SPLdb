@@ -3,17 +3,25 @@ package SPLconcepts;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.eclipse.jgit.revwalk.RevCommit;
+
+import preprocessing.Utils;
+
 public class ProductRelease {
 
-	String idRelease;
-	Product fromProduct;
-	Date releaseDate;
-	ArrayList<ProductAssetFileAnnotated> productAssets;
+	private String idRelease;
+	private Product fromProduct;
+	private Date releaseDate;
+	private	ArrayList<ProductAssetFileAnnotated> productAssets;
+	private RevCommit releasedCommit;
 	
-	public ProductRelease(String idRelease, Product fromProduct, Date l){
-		this.idRelease = idRelease;
+	public ProductRelease(String idRelease, Product fromProduct, Date l, RevCommit releasedCommit){
+		
 		this.fromProduct = fromProduct;
 		this.releaseDate = l;
+		this.releasedCommit = releasedCommit;
+		
+		this.idRelease = Utils.extractRefName(idRelease, 2);
 	}
 	
 	public String getIdRelease() {
@@ -39,6 +47,14 @@ public class ProductRelease {
 	}
 	public void setProductAssets(ArrayList<ProductAssetFileAnnotated> productAssets) {
 		this.productAssets = productAssets;
+	}
+
+	public RevCommit getReleasedCommit() {
+		return releasedCommit;
+	}
+
+	public void setReleasedCommit(RevCommit releasedCommit) {
+		this.releasedCommit = releasedCommit;
 	}
 	
 	

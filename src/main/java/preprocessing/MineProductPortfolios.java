@@ -18,7 +18,6 @@ import org.repodriller.scm.CommitVisitor;
 import org.repodriller.scm.GitRepository;
 import org.repodriller.scm.SCMRepository;
 
-import OldMain.AnalyzeFeatureDetail;
 import OldMain.CustomizationDetail;
 import OldMain.Customs;
 import SPLconcepts.CoreAssetBaseline;
@@ -55,13 +54,8 @@ public class MineProductPortfolios implements CommitVisitor {
 		pp = new ProductPortfolio(originB , portfoliocount);
 		
 		Product p;
-		ProductRelease release;
-		CustomizationEffort custEffort;
-		
-		
 
-		//let's see if commits belong to product branches
-		if (isCommitIntoProductBranch(commit) ){
+		if (isCommitIntoProductBranch(commit) ){//let's see if commits belong to product branches
 			if (commit.getBranches().contains(Customs.coreAssetsBranchPatternName)){ //this commit is the origin of the product
 				Iterator<String> it = commit.getBranches().iterator();
 				String brName;
@@ -70,12 +64,12 @@ public class MineProductPortfolios implements CommitVisitor {
 				  brName =it.next();
 				  if (brName.contains(Main.productBranchPatternName)){
 					  p = new Product(commit, brName, pp);
-					  p.computeAllItsReleases();
+					  p.computeAllReleases();
 					  
 					  for (int i=0; i< p.getReleases().size(); i++){
 						  writer.write(
-								  pp.getPortfolioID(),//"Series "+portfoliocount+".X",
-								  pp.getDerivedFrom().getCommit().getHash(), //derived from coreAssetBaseline
+								  pp.getPortfolioID(),
+								  pp.getDerivedFrom().getCommit().getHash(), 
 								  p.getBranchName(),
 								  p.getReleases().get(i).getIdRelease(),
 								  p.getReleases().get(i).getReleaseDate());
@@ -83,7 +77,8 @@ public class MineProductPortfolios implements CommitVisitor {
 				  }
 
 				}
-
+				portfoliocount++;
+				
 				//mine Customizations for each Product
 				/*
 				ArrayList<String> commitList = new ArrayList <String>();
@@ -106,7 +101,7 @@ public class MineProductPortfolios implements CommitVisitor {
 							;
 				}
 				*/
-				portfoliocount++;
+			
 			}
 		}
 		else {

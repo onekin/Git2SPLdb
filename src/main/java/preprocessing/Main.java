@@ -1,11 +1,24 @@
 package preprocessing;
+import java.awt.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.internal.storage.file.FileRepository;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.repodriller.RepoDriller;
 import org.repodriller.RepositoryMining;
 import org.repodriller.Study;
+import org.repodriller.domain.Commit;
+import org.repodriller.filter.range.CommitRange;
 import org.repodriller.filter.range.Commits;
 import org.repodriller.persistence.csv.CSVFile;
 import org.repodriller.scm.GitRepository;
 
+import SPLconcepts.Product;
+import SPLconcepts.ProductRelease;
 import SPLconcepts.SPL;
 
 public class Main implements Study {
@@ -56,15 +69,31 @@ public class Main implements Study {
 	}
 	
 	public void execute() {
-
-		// 1: Mine coreAsset baselines
 		
+	
+	
+	
+		//1. mine from Git repository to SPL model
 		mineCoreAssetBaselines();
 		mineProductPorfolios();
-		mineCustomizationEffort();
+		
+		for(int i=0; i< Main.spl.getProductPortfoliosSize(); i++){
+			for (int j=0; j < spl.getProductPortfolio(i).getNumberOfProductsInPortfolio();j++){//for each product in porfolio, execute mineCustomizations
+				for (int z=0; z < spl.getProductPortfolio(i).getProductFromPortfolio(j).getReleases().size(); z++)
+					mineCustomizationEffort(spl.getProductPortfolio(i).getProductFromPortfolio(j).getReleases().get(z));
+					
+			}
+		}
+		
+		//(optional)save to EMF model 
+		
+		//2. Transform to csv files
+	
 	}
 
 
+
+	
 
 	private void mineCoreAssetBaselines() {
 		new RepositoryMining()
@@ -74,12 +103,12 @@ public class Main implements Study {
 		.process(new MineBaselines(), new CSVFile (pathToResources+"/spl-data/baselines.csv"))
 		.mine();
 		System.out.println("Finished processing CoreAsset Baselines");
-		System.out.println(spl.getCoreAssetBaseline(0).getCoreAsset(0).getContent());
+	//	System.out.println(spl.getCoreAssetBaseline(0).getCoreAsset(0).getContent());
 		
 	}
 
 	private void mineProductPorfolios() {
-		//if(hasFeature(singleRepository))
+
 		new RepositoryMining()
 		.in(GitRepository.singleProject(productRepo))
 		.through(Commits.list(spl.getCoreAssetBaselinesAsCommitsHashes()))
@@ -89,8 +118,19 @@ public class Main implements Study {
 		
 	}
 	
-	private void mineCustomizationEffort() {
-		// TODO Auto-generated method stub
+		
+	private void mineCustomizationEffort(ProductRelease productRelease) {
+		System.out.println("INSIDE mineCustomizationEffort");
+		
+		List commitIDs = Utils.getCommitHashesBetweenTwoTags( productRelease.getFromProduct().getInPortfolio().getDerivedFrom().getTag(),
+				productRelease.getIdRelease());
+				
+		new RepositoryMining()
+		.in(GitRepository.singleProject(productRepo))
+		.through((CommitRange) commitIDs)
+		.filters()
+		.process(new MineProductCustomizations(), new CSVFile (pathToResources+"/spl-data/customizations.csv"))
+		.mine();
 		
 	}
 

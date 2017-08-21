@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import OldMain.AnalyzeFeatureDetail;
 
 import org.repodriller.domain.Commit;
 import org.repodriller.domain.DiffParser;
@@ -15,7 +14,7 @@ import org.repodriller.scm.SCMRepository;
 import org.repodriller.domain.DiffLine;
 
 import SPLconcepts.CustomizationEffort;
-/*
+
 public class MineProductCustomizations implements CommitVisitor {
 
 	public String name() {
@@ -23,6 +22,7 @@ public class MineProductCustomizations implements CommitVisitor {
 		return null;
 	}
 
+	//commits are from product releases 
 	public void process(SCMRepository repo, Commit commit, PersistenceMechanism writer) {
 		
 		for (Modification m : commit.getModifications()) {// POR CADA MODIFICACION DE UN COMMIT
@@ -57,9 +57,9 @@ public class MineProductCustomizations implements CommitVisitor {
 						addedNewLines = parsedDiff.getBlocks().get(counter-1).getLinesInNewFile();
 						sourceCodeFile= m.getSourceCode();
 						
-						CustomizationEffort analyzeFeatureDetail = new CustomizationEffort(sourceCodeFile,addedNewLines);
 						
-						ArrayList<CustomizationEffort> list = analyzeFeatureDetail.computeFeatureChanged(sourceCodeFile, addedNewLines, m.getFileName(), m.getOldPath()) ;
+						
+						ArrayList<CustomizationEffort> list = FeatureAnalysisUtils.computeFeatureChanged(sourceCodeFile, addedNewLines, m.getFileName(), m.getOldPath()) ;
 						Iterator<CustomizationEffort> it= list.iterator();
 						CustomizationEffort aux ;
 						while (it.hasNext()){
@@ -97,7 +97,8 @@ public class MineProductCustomizations implements CommitVisitor {
 					}
 				}
 		
-	}
+		}
 
+	}
 }
-*/
+

@@ -1,6 +1,7 @@
 package preprocessing;
 
 
+import java.util.Date;
 import java.util.List;
 
 import org.repodriller.domain.Commit;
@@ -31,14 +32,15 @@ public class MineBaselines implements CommitVisitor {
 			try{
 				
 				repo.getScm().checkout(commit.getHash());
-				CoreAssetBaseline CABaseline = new CoreAssetBaseline(commit, commit.getDate());
+				String baselineTag = Utils.getTagForACommitHash(commit.getHash());
+				CoreAssetBaseline CABaseline = new CoreAssetBaseline(commit, new Date (commit.getDate().getTimeInMillis()), baselineTag);
 				Main.spl.addBaseline(CABaseline);
 				
 					List<RepositoryFile> files = repo.getScm().files();
 					
 					SourceCodeFile CAfile;
 					for(RepositoryFile file : files) {
-						System.out.println ("Nombre fichero: "+file.getFile().getPath());
+					//	System.out.println ("Nombre fichero: "+file.getFile().getPath());
 						if(!file.getFile().getAbsolutePath().contains(Main.pathToWhereCustomizationsAreComputed)) continue;
 						
 						//(File file, String fileName, String path, String content, String hash) {
@@ -48,8 +50,8 @@ public class MineBaselines implements CommitVisitor {
 					//	baselines.addCoreAssetFile(CAfile);
 					
 					writer.write(
-							commit.getHash(),	
-							commit.getDate(),
+							CABaseline.getTag(),	
+							CABaseline.getReleaseDate(),
 							file.getFullName());
 					
 				}

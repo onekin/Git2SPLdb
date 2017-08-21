@@ -1,19 +1,14 @@
 package SPLconcepts;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
-import org.apache.log4j.chainsaw.Main;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.*;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevObject;
-import org.eclipse.jgit.revwalk.RevTag;
 import org.repodriller.domain.Commit;
 
 
@@ -72,8 +67,7 @@ public class Product {
 		this.inPortfolio = inPortfolio;
 	}
 
-	public void computeAllItsReleases() {// WE NEED TO IMPLEMENT THIS!!!!!
-		// TODO Auto-generated method stub
+	public void computeAllReleases() {
 	
 		if(commitList==null) commitList= new ArrayList<RevCommit>();
 		
@@ -102,11 +96,10 @@ public class Product {
 					    if (object.getName().equals(co.getName())) {
 					        commits.add(object);
 					        System.out.println("release for product" +this.releaseBranchName+ "is commit: "+object.getName()+ "  name:"+tag.getName());
-					        ProductRelease pr = new ProductRelease (tag.getName(),this, new Date ( 1000L * co.getCommitTime()));
+					        ProductRelease pr = new ProductRelease (tag.getName(),this, new Date ( 1000L * co.getCommitTime()), co);
 
 					        addProductRelease(pr);
-					        
-					        //MORE?
+
 					    }
 					}
 				}

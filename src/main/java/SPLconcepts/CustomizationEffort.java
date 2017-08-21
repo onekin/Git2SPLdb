@@ -1,7 +1,13 @@
 package SPLconcepts;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.repodriller.domain.DiffLine;
+
 public class CustomizationEffort{
 
+  String customizationId;
   SourceCodeFile productFile;
   SourceCodeFile coreAssetFile;
   String featureNameModified;
@@ -9,14 +15,21 @@ public class CustomizationEffort{
   
   int addedLines = 0;
   int deletedLines = 0;
-  int churn = 0;
+
+  public CustomizationEffort(String customizationId){
+	  
+  }
   
-  public CustomizationEffort(SourceCodeFile productFile, SourceCodeFile coreAssetFile,  String featureNameModified){
+  
+  public CustomizationEffort(String customizationId, String featureNameModified, String modType, int amount,  SourceCodeFile productFile, SourceCodeFile coreAssetFile){
+	  this.customizationId = customizationId;
 	  this.productFile = productFile;
 	  this.coreAssetFile = coreAssetFile;
 	  this.featureNameModified = featureNameModified;
   }
 	
+
+
 	public SourceCodeFile getProductFile() {
 		return productFile;
 	}
@@ -58,10 +71,15 @@ public class CustomizationEffort{
 	}
 	
 	public int getChurn() {
-		return churn;
+		return this.addedLines+this.deletedLines;
 	}
 	
-	public void setChurn(int churn) {
-		this.churn = churn;
+
+
+	public ArrayList<CustomizationEffort> computeFeatureChanged(
+			String sourceCodeFile, List<DiffLine> addedNewLines,
+			String fileName, String oldPath) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

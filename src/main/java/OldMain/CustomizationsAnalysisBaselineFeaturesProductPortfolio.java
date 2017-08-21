@@ -15,6 +15,7 @@ import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.scm.CommitVisitor;
 import org.repodriller.scm.SCMRepository;
 
+
 public class CustomizationsAnalysisBaselineFeaturesProductPortfolio implements CommitVisitor {
 	 
 	public static boolean headerFlag = false;

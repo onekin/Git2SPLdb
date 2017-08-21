@@ -12,4 +12,48 @@ public class Feature {
 	ArrayList<Feature>  requires;
 	ArrayList<Feature>  excludes;
 	
+	public Feature (String name, String idFeature){
+		this.name = name;
+		this.idFeature= idFeature;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getIdFeature() {
+		return idFeature;
+	}
+	public void setIdFeature(String idFeature) {
+		this.idFeature = idFeature;
+	}
+	public ArrayList<SourceCodeFile> getCoreassets() {
+		return coreassets;
+	}
+	public void setCoreassets(ArrayList<SourceCodeFile> coreassets) {
+		this.coreassets = coreassets;
+	}
+	public ArrayList<CoreAssetBaseline> getInBaselines() {
+		return inBaselines;
+	}
+	public void setInBaselines(ArrayList<CoreAssetBaseline> inBaselines) {
+		this.inBaselines = inBaselines;
+	}
+	
+	public ArrayList<Feature> getRequires() {
+		return requires;
+	}
+
+	public ArrayList<Feature> getExcludes() {
+		return excludes;
+	}
+	
+	
+	
+	
+	
+	
+	
 }
