@@ -44,10 +44,7 @@ public class MineBaselines implements CommitVisitor {
 					for(RepositoryFile file : files) {
 					//	System.out.println ("Nombre fichero: "+file.getFile().getPath());
 						if(!file.getFile().getAbsolutePath().contains(Main.pathToWhereCustomizationsAreComputed)) continue;
-						
-						//(File file, String fileName, String path, String content, String hash) {
-						CAfile=new CoreAssetFileAnnotated(file.getFile(), file, file.getFile().getName(), 
-								file.getFile().getPath(), file.getSourceCode());
+						CAfile= new CoreAssetFileAnnotated(file.getFile().getName(),  file.getFile().getPath(), file.getSourceCode());
 						CABaseline.addCoreAssetFile(CAfile);
 					//	baselines.addCoreAssetFile(CAfile);
 					

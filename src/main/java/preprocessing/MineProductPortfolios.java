@@ -21,7 +21,7 @@ import org.repodriller.scm.SCMRepository;
 import OldMain.CustomizationDetail;
 import OldMain.Customs;
 import SPLconcepts.CoreAssetBaseline;
-import SPLconcepts.CustomizationEffort;
+import SPLconcepts.CustomizationEffortDeprecated;
 import SPLconcepts.Product;
 import SPLconcepts.ProductPortfolio;
 import SPLconcepts.ProductRelease;

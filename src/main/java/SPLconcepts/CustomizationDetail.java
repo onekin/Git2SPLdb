@@ -5,43 +5,56 @@ public class CustomizationDetail{
 	
 
 	String featureModifiedName;
-	String operation;//ADDED,REMOVED,KEPT
+	String operation;//ADDED,REMOVED
 	Integer lineOfCodeModified;
-	String fileName;
-	String filePath;
-	CustomizationEffort custom;
 
-	public CustomizationDetail(String featureName, String modType, int lineOfCodeModified, String fileName, String filePath) {
+	
+	SourceCodeFile productFile;
+	SourceCodeFile coreAssetFile;
+	ProductRelease inRelease=null;
+
+	public CustomizationDetail(String featureName, String modType, int lineOfCodeModified, SourceCodeFile productFile, SourceCodeFile coreAssetFile, ProductRelease inRelease) {
+		
 		this.featureModifiedName=featureName;
 		this.operation=modType;
 		this.lineOfCodeModified=lineOfCodeModified;
-		this.fileName=fileName;
-		this.filePath=filePath;
+		this. coreAssetFile=coreAssetFile;
+		this. productFile=productFile;	
+		this.inRelease = inRelease;
+	}
+
 	
+
+	public SourceCodeFile getProductFile() {
+		return productFile;
 	}
 
-	public String getFileName() {
-		return fileName;
+
+
+	public void setProductFile(SourceCodeFile productFile) {
+		this.productFile = productFile;
 	}
 
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
+
+
+	public SourceCodeFile getCoreAssetFile() {
+		return coreAssetFile;
 	}
 
-	public String getFilePath() {
-		return filePath;
+
+
+	public void setCoreAssetFile(SourceCodeFile coreAssetFile) {
+		this.coreAssetFile = coreAssetFile;
 	}
 
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
+
+
+	public ProductRelease getInRelease() {
+		return inRelease;
 	}
 
-	public CustomizationEffort getCustom() {
-		return custom;
-	}
-
-	public void setCustom(CustomizationEffort custom) {
-		this.custom = custom;
+	public void setInRelease(ProductRelease inRelease) {
+		this.inRelease = inRelease;
 	}
 
 	public String getFeatureModifiedName() {

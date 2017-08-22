@@ -14,7 +14,7 @@ public class ProductRelease {
 	private Date releaseDate;
 	private	ArrayList<ProductAssetFileAnnotated> productAssets;
 	private RevCommit releasedCommit;
-	ArrayList<CustomizationEffort> customList=new ArrayList<CustomizationEffort>();
+	ArrayList<CustomizationDetail> customList=new ArrayList<CustomizationDetail>();
 	
 	public ProductRelease(String idRelease, Product fromProduct, Date l, RevCommit releasedCommit){
 		
@@ -24,11 +24,11 @@ public class ProductRelease {
 		this.idRelease = Utils.extractRefName(idRelease, 2);
 	}
 	
-	public void addCustomization(CustomizationEffort cust){
+	public void addCustomization(CustomizationDetail cust){
 		this.customList.add(cust);
 	}
 	
-	public ArrayList<CustomizationEffort>  getCustomization(){
+	public ArrayList<CustomizationDetail>  getCustomizations(){
 		return this.customList;
 	}
 	
@@ -64,6 +64,8 @@ public class ProductRelease {
 	public void setReleasedCommit(RevCommit releasedCommit) {
 		this.releasedCommit = releasedCommit;
 	}
+
+
 	
 	
 	

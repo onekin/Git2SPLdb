@@ -5,14 +5,15 @@ import java.util.List;
 
 import org.repodriller.domain.DiffLine;
 
-public class CustomizationEffort{
-
+public class CustomizationEffortDeprecated{
+	/*
   int customizationId;
   SourceCodeFile productFile;
   SourceCodeFile coreAssetFile;
   String featureNameModified;
   ProductRelease inRelease=null;
   //Feature featureModified;
+  ArrayList<CustomizationDetail> detailsList;
   
   int addedLines = 0;
   int deletedLines = 0;
@@ -116,4 +117,5 @@ public class CustomizationEffort{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	*/
 }

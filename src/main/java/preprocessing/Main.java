@@ -22,7 +22,8 @@ import org.repodriller.scm.SCMRepository;
 
 import utils.Utils;
 
-import SPLconcepts.CustomizationEffort;
+import SPLconcepts.CustomizationDetail;
+import SPLconcepts.CustomizationEffortDeprecated;
 import SPLconcepts.Product;
 import SPLconcepts.ProductPortfolio;
 import SPLconcepts.ProductRelease;
@@ -150,10 +151,9 @@ public class Main implements Study {
 	private void mineCustomizationEffort(ProductRelease productRelease, String name) {
 		System.out.println("Mining customizations for "+productRelease.getIdRelease());
 		
-		ArrayList<String> commitIDs = Utils.getCommitHashesBetweenTwoTags(productRelease.getFromProduct().getInPortfolio().getDerivedFrom().getTag(),
-				productRelease.getIdRelease());//baseline it was derived from  -- ProductRelease
-				/**		
-				new RepositoryMining()
+		ArrayList<String> commitIDs 
+		= Utils.getCommitHashesBetweenTwoTags(productRelease.getFromProduct().getInPortfolio().getDerivedFrom().getTag(), productRelease.getIdRelease());//baseline it was derived from  -- ProductRelease
+				/**new RepositoryMining()
 				.in(GitRepository.singleProject(productRepo))
 				.through(Commits.list(commitIDs))
 				.filters()
@@ -162,13 +162,15 @@ public class Main implements Study {
 		
 		//I'm going my own way
 		Iterator<String> it = commitIDs.iterator();
+		ArrayList<CustomizationDetail> commitCustomizationsDetails = new ArrayList<CustomizationDetail>();
 		while(it.hasNext()){//for each commit in the release call mine Product Customization
 			String commit = it.next();
 		    ChangeSet cs = convertHashToCommit(commit,GitRepository.singleProject(Main.productRepo));
 		    MineProductCustomizations mineCust = new MineProductCustomizations(productRelease);
-	 	    mineCust.mine(GitRepository.singleProject(productRepo), GitRepository.singleProject(productRepo).getScm().getCommit(cs.getId()), new CSVFile (pathToResources+"/spl-data/customizations-"+name+"+.csv"));
+		    commitCustomizationsDetails.addAll( mineCust.mine(GitRepository.singleProject(productRepo), GitRepository.singleProject(productRepo).getScm().getCommit(cs.getId()), new CSVFile (pathToResources+"/spl-data/customizations-"+name+"+.csv")));
 		}
-	
+		//HERE WE HAVE ALL CUSTOMIZATION DETAILS for the release into list "commitCustomizationsDetails"
+		productRelease.getCustomizations().addAll(commitCustomizationsDetails);
 	}
 	
 	private void printCustomizations() {
@@ -187,20 +189,18 @@ public class Main implements Study {
 				listPR=p.getReleases();
 				Iterator<ProductRelease> prIt = listPR.iterator();
 				while(prIt.hasNext()){
-					ArrayList<CustomizationEffort> custs = prIt.next().getCustomization();
-					Iterator<CustomizationEffort> ite = custs.iterator();
+					ArrayList<CustomizationDetail> custs = prIt.next().getCustomizations();
+					Iterator<CustomizationDetail> ite = custs.iterator();
 					while(ite.hasNext()){
-						CustomizationEffort cust = ite.next();
+						CustomizationDetail cust = ite.next();
 						System.out.println(
-								"ID:"+cust.getCustomizationId()+"\n"+
+								//"ID:"+cust.getCustomizationId()+"\n"+
 								"In release" +cust.getInRelease().getIdRelease()+"\n"+
 								"Product file"+cust.getProductFile().getFileName()+"\n"+
 								"Core Asset file:"+cust.getCoreAssetFile().getFileName()+"\n"+
-								"Feature modified:"+cust.getFeatureNameModified() +"\n"+
-								"Added:"+cust.getAddedLines()+"\n"+
-								"Deleted:"+cust.getDeletedLines()+"\n"+
-								"Churn"+ cust.getChurn() +"\n-------------------");
-								
+								"Feature modified:"+cust.getFeatureModifiedName() +"\n"+
+								"Operation:"+cust.getOperation()+"\n"+
+								"LineChanged:"+cust.getLineOfCodeModified()+"\n-------------------");		
 					}
 					
 				}

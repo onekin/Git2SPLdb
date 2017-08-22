@@ -1,9 +1,15 @@
 package SPLconcepts;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.repodriller.scm.RepositoryFile;
+
+import OldMain.Customs;
 
 public class ProductAssetFileAnnotated implements SourceCodeFile{
 	
@@ -13,14 +19,16 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 	String content;
 	RepositoryFile repoFile;
 
-	public ProductAssetFileAnnotated(RepositoryFile repoFile, File file, String fileName, String path,
-			String content, String hash) {
-		this.file = file;
-		this.repoFile = repoFile;
+	HashMap <Integer,String> featureToCodeMapping = new HashMap<Integer, String>();
+	ArrayList<String> featureList= new ArrayList<String>();
+	
+	public ProductAssetFileAnnotated(String fileName, String path, String content ) {
+
 		this.fileName=fileName;
 		this.path = path;
 		this.content = content;
 	}
+
 
 	public String getContent() {
 		
@@ -47,9 +55,6 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 		return repoFile;
 	}
 
-	public HashMap<Integer, String> readFileToGetFeatureMap(File auxFile) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 }

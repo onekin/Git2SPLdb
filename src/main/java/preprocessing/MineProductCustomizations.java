@@ -31,24 +31,25 @@ public class MineProductCustomizations{
 	}
 
 
-	public void mine(SCMRepository repo, Commit commit, PersistenceMechanism writer) {//for each commit belonging to the product release at hand
+	public ArrayList<CustomizationDetail> mine(SCMRepository repo, Commit commit, PersistenceMechanism writer) {//for each commit belonging to the product release at hand
 		if(headerFlag==false){
 			headerFlag=true;
 			writer.write("Product","Feature","Churn");
 		}
-		
+		ArrayList<CustomizationDetail> totalModifications = new ArrayList<CustomizationDetail>();
 		for (Modification m : commit.getModifications()) { // for each modification in each commit. Modifications are one per file changed
 			System.out.println("INSIDE FOR ");
 			if( m.getNewPath().startsWith(Main.pathToWhereCustomizationsAreComputed)){ // only compute modifications that are performed to "path"
-				computeFeatureCustomizationsInModification("ADDED",commit,m,writer);
-				computeFeatureCustomizationsInModification("REMOVED",commit,m,writer);
-				//computeCustomizationsForAModification("KEPT",commit,writer);				
+				totalModifications.addAll ( computeFeatureCustomizationsInModification("NEWFile",commit,m,writer,this.productRelease));//comupte modification in the new file w.r.t the old file (additions and removals)
+				totalModifications.addAll ( computeFeatureCustomizationsInModification("OLDFile",commit,m,writer,this.productRelease));//compute modification in the old file w.r.r the new file (removals)
+							
 			}
 		}
-		//HERE CREATE A CUSTOMIZATION EFFORT OBJECT! based on the CustomizationDetails
+		productRelease.getCustomizations().addAll(totalModifications);
+		return totalModifications;
 	}
 
-	private void computeFeatureCustomizationsInModification(String operation, Commit commit, Modification m, PersistenceMechanism writer) {
+	private ArrayList<CustomizationDetail> computeFeatureCustomizationsInModification(String operation, Commit commit, Modification m, PersistenceMechanism writer, ProductRelease pr) {
 		
 		int counter=1;
 		List<DiffLine> lines = null;
@@ -60,30 +61,28 @@ public class MineProductCustomizations{
 		System.out.println("ProductBranch-- File name--- Feature changed ---Operation ---LOCs");
 		System.out.println("------------------------------------------------------------------");
 		
-		
-		while (counter<=numberOfBlock){//analyze those lines that appeared as NEW in the file
-			if(operation=="ADDED")	
+		ArrayList<CustomizationDetail> list =null;
+		while (counter<=numberOfBlock){//analyze those lines that are removed/added in the new file
+			if(operation=="NEWFile")	
 				lines = parsedDiff.getBlocks().get(counter-1).getLinesInNewFile();//added new lines
-				
-			else if (operation == "REMOVED") 
+			else if (operation == "OLDFile") 
 				lines = parsedDiff.getBlocks().get(counter-1).getLinesInOldFile(); //deleted lines
+			
 			sourceCodeFile= m.getSourceCode();
 			
-			ArrayList<CustomizationDetail> list ;
-			list = FeatureAnalysisUtils.computeFeatureChanged(sourceCodeFile, lines, m.getFileName(), m.getOldPath(), productRelease) ; //get details of customizations
+			list = FeatureAnalysisUtils.computeCustomizationDetails( m.getFileName(), m.getNewPath(), sourceCodeFile, lines, pr, commit) ; //get details of customizations
 			
-			Iterator<CustomizationDetail> it= list.iterator();//JUST FOR PRINTING DETAILS; WE CAN REMOVE THIS
+			/** JUST FOR PRINTING DETAILS; WE CAN REMOVE THIS **/
+			Iterator<CustomizationDetail> it= list.iterator();
 			while (it.hasNext()){
 				CustomizationDetail aux = it.next();
-				//this.productRelease.getCustomization().add(aux);
 				System.out.println(commit.getBranches()+"  "+m.getFileName()+" "+aux.getFeatureModifiedName()+ " "+ aux.getOperation());
-				if( (aux.getFeatureModifiedName()!="none") && (aux.getFeatureModifiedName()!=null)){
-					writer.write(commit.getBranches(),aux.getFeatureModifiedName(),aux.getLineOfCodeModified());
-				}
+				writer.write(commit.getBranches(),aux.getFeatureModifiedName(),aux.getOperation());
+				
 			}
 			counter++;
 		}	
-		
+		return list;
 	}
 }
 
