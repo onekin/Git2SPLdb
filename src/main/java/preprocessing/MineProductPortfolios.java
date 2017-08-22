@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.repodriller.RepositoryMining;
 import org.repodriller.domain.Commit;
 import org.repodriller.domain.DiffLine;
@@ -17,6 +18,8 @@ import org.repodriller.persistence.csv.CSVFile;
 import org.repodriller.scm.CommitVisitor;
 import org.repodriller.scm.GitRepository;
 import org.repodriller.scm.SCMRepository;
+
+import utils.Utils;
 
 import OldMain.CustomizationDetail;
 import OldMain.Customs;
@@ -53,17 +56,23 @@ public class MineProductPortfolios implements CommitVisitor {
 		CoreAssetBaseline originB = Main.spl.getCoreAssetBaselineFromCommit(commit);
 		pp = new ProductPortfolio(originB , portfoliocount);
 	
-		
 		Product p;
 
-		if (isCommitIntoProductBranch(commit) ){//let's see if commits belong to product branches
-			if (commit.getBranches().contains(Customs.coreAssetsBranchPatternName)){ //this commit is the origin of the product
-				Iterator<String> it = commit.getBranches().iterator();
+		//if (isCommitIntoProductBranch(commit) && isCommitIntoProductBranch(originB.getCommit())){//let's see if commits belong to product branches
+		//	if (commit.getBranches().contains(Customs.coreAssetsBranchPatternName)){ //this commit is the origin of the product
+				
+				System.out.println("GETTING branches for: "+commit.getHash()+"\n"+commit.getBranches().toString());
+				Iterator<String> it = commit.getBranches().iterator();//lists all branches that include the "commit"
 				String brName;
+				
 				while(it.hasNext()){
-					
+				  
 				  brName =it.next();
-				  if (brName.contains(Main.productBranchPatternName)){
+				  System.out.println("Al LORO: branch:"+brName+"   commit:" +commit.getHash() + "nuevo:" +searchForNewerBaselineCommit(brName,commit).getHash());
+				  if(searchForNewerBaselineCommit(brName,commit).getHash().equals(commit.getHash()) //if the product branch is really  derived from this exact baseline commit
+						  &&
+						 (!brName.equals(Main.coreAssetsBranchPatternName)))
+				  {
 					  p = new Product(commit, brName, pp);
 					  p.computeAllReleases();
 					  pp.addProductToPortfolio(p);
@@ -84,14 +93,36 @@ public class MineProductPortfolios implements CommitVisitor {
 				Main.spl.getProductPortfolioList().add(pp);
 				
 			
+	//		}
+	//	}
+		
+	}
+	
+
+
+	public Commit searchForNewerBaselineCommit(String branchName, Commit currentCommit){
+		
+		Commit latestCAForBranch=currentCommit;
+		ArrayList<Commit> coreAssetBaselines = Main.spl.getCoreAssetBaselinesAsCommits();
+		
+		Iterator<Commit> caIterator = coreAssetBaselines.iterator();
+		while(caIterator.hasNext()){
+			Commit newerCommit = caIterator.next();
+			if (Utils.isCommitInBranch(newerCommit, branchName))//if the baseilne commit is in the branch
+				if( newerCommit.getCommitterDate().after(currentCommit.getCommitterDate())){ //newer is after current commit 
+					latestCAForBranch=newerCommit;
 			}
-		}
-		else {
 			
 		}
+		
+		return latestCAForBranch;
 	}
 
-	public boolean isCommitIntoProductBranch(Commit co){
+	
+
+
+
+	public boolean isCommitIntoAnyProductBranch(Commit co){
 		Set<String> branches = co.getBranches();
 		Iterator<String> it = branches.iterator();
 		while (it.hasNext()){

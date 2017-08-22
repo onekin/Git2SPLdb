@@ -1,4 +1,5 @@
 package preprocessing;
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -96,6 +97,7 @@ public class Main implements Study {
 		
 		//3. print info
 		printCustomizations();
+		printPP();
 	
 	}
 
@@ -116,24 +118,14 @@ public class Main implements Study {
 
 		new RepositoryMining()
 		.in(GitRepository.singleProject(productRepo))
-		.through(Commits.list(spl.getCoreAssetBaselinesAsCommitsHashes()))
+		.through( Commits.list( spl.getCoreAssetBaselinesAsCommitsHashes()))
 		.filters()
 		.process(new MineProductPortfolios(), new CSVFile (pathToResources+"/spl-data/portfolios.csv"))
 		.mine();
 		
 	}
 	
-	ChangeSet convertHashToCommit(String hash, SCMRepository scmRepository){
-		
-		List<ChangeSet> all = scmRepository.getScm().getChangeSets();
-
-		for(ChangeSet cs : all) {
-			if(hash.equals(cs.getId())) {
-				return cs;
-			}
-		}
-		return null;
-	}
+	
 	
 	/****public List<ChangeSet> getCommitIDsToCommits(SCM scm, List<String> commits) {
 		List<ChangeSet> all = scm.getChangeSets();
@@ -165,7 +157,7 @@ public class Main implements Study {
 		ArrayList<CustomizationDetail> commitCustomizationsDetails = new ArrayList<CustomizationDetail>();
 		while(it.hasNext()){//for each commit in the release call mine Product Customization
 			String commit = it.next();
-		    ChangeSet cs = convertHashToCommit(commit,GitRepository.singleProject(Main.productRepo));
+		    ChangeSet cs = Utils.convertHashToCommit(commit,GitRepository.singleProject(Main.productRepo));
 		    MineProductCustomizations mineCust = new MineProductCustomizations(productRelease);
 		    commitCustomizationsDetails.addAll( mineCust.mine(GitRepository.singleProject(productRepo), GitRepository.singleProject(productRepo).getScm().getCommit(cs.getId()), new CSVFile (pathToResources+"/spl-data/customizations-"+name+"+.csv")));
 		}
@@ -209,4 +201,29 @@ public class Main implements Study {
 		
 	}
 
+	private void printPP() {
+		System.out.println("---------------Printing ProductPortfolios--------");
+		int size = Main.spl.productPortfolios.size();
+		int i=0;
+		while( i< size){
+			System.out.println("Portfolio: "+Main.spl.productPortfolios.get(i).getPortfolioID());
+			System.out.println("DerivedFRom: "+ Main.spl.productPortfolios.get(i).getDerivedFrom().getTag());
+			System.out.println("Number of products: "+ Main.spl.productPortfolios.get(i).getNumberOfProductsInPortfolio());
+			ArrayList<Product> products = Main.spl.productPortfolios.get(i).getProducts();
+			System.out.println("Product SIZE: "+ products.size());
+			
+			Iterator <Product> it = products.iterator();
+			Product p;
+			while (it.hasNext()){
+				p=it.next();
+				System.out.println("PRODUCT  name " +	p.getBranchName());
+				System.out.println("Origin Comit " +	p.getOriginCommit().getHash());
+				System.out.println(" releases count:" + p.getReleases().size());
+				System.out.println(" releases to string: " + p.getReleases().toString());
+			}
+			
+			i++;
+		}
+
+	}
 }

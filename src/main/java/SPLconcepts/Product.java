@@ -79,7 +79,7 @@ public class Product {
 	                .call();
 			  System.out.println("Commits for branch: "+this.getBranchName());
 		        for(RevCommit revCommit : revCommits){
-		        	if(revCommit.getName().equals(this.originCommit.getHash())) break; // do not add commits belonging to the core asset baselines
+		          if(revCommit.getName().equals(this.originCommit.getHash())) break; // do not add commits belonging to the core asset baselines
 		        	this.commitList.add(revCommit);
 		        	System.out.println(revCommit.getName());
 		        	

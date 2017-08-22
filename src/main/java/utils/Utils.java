@@ -14,7 +14,9 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.repodriller.domain.ChangeSet;
 import org.repodriller.domain.Commit;
+import org.repodriller.scm.SCMRepository;
 
 import preprocessing.Main;
 
@@ -23,12 +25,13 @@ public class Utils {
 	
 	static int customizationCounter = 0;
 
+
 	
 	static public ArrayList<String> getCommitHashesBetweenTwoTags(String baselineTag, String productReleaseTag) {
 		//this snipped sworks fine
 		try{
-			  Repository repo = new FileRepository(preprocessing.Main.productRepo+"/.git");
-			  Git git = new Git(repo);
+		  Repository repo = new FileRepository(preprocessing.Main.productRepo+"/.git");
+		  Git git = new Git(repo);
 		  Ref refFrom = repo.getRef(baselineTag);
 		  Ref refTo = repo.getRef(productReleaseTag);
 		
@@ -49,7 +52,17 @@ public class Utils {
 		}		
 	}
 	
-
+	static public ChangeSet convertHashToCommit(String hash, SCMRepository scmRepository){
+			
+			List<ChangeSet> all = scmRepository.getScm().getChangeSets();
+	
+			for(ChangeSet cs : all) {
+				if(hash.equals(cs.getId())) {
+					return cs;
+				}
+		}
+		return null;
+	}
 	
 	static public String getTagForACommitHash(String hash){
 		Repository repository;
@@ -81,6 +94,34 @@ public class Utils {
 		static public int getNewCustomizationId(){
 			customizationCounter ++;
 			return customizationCounter;
+		}
+
+		public static Iterable<RevCommit> getCommitsInBranch(String branchName) {
+			
+			try {
+				Repository repository = new FileRepository(preprocessing.Main.productRepo+"/.git");
+				Git git = new Git(repository);
+				 Iterable<RevCommit> revCommits = git.log()
+			                .add(repository.resolve(branchName))
+			                .call();
+			     return  revCommits;
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			return null;
+		}
+		
+		public static boolean isCommitInBranch(Commit newerCommit, String branchName) {
+			Iterable <RevCommit> commitsForBranch = Utils.getCommitsInBranch(branchName);
+			Iterator <RevCommit> it = commitsForBranch.iterator();
+			
+			while(it.hasNext()){
+				RevCommit co = it.next();
+				if(co.getName().compareTo(newerCommit.getHash())==0)
+					return true;
+			}
+			
+			return false;
 		}
 	
 }

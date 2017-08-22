@@ -1,6 +1,8 @@
 package SPLconcepts;
 
 import java.util.ArrayList;
+
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,11 +15,21 @@ public class SPL {
 	
 	
 	
-	public List<String> getCoreAssetBaselinesAsCommitsHashes(){
+	public ArrayList<String> getCoreAssetBaselinesAsCommitsHashes(){
 		ArrayList<String> commitList = new ArrayList <String>();
 		
 		for (int i=0; i< coreAssetBaselines.size() ;i++){
 			commitList.add(coreAssetBaselines.get(i).getCommit().getHash());
+		}
+		Collections.reverse(commitList);
+		return (commitList);
+	}
+	
+	public ArrayList<Commit> getCoreAssetBaselinesAsCommits(){
+		ArrayList<Commit> commitList = new ArrayList <Commit>();
+		
+		for (int i=0; i< coreAssetBaselines.size() ;i++){
+			commitList.add(coreAssetBaselines.get(i).getCommit());
 		}
 		
 		return commitList;
@@ -27,7 +39,7 @@ public class SPL {
 		Iterator<CoreAssetBaseline> it = coreAssetBaselines.iterator();
 		CoreAssetBaseline ca=null;
 		while (it.hasNext()){
-			System.out.println("In getCoreAssetBaselineFromCommit; Commit hash: " +co.getHash());
+		//	System.out.println("In SPL.java GETCoreAssetBaselineFromCommit; Commit hash: " +co.getHash());
 			 ca = it.next();
 			 System.out.println(ca.getCommit().getHash());
 			if (ca.getCommit().getHash().equals(co.getHash()))
