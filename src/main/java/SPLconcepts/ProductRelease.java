@@ -5,7 +5,7 @@ import java.util.Date;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 
-import preprocessing.Utils;
+import utils.Utils;
 
 public class ProductRelease {
 
@@ -14,14 +14,22 @@ public class ProductRelease {
 	private Date releaseDate;
 	private	ArrayList<ProductAssetFileAnnotated> productAssets;
 	private RevCommit releasedCommit;
+	ArrayList<CustomizationEffort> customList=new ArrayList<CustomizationEffort>();
 	
 	public ProductRelease(String idRelease, Product fromProduct, Date l, RevCommit releasedCommit){
 		
 		this.fromProduct = fromProduct;
 		this.releaseDate = l;
-		this.releasedCommit = releasedCommit;
-		
+		this.releasedCommit = releasedCommit;	
 		this.idRelease = Utils.extractRefName(idRelease, 2);
+	}
+	
+	public void addCustomization(CustomizationEffort cust){
+		this.customList.add(cust);
+	}
+	
+	public ArrayList<CustomizationEffort>  getCustomization(){
+		return this.customList;
 	}
 	
 	public String getIdRelease() {

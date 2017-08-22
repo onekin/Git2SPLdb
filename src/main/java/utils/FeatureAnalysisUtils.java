@@ -1,4 +1,4 @@
-package preprocessing;
+package utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,8 +10,11 @@ import java.util.List;
 
 import org.repodriller.domain.DiffLine;
 
+import preprocessing.Main;
+
 
 import SPLconcepts.CoreAssetFileAnnotated;
+import SPLconcepts.CustomizationDetail;
 import SPLconcepts.CustomizationEffort;
 import SPLconcepts.ProductRelease;
 import SPLconcepts.SourceCodeFile;
@@ -19,12 +22,12 @@ import SPLconcepts.SourceCodeFile;
 public class FeatureAnalysisUtils {
 	
 	
-	public static ArrayList <CustomizationEffort> computeFeatureChanged(String sourceCodeFile, List<DiffLine> newLines, String fileName, String filePath, ProductRelease inRelease) {	
-		//Lista de modificaciones de un archivo. Para una modificacion, que feature cambia y cuanto
+	public static ArrayList <CustomizationDetail> computeFeatureChanged(String sourceCodeFile, List<DiffLine> newLines, String fileName, String filePath, ProductRelease inRelease) {	
+		//Lista de modificaciones de un archivo. Para una modificacion, que feature cambia y que operacion: borrar o a–adir
 	
 		try {
 			
-			ArrayList <CustomizationEffort>	featureModificationDetailList  = new  ArrayList <CustomizationEffort> (); 
+			ArrayList <CustomizationDetail>	featureModificationDetailList  = new  ArrayList <CustomizationDetail> (); 
 	        File auxFile= new File(Main.pathToAuxWorkSpace); //csvFilePath
 	        PrintWriter writer = new PrintWriter(auxFile);
 	        writer.print(sourceCodeFile);
@@ -50,17 +53,16 @@ public class FeatureAnalysisUtils {
 	        	modType=aux.getType().toString();
 	        	featureName= map.get(lineNumber);
 	        	
-		       	if(modType!="KEPT"){
+		       //	if(modType!="KEPT"){
 		        	System.out.println("feature changed: "+featureName+ " mod-type: "+modType+ " line num:"+lineNumber);
-		        	CustomizationEffort cust = new CustomizationEffort(Utils.getNewCustomizationId(),inRelease ,featureName, new CoreAssetFileAnnotated(fileName), new CoreAssetFileAnnotated(fileName));
-		        	if(modType=="ADDED" ) cust.addAddedLines(1);
-		       		else cust.addDeletedLines(1);
-		        	 featureModificationDetailList.add(cust);
+		        	//public CustomizationDetailUtil(String featureName, String modType, int lineOfCodeModified, String fileName, String filePath) {
+		        	CustomizationDetail cust = new CustomizationDetail(featureName, modType, lineNumber, fileName, filePath);
+		        	featureModificationDetailList.add(cust);
 		       				
-		       	}
+		       	//}
 	        }
 		
-			return featureModificationDetailList;
+			return featureModificationDetailList; 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

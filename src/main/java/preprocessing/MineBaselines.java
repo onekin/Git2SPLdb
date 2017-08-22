@@ -11,6 +11,8 @@ import org.repodriller.scm.CommitVisitor;
 import org.repodriller.scm.RepositoryFile;
 import org.repodriller.scm.SCMRepository;
 
+import utils.Utils;
+
 import OldMain.Customs;
 import SPLconcepts.CoreAssetBaseline;
 import SPLconcepts.CoreAssetFileAnnotated;

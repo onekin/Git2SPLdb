@@ -16,19 +16,46 @@ public class CustomizationEffort{
   
   int addedLines = 0;
   int deletedLines = 0;
+  int keptLines = 0;
 
-  public CustomizationEffort(int customizationId, ProductRelease inRelease, String featureNameModified, SourceCodeFile productFile, SourceCodeFile coreAsseCodeFile){
-	  this.customizationId = customizationId;
-	  this.inRelease = inRelease;
-	  this.productFile = productFile;
-	  this.coreAssetFile = coreAsseCodeFile;
-	  this.featureNameModified = featureNameModified;
-  }
-  
+	  public CustomizationEffort(int customizationId, ProductRelease inRelease, String featureNameModified, SourceCodeFile productFile, SourceCodeFile coreAsseCodeFile){
+		  this.customizationId = customizationId;
+		  this.inRelease = inRelease;
+		  this.productFile = productFile;
+		  this.coreAssetFile = coreAsseCodeFile;
+		  this.featureNameModified = featureNameModified;
+	  }
+	  	
+	public int getKeptLines() {
+		return keptLines;
+	}
+	
+	
+	
+	public void setKeptLines(int keptLines) {
+		this.keptLines = keptLines;
+	}
 
 
 
+		public int getCustomizationId() {
+		return customizationId;
+	}
 
+
+	public void setCustomizationId(int customizationId) {
+		this.customizationId = customizationId;
+	}
+	
+	public ProductRelease getInRelease() {
+		return inRelease;
+	}
+
+	
+	public void setInRelease(ProductRelease inRelease) {
+		this.inRelease = inRelease;
+	}
+	
 	public void  addAddedLines(int amount){
 		addedLines = addedLines +amount;
 	}

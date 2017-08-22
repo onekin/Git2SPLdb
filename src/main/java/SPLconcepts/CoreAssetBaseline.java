@@ -6,7 +6,7 @@ import java.util.Date;
 
 import org.repodriller.domain.Commit;
 
-import preprocessing.Utils;
+import utils.Utils;
 
 public class CoreAssetBaseline{//extends Commit
 	

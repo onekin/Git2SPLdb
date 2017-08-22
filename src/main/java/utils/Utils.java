@@ -1,10 +1,11 @@
-package preprocessing;
+package utils;
 
-import java.awt.List;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 
 import org.eclipse.jgit.api.Git;
@@ -13,6 +14,9 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.repodriller.domain.Commit;
+
+import preprocessing.Main;
 
 
 public class Utils {
@@ -20,7 +24,7 @@ public class Utils {
 	static int customizationCounter = 0;
 
 	
-	static public List getCommitHashesBetweenTwoTags(String baselineTag, String productReleaseTag) {
+	static public ArrayList<String> getCommitHashesBetweenTwoTags(String baselineTag, String productReleaseTag) {
 		//this snipped sworks fine
 		try{
 			  Repository repo = new FileRepository(preprocessing.Main.productRepo+"/.git");
@@ -28,7 +32,7 @@ public class Utils {
 		  Ref refFrom = repo.getRef(baselineTag);
 		  Ref refTo = repo.getRef(productReleaseTag);
 		
-		 List commitHashList = new  List();
+		  ArrayList<String>  commitHashList = new  ArrayList<String>();
 		  
 		Iterable<RevCommit> list = git.log().addRange(refFrom.getObjectId(), refTo.getObjectId()).call();
 		Iterator<RevCommit> it = list.iterator();
@@ -44,6 +48,8 @@ public class Utils {
 			return null;
 		}		
 	}
+	
+
 	
 	static public String getTagForACommitHash(String hash){
 		Repository repository;
