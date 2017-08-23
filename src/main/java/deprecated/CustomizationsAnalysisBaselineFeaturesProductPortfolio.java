@@ -1,4 +1,4 @@
-package OldMain;
+package deprecated;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;

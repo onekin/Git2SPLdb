@@ -1,30 +1,17 @@
 package preprocessing;
-import java.util.Collections;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
 
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.internal.storage.file.FileRepository;
-import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.revwalk.RevCommit;
+import java.util.ArrayList;
+import tests.FunctionalTests;
+import java.util.Iterator;
 import org.repodriller.RepoDriller;
 import org.repodriller.RepositoryMining;
 import org.repodriller.Study;
 import org.repodriller.domain.ChangeSet;
-import org.repodriller.domain.Commit;
-import org.repodriller.filter.range.CommitRange;
 import org.repodriller.filter.range.Commits;
 import org.repodriller.persistence.csv.CSVFile;
 import org.repodriller.scm.GitRepository;
-import org.repodriller.scm.SCM;
-import org.repodriller.scm.SCMRepository;
-
 import utils.Utils;
-
 import SPLconcepts.CustomizationDetail;
-import SPLconcepts.CustomizationEffortDeprecated;
 import SPLconcepts.Product;
 import SPLconcepts.ProductPortfolio;
 import SPLconcepts.ProductRelease;
@@ -36,7 +23,7 @@ public class Main implements Study {
 	public static String coreAssetsRepo; // Users/Onekin/Documents/workspace/WeatherStationSPL
 	public static String productRepo;
 	public static String pathToResources; //Users/Onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resource/alluvial/sankey.csv
-	public static String pathToAuxWorkSpace; //Users/Onekin/temp/aux.txt
+	//public static String pathToAuxWorkSpace; //Users/Onekin/temp/aux.txt
 	public static String pathToWhereCustomizationsAreComputed;//"input"
 		
 		/**Settings for Git repos and annotation based SPLs*/
@@ -68,7 +55,7 @@ public class Main implements Study {
 			coreAssetsRepo=args[0];
 			productRepo=args[0];
 			pathToResources=args[1];
-			pathToAuxWorkSpace = args[2];
+	//		pathToAuxWorkSpace = args[2];
 			pathToWhereCustomizationsAreComputed=args[3];
 			new RepoDriller().start(new Main());
 		}
@@ -98,6 +85,8 @@ public class Main implements Study {
 		//3. print info
 		printCustomizations();
 		printPP();
+		
+		tests.FunctionalTests.runChecks();
 	
 	}
 

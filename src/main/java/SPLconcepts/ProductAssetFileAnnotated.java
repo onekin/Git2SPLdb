@@ -9,7 +9,8 @@ import java.util.HashMap;
 
 import org.repodriller.scm.RepositoryFile;
 
-import OldMain.Customs;
+import deprecated.Customs;
+
 
 public class ProductAssetFileAnnotated implements SourceCodeFile{
 	

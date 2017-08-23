@@ -1,4 +1,4 @@
-package OldMain;
+package deprecated;
 
 import org.repodriller.domain.Commit;
 import org.repodriller.persistence.PersistenceMechanism;

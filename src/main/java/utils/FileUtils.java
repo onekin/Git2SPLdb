@@ -5,8 +5,9 @@ import java.io.FileReader;
 
 import org.repodriller.domain.Commit;
 
+import SPLconcepts.SourceCodeFile;
+
 public class FileUtils {
-	
 	
 	
 	
@@ -27,6 +28,7 @@ public class FileUtils {
 			  e.printStackTrace();
 		  }  
 	}
+
 	
 
 }

@@ -10,65 +10,45 @@ import java.util.HashMap;
 
 import org.repodriller.scm.RepositoryFile;
 
-import OldMain.Customs;
+import deprecated.Customs;
+
 
 
 public class CoreAssetFileAnnotated implements SourceCodeFile{
-
+	String id; //this is the full name of the file (e.g. /Users/user/Documents/repo/src/file1.txt)
 	String fileName;
 	String path;
 	String content;
+	int totalLines;
 
 
 	HashMap <Integer,String> featureToCodeMapping = new HashMap<Integer, String>();
 	ArrayList<String> featureList= new ArrayList<String>();
 	
-	public CoreAssetFileAnnotated( String fileName, String path, String content) {
+	public CoreAssetFileAnnotated(String id, String fileName, String path, String content, int totalLines) {
 
-
+		this.id= id;
 		this.fileName=fileName;
 		this.path = path;
 		this.content = content;
+		this.totalLines = totalLines; 
 	}
 	
-
-
-
-
-
-
-
 	public String getFileName() {
 		return fileName;
 	}
-
-
-
-
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
 
-
-
-
-
 	public String getPath() {
 		return path;
 	}
 
-
-
-
-
 	public void setPath(String path) {
 		this.path = path;
 	}
-
-
-
-
 
 	public String getContent() {
 		return content;

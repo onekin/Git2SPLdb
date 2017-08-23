@@ -11,9 +11,10 @@ import org.repodriller.scm.CommitVisitor;
 import org.repodriller.scm.RepositoryFile;
 import org.repodriller.scm.SCMRepository;
 
+import deprecated.Customs;
+
 import utils.Utils;
 
-import OldMain.Customs;
 import SPLconcepts.CoreAssetBaseline;
 import SPLconcepts.CoreAssetFileAnnotated;
 import SPLconcepts.SourceCodeFile;
@@ -41,17 +42,17 @@ public class MineBaselines implements CommitVisitor {
 					List<RepositoryFile> files = repo.getScm().files();
 					
 					SourceCodeFile CAfile;
-					for(RepositoryFile file : files) {
-					//	System.out.println ("Nombre fichero: "+file.getFile().getPath());
+					for(RepositoryFile file : files) {//Mining Files for baseline
 						if(!file.getFile().getAbsolutePath().contains(Main.pathToWhereCustomizationsAreComputed)) continue;
-						CAfile= new CoreAssetFileAnnotated(file.getFile().getName(),  file.getFile().getPath(), file.getSourceCode());
+						CAfile= new CoreAssetFileAnnotated(file.getFullName(), file.getFile().getName(),  file.getFile().getPath(), file.getSourceCode(), file.getSourceCode().split("\n").length);
 						CABaseline.addCoreAssetFile(CAfile);
-					//	baselines.addCoreAssetFile(CAfile);
+				
 					
 					writer.write(
 							CABaseline.getTag(),	
 							CABaseline.getReleaseDate(),
-							file.getFullName());
+							file.getFullName(),
+							file.getSourceCode().split("\n").length);
 					
 				}
 			} finally {

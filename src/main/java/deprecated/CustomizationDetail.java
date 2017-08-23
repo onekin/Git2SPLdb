@@ -1,4 +1,4 @@
-package OldMain;
+package deprecated;
 
 public class CustomizationDetail{
 	

@@ -19,10 +19,11 @@ import org.repodriller.scm.CommitVisitor;
 import org.repodriller.scm.GitRepository;
 import org.repodriller.scm.SCMRepository;
 
+import deprecated.CustomizationDetail;
+import deprecated.Customs;
+
 import utils.Utils;
 
-import OldMain.CustomizationDetail;
-import OldMain.Customs;
 import SPLconcepts.CoreAssetBaseline;
 import SPLconcepts.CustomizationEffortDeprecated;
 import SPLconcepts.Product;
@@ -117,9 +118,6 @@ public class MineProductPortfolios implements CommitVisitor {
 		
 		return latestCAForBranch;
 	}
-
-	
-
 
 
 	public boolean isCommitIntoAnyProductBranch(Commit co){

@@ -1,4 +1,4 @@
-package OldMain;
+package deprecated;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,35 +7,41 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.repodriller.scm.RepositoryFile;
-
-import OldMain.Customs;
+import deprecated.Customs;
 
 
-public class CoreAssetFileAnnotated {
 
+public class AnnotatedFile{
+	
 	File file;
 	String fileName;
 	String path;
-	String content;
-	//String hash;
-	RepositoryFile repoFile;
-
+	
 	HashMap <Integer,String> featureToCodeMapping = new HashMap<Integer, String>();
 	ArrayList<String> featureList= new ArrayList<String>();
 	
-
+	
+	
+	public AnnotatedFile(File file){
+		this.file=file;
+	}
+	
+	
+	
 	public HashMap <Integer,String>  readFileToGetFeatureMap(File file) throws IOException {//Read the file lineByLine
 		FileInputStream fis = new FileInputStream(file);
 	 
 		//Construct BufferedReader from InputStreamReader
 		BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+	 
 		String line = null;
 		int counter=1;
 		String featureName="none";
 		
 		while ((line = br.readLine()) != null){
-			if (line.contains(Customs.annotationPatternBeginning)){		
+			if (line.contains(Customs.annotationPatternBeginning)){
+
+			
 				featureToCodeMapping.put(counter,featureName);
 				featureName=line.split("pv:hasFeature")[1];
 				featureList.add(featureName);
