@@ -1,6 +1,7 @@
 package SPLconcepts;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.repodriller.domain.Commit;
 
@@ -26,8 +27,14 @@ public class ProductPortfolio {
 		products.add(p);
 	}
 	
-	public void getProductFromPortfolio(String name){
-		return;
+	public Product getProductFromPortfolio(String name){
+		Iterator<Product> it =this.products.iterator();
+		while (it.hasNext()){
+			Product p = it.next();
+			if (p.getReleaseBranchName().equals(name))
+					return p; 
+		}
+		return null;
 	}
 	
 	public Product getProductFromPortfolio(int i){

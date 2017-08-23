@@ -59,13 +59,6 @@ public class Product {
 		this.originCommit = originCommit;
 	}
 
-	public String getBranchName() {
-		return releaseBranchName;
-	}
-
-	public void setBranchName(String branchName) {
-		this.releaseBranchName = branchName;
-	}
 
 	public ArrayList<ProductRelease> getReleases() {
 		return releases;

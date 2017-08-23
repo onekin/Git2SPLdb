@@ -13,6 +13,7 @@ import org.repodriller.scm.GitRepository;
 import utils.Utils;
 import SPLconcepts.CustomizationDetail;
 import SPLconcepts.Product;
+import SPLconcepts.ProductAssetFileAnnotated;
 import SPLconcepts.ProductPortfolio;
 import SPLconcepts.ProductRelease;
 import SPLconcepts.SPL;
@@ -85,11 +86,32 @@ public class Main implements Study {
 		//3. print info
 		printCustomizations();
 		printPP();
-		
+		printFilesInRelease();
 		tests.FunctionalTests.runChecks();
-	
 	}
 
+
+	private void printFilesInRelease() {
+
+		String branchName = "productBerlin";
+		
+		Product p = Main.spl.getProductPortfolio(0).getProductFromPortfolio(branchName);
+		ArrayList<ProductAssetFileAnnotated> caFiles = p.getReleases().get(0).getProductAssets();
+		Iterator<ProductAssetFileAnnotated> it = caFiles.iterator();
+		int i=1;
+		while (it.hasNext()){
+			ProductAssetFileAnnotated ca = it.next();
+			if(ca.getFileName().equals("Weather Station User Manual.xml")){
+				System.out.println("RELEASE:" +p.getReleases().get(1).getIdRelease());
+				System.out.println("File number:" +i);
+			  System.out.println("File path:" +ca.getPath());
+			  System.out.println("File name:" +ca.getFileName());
+			  System.out.println("Content: \n "+ ca.getContent());
+			}
+			i++;
+		}
+
+	}
 
 	private void mineCoreAssetBaselines() {
 		new RepositoryMining()
@@ -205,7 +227,7 @@ public class Main implements Study {
 			Product p;
 			while (it.hasNext()){
 				p=it.next();
-				System.out.println("PRODUCT  name " +	p.getBranchName());
+				System.out.println("PRODUCT  name " +	p.getReleaseBranchName());
 				System.out.println("Origin Comit " +	p.getOriginCommit().getHash());
 				System.out.println(" releases count:" + p.getReleases().size());
 				System.out.println(" releases to string: " + p.getReleases().toString());
