@@ -10,6 +10,9 @@ import org.repodriller.domain.ChangeSet;
 import org.repodriller.filter.range.Commits;
 import org.repodriller.persistence.csv.CSVFile;
 import org.repodriller.scm.GitRepository;
+
+import exporting.ExportTarget;
+import exporting.ExportToMySQLDatabase;
 import utils.Utils;
 import SPLconcepts.Customization;
 import SPLconcepts.Feature;
@@ -89,11 +92,10 @@ public class Main implements Study {
 		//2. Transform to csv files
 		
 		//3. print info
-		printCustomizations();
-		printPP();
-		printFilesInRelease();
-		printlnFeatures();
-		tests.FunctionalTests.runChecks();
+	 	printCustomizations(); printPP(); printFilesInRelease(); printlnFeatures(); tests.FunctionalTests.runChecks();
+	 	
+	 	ExportTarget export = new ExportToMySQLDatabase(Main.pathToResources+"/db-data/inserts.sql");
+		export.export();
 	}
 
 
@@ -228,13 +230,13 @@ public class Main implements Study {
 
 	private void printPP() {
 		System.out.println("---------------Printing ProductPortfolios--------");
-		int size = Main.spl.productPortfolios.size();
+		int size = Main.spl.getProductPortfolios().size();//
 		int i=0;
 		while( i< size){
-			System.out.println("Portfolio: "+Main.spl.productPortfolios.get(i).getPortfolioID());
-			System.out.println("DerivedFRom: "+ Main.spl.productPortfolios.get(i).getDerivedFrom().getId());
-			System.out.println("Number of products: "+ Main.spl.productPortfolios.get(i).getNumberOfProductsInPortfolio());
-			ArrayList<Product> products = Main.spl.productPortfolios.get(i).getProducts();
+			System.out.println("Portfolio: "+Main.spl.getProductPortfolios().get(i).getPortfolioID());
+			System.out.println("DerivedFRom: "+ Main.spl.getProductPortfolios().get(i).getDerivedFrom().getId());
+			System.out.println("Number of products: "+ Main.spl.getProductPortfolios().get(i).getNumberOfProductsInPortfolio());
+			ArrayList<Product> products = Main.spl.getProductPortfolios().get(i).getProducts();
 			System.out.println("Product SIZE: "+ products.size());
 			
 			Iterator <Product> it = products.iterator();

@@ -87,6 +87,7 @@ public class MineBaselines implements CommitVisitor {
 					Feature f = new Feature(value, value);
 					Main.features.add(f);
 					baseline.addFeature(f);
+					ca.getFeatureList().add(f.getIdFeature());
 				}
 					
 			}

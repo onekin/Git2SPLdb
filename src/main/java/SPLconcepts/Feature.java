@@ -29,12 +29,7 @@ public class Feature {
 	public void setIdFeature(String idFeature) {
 		this.idFeature = idFeature;
 	}
-	public ArrayList<SourceCodeFile> getCoreassets() {
-		return coreassets;
-	}
-	public void setCoreassets(ArrayList<SourceCodeFile> coreassets) {
-		this.coreassets = coreassets;
-	}
+
 	public ArrayList<CoreAssetBaseline> getInBaselines() {
 		return inBaselines;
 	}

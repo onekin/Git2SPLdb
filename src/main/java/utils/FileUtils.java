@@ -1,7 +1,9 @@
 package utils;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -19,6 +21,20 @@ public class FileUtils {
 	static int coreAssetFileCounter = 0;
 	static int productAssetFileCounter = 0;
 	
+	
+	
+	public static void writeToFile(String path, String text){
+		
+		try {
+			PrintWriter out = new PrintWriter(path);
+			out.println(text);
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	
 	public static String readAFileFromRepositoryCommit(Commit co, String fileName, String fullPath){
 		try{

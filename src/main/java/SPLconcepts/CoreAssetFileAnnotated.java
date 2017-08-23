@@ -100,4 +100,6 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 	public void setFeatureList(ArrayList<String> featureList) {
 		this.featureList = featureList;
 	}
+
+
 }
