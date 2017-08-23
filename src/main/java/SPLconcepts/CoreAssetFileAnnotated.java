@@ -15,23 +15,25 @@ import deprecated.Customs;
 
 
 public class CoreAssetFileAnnotated implements SourceCodeFile{
-	String id; //this is the full name of the file (e.g. /Users/user/Documents/repo/src/file1.txt)
+	int id; //this is the full name of the file (e.g. /Users/user/Documents/repo/src/file1.txt)
 	String fileName;
 	String path;
 	String content;
 	int totalLines;
+	CoreAssetBaseline fromBaseline;
 
 
 	HashMap <Integer,String> featureToCodeMapping = new HashMap<Integer, String>();
 	ArrayList<String> featureList= new ArrayList<String>();
 	
-	public CoreAssetFileAnnotated(String id, String fileName, String path, String content, int totalLines) {
+	public CoreAssetFileAnnotated(int id, String fileName, String path, String content, int totalLines, CoreAssetBaseline CABaseline) {
 
 		this.id= id;
 		this.fileName=fileName;
 		this.path = path;
 		this.content = content;
 		this.totalLines = totalLines; 
+		this.fromBaseline = CABaseline ;
 	}
 	
 	public String getFileName() {

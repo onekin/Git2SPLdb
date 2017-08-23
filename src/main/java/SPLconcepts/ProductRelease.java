@@ -12,7 +12,7 @@ public class ProductRelease {
 	private String idRelease;
 	private Product fromProduct;
 	private Date releaseDate;
-	private	ArrayList<ProductAssetFileAnnotated> productAssets;
+	private	ArrayList<ProductAssetFileAnnotated> productAssets = new ArrayList<ProductAssetFileAnnotated>();
 	private RevCommit releasedCommit;
 	ArrayList<CustomizationDetail> customList=new ArrayList<CustomizationDetail>();
 	
@@ -23,6 +23,7 @@ public class ProductRelease {
 		this.releasedCommit = releasedCommit;	
 		this.idRelease = Utils.extractRefName(idRelease, 2);
 	}
+	
 	
 	public void addCustomization(CustomizationDetail cust){
 		this.customList.add(cust);

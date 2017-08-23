@@ -14,20 +14,23 @@ import deprecated.Customs;
 
 public class ProductAssetFileAnnotated implements SourceCodeFile{
 	
-	File file;
+	int id;
 	String fileName;
 	String path;
 	String content;
-	RepositoryFile repoFile;
+	int totalLines;
+	ProductRelease fromPRelease; 
 
 	HashMap <Integer,String> featureToCodeMapping = new HashMap<Integer, String>();
 	ArrayList<String> featureList= new ArrayList<String>();
 	
-	public ProductAssetFileAnnotated(String fileName, String path, String content ) {
-
+	public ProductAssetFileAnnotated(int id, String fileName, String path, String content, int totalLines, ProductRelease pr ) {
+		this.id= id;
 		this.fileName=fileName;
 		this.path = path;
 		this.content = content;
+		this.totalLines = totalLines;
+		this.fromPRelease = pr;
 	}
 
 
@@ -45,17 +48,4 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 		
 		return fileName;
 	}
-
-	public File getFile() {
-		// TODO Auto-generated method stub
-		return file;
-	}
-	
-	public RepositoryFile getRepoFile() {
-		// TODO Auto-generated method stub
-		return repoFile;
-	}
-
-	
-
 }

@@ -42,8 +42,8 @@ public class FeatureAnalysisUtils {
 		   	if(modType!="KEPT"){//a line that reserces as diff context 
 		    	//System.out.println("feature changed: "+featureName+ " mod-type: "+modType+ " line num:"+lineNumber);
 		    	CustomizationDetail cust = new CustomizationDetail(featureName, modType, lineNumber,
-		    			utils.FileUtils.getCoreAssetByProductAssetName(), 
-		    			utils.FileUtils.getProductAssetByFileName(fileName));
+		    			utils.FileUtils.getCoreAssetByProductAssetName(fileName, pr), 
+		    			utils.FileUtils.getProductAssetByFileName(fileName, pr), pr);
 		    	featureModificationDetailList.add(cust);
 		   				
 		   	}

@@ -1,34 +1,30 @@
 package preprocessing;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.internal.storage.file.FileRepository;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.repodriller.RepositoryMining;
+import org.repodriller.domain.ChangeSet;
 import org.repodriller.domain.Commit;
-import org.repodriller.domain.DiffLine;
-import org.repodriller.domain.DiffParser;
-import org.repodriller.domain.Modification;
-import org.repodriller.filter.range.CommitRange;
-import org.repodriller.filter.range.Commits;
 import org.repodriller.persistence.PersistenceMechanism;
-import org.repodriller.persistence.csv.CSVFile;
 import org.repodriller.scm.CommitVisitor;
-import org.repodriller.scm.GitRepository;
+import org.repodriller.scm.RepositoryFile;
 import org.repodriller.scm.SCMRepository;
-
-import deprecated.CustomizationDetail;
-import deprecated.Customs;
-
 import utils.Utils;
-
 import SPLconcepts.CoreAssetBaseline;
-import SPLconcepts.CustomizationEffortDeprecated;
+import SPLconcepts.CoreAssetFileAnnotated;
 import SPLconcepts.Product;
+import SPLconcepts.ProductAssetFileAnnotated;
 import SPLconcepts.ProductPortfolio;
 import SPLconcepts.ProductRelease;
+import SPLconcepts.SourceCodeFile;
 
 public class MineProductPortfolios implements CommitVisitor {
 	
@@ -75,7 +71,7 @@ public class MineProductPortfolios implements CommitVisitor {
 						 (!brName.equals(Main.coreAssetsBranchPatternName)))
 				  {
 					  p = new Product(commit, brName, pp);
-					  p.computeAllReleases();
+					  computeAllReleasesForProduct(p,repo);
 					  pp.addProductToPortfolio(p);
 					  
 					  
@@ -99,7 +95,63 @@ public class MineProductPortfolios implements CommitVisitor {
 		
 	}
 	
+	public void computeAllReleasesForProduct(Product p, SCMRepository repo) {
+		  try{
+			  Repository repository = new FileRepository(preprocessing.Main.productRepo+"/.git");
+			  Git git = new Git(repository);
+			  Iterable<RevCommit> revCommits = git.log().add(repository.resolve(p.getReleaseBranchName())).call();
+			  
+			  System.out.println("Commits for branch: "+p.getBranchName());
+		        for(RevCommit revCommit : revCommits){
+		          if(revCommit.getName().equals(p.getOriginCommit().getHash())) break; // do not add commits belonging to the core asset baselines
+		        	p.getCommitList().add(revCommit);
+		        	System.out.println(revCommit.getName());
+		        	
+		        }
+		        
+		        Iterator<RevCommit> it = p.getCommitList().iterator();
+				while (it.hasNext()){
+					RevCommit co = it.next();
+					 List<Ref> list = git.tagList().call();	
+					
+					ArrayList<ObjectId> commits = new ArrayList<ObjectId>();
+					for (Ref tag : list) {
+						ObjectId object = tag.getObjectId(); 
+					    if (object.getName().equals(co.getName())) {
+					        commits.add(object);
+					       // System.out.println("release for product" +this.releaseBranchName+ "is commit: "+object.getName()+ "  name:"+tag.getName());
+					        ProductRelease pr = new ProductRelease (tag.getName(),p, new Date ( 1000L * co.getCommitTime()), co);
+					        p.getReleases().add(pr);
+					        mineProductAssetsForProductRelease(pr,repo);
+					    }
+					}
+				}
 
+		  }catch (Exception e ){
+			  e.printStackTrace();
+		  }
+		
+	}
+
+
+	private void mineProductAssetsForProductRelease(ProductRelease pr1, SCMRepository repo) {
+		try{
+		
+	
+			repo.getScm().checkout(pr1.getReleasedCommit().getName());
+			List<RepositoryFile> files = repo.getScm().files();
+			
+			SourceCodeFile PAFile;
+			for(RepositoryFile file : files) {//Mining Files for baseline
+				if(!file.getFile().getAbsolutePath().contains(Main.pathToWhereCustomizationsAreComputed)) continue;
+				PAFile= new ProductAssetFileAnnotated(utils.FileUtils.getProductAssetFileCounter(), file.getFile().getName(),  file.getFile().getPath(), file.getSourceCode(), file.getSourceCode().split("\n").length, pr1);
+				pr1.getProductAssets().add((ProductAssetFileAnnotated) PAFile);
+	
+		}
+		} finally {
+				repo.getScm().reset();
+		}			
+	}
 
 	public Commit searchForNewerBaselineCommit(String branchName, Commit currentCommit){
 		

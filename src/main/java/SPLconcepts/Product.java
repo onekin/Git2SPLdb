@@ -19,7 +19,7 @@ public class Product {
 	ArrayList<ProductRelease> releases= new ArrayList<ProductRelease>();
 	ProductPortfolio inPortfolio=null;
 	
-	ArrayList<RevCommit> commitList=null;
+	ArrayList<RevCommit> commitList=new ArrayList<RevCommit>();
 	
 	Commit originCommit =null;
 
@@ -29,6 +29,22 @@ public class Product {
 		this.inPortfolio = inPortfolio;
 	}
 	
+	public String getReleaseBranchName() {
+		return releaseBranchName;
+	}
+
+	public void setReleaseBranchName(String releaseBranchName) {
+		this.releaseBranchName = releaseBranchName;
+	}
+
+	public ArrayList<RevCommit> getCommitList() {
+		return commitList;
+	}
+
+	public void setCommitList(ArrayList<RevCommit> commitList) {
+		this.commitList = commitList;
+	}
+
 	public void addProductRelease(ProductRelease pr){
 		if (this.releases==null)
 			releases= new ArrayList<ProductRelease> ();
@@ -67,47 +83,7 @@ public class Product {
 		this.inPortfolio = inPortfolio;
 	}
 
-	public void computeAllReleases() {
 	
-		if(commitList==null) commitList= new ArrayList<RevCommit>();
-		
-		  try{
-			  Repository repository = new FileRepository(preprocessing.Main.productRepo+"/.git");
-			  Git git = new Git(repository);
-			  Iterable<RevCommit> revCommits = git.log().
-	        		add(repository.resolve(this.releaseBranchName))
-	                .call();
-			  System.out.println("Commits for branch: "+this.getBranchName());
-		        for(RevCommit revCommit : revCommits){
-		          if(revCommit.getName().equals(this.originCommit.getHash())) break; // do not add commits belonging to the core asset baselines
-		        	this.commitList.add(revCommit);
-		        	System.out.println(revCommit.getName());
-		        	
-		        }
-		        
-		        Iterator<RevCommit> it = commitList.iterator();
-				while (it.hasNext()){
-					RevCommit co = it.next();
-					 List<Ref> list = git.tagList().call();	
-					
-					ArrayList<ObjectId> commits = new ArrayList<ObjectId>();
-					for (Ref tag : list) {
-						ObjectId object = tag.getObjectId(); 
-					    if (object.getName().equals(co.getName())) {
-					        commits.add(object);
-					        System.out.println("release for product" +this.releaseBranchName+ "is commit: "+object.getName()+ "  name:"+tag.getName());
-					        ProductRelease pr = new ProductRelease (tag.getName(),this, new Date ( 1000L * co.getCommitTime()), co);
-					       this.releases.add(pr);
-
-					    }
-					}
-				}
-
-		  }catch (Exception e ){
-			  e.printStackTrace();
-		  }
-		
-	}
 
 
 	
