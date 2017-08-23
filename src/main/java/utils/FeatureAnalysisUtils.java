@@ -10,7 +10,8 @@ import org.repodriller.domain.DiffLine;
 
 import preprocessing.Main;
 import SPLconcepts.CoreAssetFileAnnotated;
-import SPLconcepts.CustomizationDetail;
+import SPLconcepts.Customization;
+import SPLconcepts.Feature;
 import SPLconcepts.ProductAssetFileAnnotated;
 import SPLconcepts.ProductRelease;
 
@@ -18,10 +19,10 @@ import SPLconcepts.ProductRelease;
 public class FeatureAnalysisUtils {
 	
 	
-	public static ArrayList <CustomizationDetail> computeCustomizationDetails(String fileName, String path, String fileContent, List<DiffLine> lines, ProductRelease pr, Commit commit) {	
+	public static ArrayList <Customization> computeCustomizationDetails(String fileName, String path, String fileContent, List<DiffLine> lines, ProductRelease pr, Commit commit) {	
 		//Lista de modificaciones de un archivo. Para una modificacion, que feature cambia y que operacion: borrar o a–adir
 	
-		ArrayList <CustomizationDetail>	featureModificationDetailList  = new  ArrayList <CustomizationDetail> (); 
+		ArrayList <Customization>	featureModificationDetailList  = new  ArrayList <Customization> (); 
     
 		HashMap<Integer, String> map = extractFeatureMapFromFile(fileContent);
 		 
@@ -41,7 +42,7 @@ public class FeatureAnalysisUtils {
 			
 		   	if(modType!="KEPT"){//a line that reserces as diff context 
 		    	//System.out.println("feature changed: "+featureName+ " mod-type: "+modType+ " line num:"+lineNumber);
-		    	CustomizationDetail cust = new CustomizationDetail(featureName, modType, lineNumber,
+		    	Customization cust = new Customization(featureName, modType, lineNumber,
 		    			utils.FileUtils.getCoreAssetByProductAssetName(fileName, pr), 
 		    			utils.FileUtils.getProductAssetByFileName(fileName, pr), pr);
 		    	featureModificationDetailList.add(cust);
@@ -95,7 +96,7 @@ public class FeatureAnalysisUtils {
 */
 	
 
-	public static HashMap <Integer,String>  extractFeatureMapFromFile(String content ) {//Read the file lineByLine
+	public static HashMap <Integer,String>  extractFeatureMapFromFile (String content ) {//Read the file lineByLine
 		
 		HashMap <Integer,String> featureToCodeMapping = new HashMap<Integer, String>();
 		ArrayList<String> featureList= new ArrayList<String>();
@@ -106,18 +107,19 @@ public class FeatureAnalysisUtils {
 			
 			String line = null;
 			int counter=1;
-			String featureName="none";
-			
+			String featureName="undefined";
 			for(int i=0;i<lines.length;i++){
 				if (lines[i].contains(Main.annotationPatternBeginning )){		
 					featureToCodeMapping.put(counter,featureName);
 					featureName=lines[i].split("pv:hasFeature")[1];
+					
+					featureName = featureName.split("'")[1];
 					featureList.add(featureName);
 				}else{
 					if (lines[i].contains(Main.annotationPatternEnd)){
 					
 						featureToCodeMapping.put(counter,featureName);
-						featureName="none";
+						featureName="undefined";
 					}
 					else{
 						featureToCodeMapping.put(counter,featureName);
@@ -134,5 +136,16 @@ public class FeatureAnalysisUtils {
 		return featureToCodeMapping;
 	}
 
+	
+	public static boolean isFeatureInFeaturesList(String name){
+		Iterator<Feature>  it= Main.features.iterator();
+		Feature f;
+		while (it.hasNext()){
+			f = it.next();
+			if (f.getIdFeature().equals(name))
+				return true;
+		}
+		return false;
+	}
 
 }

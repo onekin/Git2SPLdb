@@ -1,19 +1,17 @@
 package SPLconcepts;
 
 
-public class CustomizationDetail{
+public class Customization{
 	
 
 	String featureModifiedName;
 	String operation;//ADDED,REMOVED
 	Integer lineOfCodeModified;
-
-	
 	SourceCodeFile productFile;
 	SourceCodeFile coreAssetFile;
 	ProductRelease inRelease=null;
 
-	public CustomizationDetail(String featureName, String modType, int lineOfCodeModified, SourceCodeFile productFile, SourceCodeFile coreAssetFile, ProductRelease inRelease) {
+	public Customization(String featureName, String modType, int lineOfCodeModified, SourceCodeFile productFile, SourceCodeFile coreAssetFile, ProductRelease inRelease) {
 		
 		this.featureModifiedName=featureName;
 		this.operation=modType;
@@ -23,31 +21,20 @@ public class CustomizationDetail{
 		this.inRelease = inRelease;
 	}
 
-	
-
 	public SourceCodeFile getProductFile() {
 		return productFile;
 	}
 
-
-
 	public void setProductFile(SourceCodeFile productFile) {
 		this.productFile = productFile;
 	}
-
-
-
 	public SourceCodeFile getCoreAssetFile() {
 		return coreAssetFile;
 	}
 
-
-
 	public void setCoreAssetFile(SourceCodeFile coreAssetFile) {
 		this.coreAssetFile = coreAssetFile;
 	}
-
-
 
 	public ProductRelease getInRelease() {
 		return inRelease;

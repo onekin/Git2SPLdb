@@ -9,11 +9,15 @@ import java.util.List;
 import org.repodriller.domain.Commit;
 
 public class SPL {
-	
+	public String id;
 	public ArrayList<CoreAssetBaseline> coreAssetBaselines = new ArrayList<CoreAssetBaseline>();
 	public ArrayList<ProductPortfolio> productPortfolios = new ArrayList<ProductPortfolio>();
 	
+
 	
+	public SPL(String id){
+		this.id = id;
+	}
 	
 	public ArrayList<String> getCoreAssetBaselinesAsCommitsHashes(){
 		ArrayList<String> commitList = new ArrayList <String>();

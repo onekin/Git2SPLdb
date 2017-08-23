@@ -34,6 +34,72 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 	}
 
 
+	public int getId() {
+		return id;
+	}
+
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+
+	public int getTotalLines() {
+		return totalLines;
+	}
+
+
+	public void setTotalLines(int totalLines) {
+		this.totalLines = totalLines;
+	}
+
+
+	public ProductRelease getFromPRelease() {
+		return fromPRelease;
+	}
+
+
+	public void setFromPRelease(ProductRelease fromPRelease) {
+		this.fromPRelease = fromPRelease;
+	}
+
+
+	public HashMap<Integer, String> getFeatureToCodeMapping() {
+		return featureToCodeMapping;
+	}
+
+
+	public void setFeatureToCodeMapping(
+			HashMap<Integer, String> featureToCodeMapping) {
+		this.featureToCodeMapping = featureToCodeMapping;
+	}
+
+
+	public ArrayList<String> getFeatureList() {
+		return featureList;
+	}
+
+
+	public void setFeatureList(ArrayList<String> featureList) {
+		this.featureList = featureList;
+	}
+
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+
 	public String getContent() {
 		
 		return content;

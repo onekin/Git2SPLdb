@@ -36,6 +36,30 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 		this.fromBaseline = CABaseline ;
 	}
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getTotalLines() {
+		return totalLines;
+	}
+
+	public void setTotalLines(int totalLines) {
+		this.totalLines = totalLines;
+	}
+
+	public CoreAssetBaseline getFromBaseline() {
+		return fromBaseline;
+	}
+
+	public void setFromBaseline(CoreAssetBaseline fromBaseline) {
+		this.fromBaseline = fromBaseline;
+	}
+
 	public String getFileName() {
 		return fileName;
 	}
@@ -56,50 +80,24 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 		return content;
 	}
 
-
-
-
-
 	public void setContent(String content) {
 		this.content = content;
 	}
 
-
-
-
-
-
-
 	public HashMap<Integer, String> getFeatureToCodeMapping() {
 		return featureToCodeMapping;
 	}
-
-
-
-
 
 	public void setFeatureToCodeMapping(
 			HashMap<Integer, String> featureToCodeMapping) {
 		this.featureToCodeMapping = featureToCodeMapping;
 	}
 
-
-
-
-
 	public ArrayList<String> getFeatureList() {
 		return featureList;
 	}
 
-
-
-
-
 	public void setFeatureList(ArrayList<String> featureList) {
 		this.featureList = featureList;
 	}
-
-
-	
-	
 }

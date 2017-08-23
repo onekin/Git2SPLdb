@@ -1,8 +1,13 @@
 package preprocessing;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.repodriller.domain.Commit;
 
@@ -17,6 +22,7 @@ import utils.Utils;
 
 import SPLconcepts.CoreAssetBaseline;
 import SPLconcepts.CoreAssetFileAnnotated;
+import SPLconcepts.Feature;
 import SPLconcepts.SourceCodeFile;
 
 public class MineBaselines implements CommitVisitor {
@@ -46,10 +52,11 @@ public class MineBaselines implements CommitVisitor {
 						if(!file.getFile().getAbsolutePath().contains(Main.pathToWhereCustomizationsAreComputed)) continue;
 						CAfile= new CoreAssetFileAnnotated(utils.FileUtils.getCoreAssetFileCounter(), file.getFile().getName(),  file.getFile().getPath(), file.getSourceCode(), file.getSourceCode().split("\n").length, CABaseline);
 						CABaseline.addCoreAssetFile(CAfile);
+						mineFeaturesInBaseline(CABaseline);
 				
 					
 					writer.write(
-							CABaseline.getTag(),	
+							CABaseline.getId(),	
 							CABaseline.getReleaseDate(),
 							file.getFullName(),
 							file.getSourceCode().split("\n").length);
@@ -61,6 +68,33 @@ public class MineBaselines implements CommitVisitor {
 		}
 	}
 	
+	private void mineFeaturesInBaseline(CoreAssetBaseline baseline) {
+		
+		 ArrayList<SourceCodeFile> listFiles = baseline.getCoreAssetFiles();
+		Iterator<SourceCodeFile> it = listFiles.iterator();
+		Collection<String> values = null;
+		SourceCodeFile ca;
+		Iterator<String> ite;
+		String value;
+		
+		while(it.hasNext()){
+			ca = it.next();
+			values = utils.FeatureAnalysisUtils.extractFeatureMapFromFile(ca.getContent()).values();
+			ite= values.iterator();
+			while (ite.hasNext()){
+				value = ite.next();
+				if (!utils.FeatureAnalysisUtils.isFeatureInFeaturesList(value)){
+					Feature f = new Feature(value, value);
+					Main.features.add(f);
+					baseline.addFeature(f);
+				}
+					
+			}
+			
+		}
+		
+	}
+
 	public boolean isCommitTagged(SCMRepository repo, Commit c){
 	//	repo.
 		c.getHash();

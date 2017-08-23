@@ -11,7 +11,8 @@ import org.repodriller.filter.range.Commits;
 import org.repodriller.persistence.csv.CSVFile;
 import org.repodriller.scm.GitRepository;
 import utils.Utils;
-import SPLconcepts.CustomizationDetail;
+import SPLconcepts.Customization;
+import SPLconcepts.Feature;
 import SPLconcepts.Product;
 import SPLconcepts.ProductAssetFileAnnotated;
 import SPLconcepts.ProductPortfolio;
@@ -37,7 +38,9 @@ public class Main implements Study {
 		public final static String annotationPatternEnd="PV:ENDCOND";
 	
 
-	public static SPL spl=new SPL();
+	public static SPL spl;
+	public static ArrayList<Feature> features;
+	
 
 	public static void main(String[] args) {
 		
@@ -65,6 +68,8 @@ public class Main implements Study {
 	
 	public void execute() {
 		//1. mine from Git repository to SPL model
+		this.spl=new SPL(this.productRepo);
+		this.features= new ArrayList<Feature>(); 
 		mineCoreAssetBaselines();
 		mineProductPorfolios();
 		
@@ -87,9 +92,18 @@ public class Main implements Study {
 		printCustomizations();
 		printPP();
 		printFilesInRelease();
+		printlnFeatures();
 		tests.FunctionalTests.runChecks();
 	}
 
+
+	private void printlnFeatures() {
+		System.out.println("-------Printing feature list-------------");
+		for  (int i=0;i<this.features.size();i++){
+			System.out.println("Feature Names: "+features.get(i).getName());
+		}
+		System.out.println("---------------------------");
+	}
 
 	private void printFilesInRelease() {
 
@@ -155,7 +169,7 @@ public class Main implements Study {
 		System.out.println("Mining customizations for "+productRelease.getIdRelease());
 		
 		ArrayList<String> commitIDs 
-		= Utils.getCommitHashesBetweenTwoTags(productRelease.getFromProduct().getInPortfolio().getDerivedFrom().getTag(), productRelease.getIdRelease());//baseline it was derived from  -- ProductRelease
+		= Utils.getCommitHashesBetweenTwoTags(productRelease.getFromProduct().getInPortfolio().getDerivedFrom().getId(), productRelease.getIdRelease());//baseline it was derived from  -- ProductRelease
 				/**new RepositoryMining()
 				.in(GitRepository.singleProject(productRepo))
 				.through(Commits.list(commitIDs))
@@ -165,7 +179,7 @@ public class Main implements Study {
 		
 		//I'm going my own way
 		Iterator<String> it = commitIDs.iterator();
-		ArrayList<CustomizationDetail> commitCustomizationsDetails = new ArrayList<CustomizationDetail>();
+		ArrayList<Customization> commitCustomizationsDetails = new ArrayList<Customization>();
 		while(it.hasNext()){//for each commit in the release call mine Product Customization
 			String commit = it.next();
 		    ChangeSet cs = Utils.convertHashToCommit(commit,GitRepository.singleProject(Main.productRepo));
@@ -192,10 +206,10 @@ public class Main implements Study {
 				listPR=p.getReleases();
 				Iterator<ProductRelease> prIt = listPR.iterator();
 				while(prIt.hasNext()){
-					ArrayList<CustomizationDetail> custs = prIt.next().getCustomizations();
-					Iterator<CustomizationDetail> ite = custs.iterator();
+					ArrayList<Customization> custs = prIt.next().getCustomizations();
+					Iterator<Customization> ite = custs.iterator();
 					while(ite.hasNext()){
-						CustomizationDetail cust = ite.next();
+						Customization cust = ite.next();
 						System.out.println(
 								//"ID:"+cust.getCustomizationId()+"\n"+
 								"In release" +cust.getInRelease().getIdRelease()+"\n"+
@@ -218,7 +232,7 @@ public class Main implements Study {
 		int i=0;
 		while( i< size){
 			System.out.println("Portfolio: "+Main.spl.productPortfolios.get(i).getPortfolioID());
-			System.out.println("DerivedFRom: "+ Main.spl.productPortfolios.get(i).getDerivedFrom().getTag());
+			System.out.println("DerivedFRom: "+ Main.spl.productPortfolios.get(i).getDerivedFrom().getId());
 			System.out.println("Number of products: "+ Main.spl.productPortfolios.get(i).getNumberOfProductsInPortfolio());
 			ArrayList<Product> products = Main.spl.productPortfolios.get(i).getProducts();
 			System.out.println("Product SIZE: "+ products.size());

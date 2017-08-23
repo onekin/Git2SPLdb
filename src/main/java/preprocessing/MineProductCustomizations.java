@@ -10,14 +10,14 @@ import org.repodriller.persistence.PersistenceMechanism;
 import org.repodriller.scm.SCMRepository;
 import org.repodriller.domain.DiffLine;
 import utils.FeatureAnalysisUtils;
-import SPLconcepts.CustomizationDetail;
+import SPLconcepts.Customization;
 import SPLconcepts.ProductRelease;
 
 public class MineProductCustomizations{   
 	// implements CommitVisitor {
 
 	private ProductRelease productRelease;
-	ArrayList<CustomizationDetail> details = new ArrayList<CustomizationDetail>();
+	ArrayList<Customization> details = new ArrayList<Customization>();
 	
 	boolean headerFlag=false;
 
@@ -31,12 +31,12 @@ public class MineProductCustomizations{
 	}
 
 
-	public ArrayList<CustomizationDetail> mine(SCMRepository repo, Commit commit, PersistenceMechanism writer) {//for each commit belonging to the product release at hand
+	public ArrayList<Customization> mine(SCMRepository repo, Commit commit, PersistenceMechanism writer) {//for each commit belonging to the product release at hand
 		if(headerFlag==false){
 			headerFlag=true;
 			writer.write("Product","Feature","Churn");
 		}
-		ArrayList<CustomizationDetail> totalModifications = new ArrayList<CustomizationDetail>();
+		ArrayList<Customization> totalModifications = new ArrayList<Customization>();
 		for (Modification m : commit.getModifications()) { // for each modification in each commit. Modifications are one per file changed
 			System.out.println("INSIDE FOR ");
 			if( m.getNewPath().startsWith(Main.pathToWhereCustomizationsAreComputed)){ // only compute modifications that are performed to "path"
@@ -49,7 +49,7 @@ public class MineProductCustomizations{
 		return totalModifications;
 	}
 
-	private ArrayList<CustomizationDetail> computeFeatureCustomizationsInModification(String operation, Commit commit, Modification m, PersistenceMechanism writer, ProductRelease pr) {
+	private ArrayList<Customization> computeFeatureCustomizationsInModification(String operation, Commit commit, Modification m, PersistenceMechanism writer, ProductRelease pr) {
 		
 		int counter=1;
 		List<DiffLine> lines = null;
@@ -61,7 +61,7 @@ public class MineProductCustomizations{
 		System.out.println("ProductBranch-- File name--- Feature changed ---Operation ---LOCs");
 		System.out.println("------------------------------------------------------------------");
 		
-		ArrayList<CustomizationDetail> list =null;
+		ArrayList<Customization> list =null;
 		while (counter<=numberOfBlock){//analyze those lines that are removed/added in the new file
 			if(operation=="NEWFile")	
 				lines = parsedDiff.getBlocks().get(counter-1).getLinesInNewFile();//added new lines
@@ -73,9 +73,9 @@ public class MineProductCustomizations{
 			list = FeatureAnalysisUtils.computeCustomizationDetails( m.getFileName(), m.getNewPath(), sourceCodeFile, lines, pr, commit) ; //get details of customizations
 			
 			/** JUST FOR PRINTING DETAILS; WE CAN REMOVE THIS **/
-			Iterator<CustomizationDetail> it= list.iterator();
+			Iterator<Customization> it= list.iterator();
 			while (it.hasNext()){
-				CustomizationDetail aux = it.next();
+				Customization aux = it.next();
 				System.out.println(commit.getBranches()+"  "+m.getFileName()+" "+aux.getFeatureModifiedName()+ " "+ aux.getOperation());
 				writer.write(commit.getBranches(),aux.getFeatureModifiedName(),aux.getOperation());
 				

@@ -10,9 +10,8 @@ import utils.Utils;
 
 public class CoreAssetBaseline{//extends Commit
 	
-	
+	String id;
 	Commit commit;
-	String tag;
 	Date releaseDate;
 	
 	public ArrayList<Feature> features = new ArrayList<Feature>();
@@ -22,7 +21,7 @@ public class CoreAssetBaseline{//extends Commit
 		this.commit = c;
 		this.releaseDate = calendar;
 		//Parsing the tag: pattern origin/
-		this.tag = Utils.extractRefName(tag, 2);
+		this.id = Utils.extractRefName(tag, 2);
 	}
 	
 	public void addFeature(Feature f){
@@ -53,12 +52,12 @@ public class CoreAssetBaseline{//extends Commit
 		this.commit = commit;
 	}
 	
-	public String getTag() {
-		return tag;
+	public String getId() {
+		return id;
 	}
 	
-	public void setTag(String tag) {
-		this.tag = tag;
+	public void setId(String tag) {
+		this.id = tag;
 	}
 	
 	public Date getReleaseDate() {

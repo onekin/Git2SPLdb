@@ -3,11 +3,11 @@ package visualization;
 import java.util.ArrayList;
 
 import SPLconcepts.CoreAssetBaseline;
-import SPLconcepts.CustomizationDetail;
+import SPLconcepts.Customization;
 
 public class AlluvialDiagramFeatureBased {
 	
 	CoreAssetBaseline CABaseline;
-	ArrayList<CustomizationDetail> customizations;
+	ArrayList<Customization> customizations;
 	
 }
