@@ -16,7 +16,6 @@ import org.repodriller.scm.CommitVisitor;
 import org.repodriller.scm.RepositoryFile;
 import org.repodriller.scm.SCMRepository;
 
-import deprecated.Customs;
 
 import utils.Utils;
 
@@ -37,7 +36,7 @@ public class MineBaselines implements CommitVisitor {
 			writer.write("Baseline-ID","Release date","CoreAssetName");
 		}
 				
-		if(commit.getBranches().contains(Customs.coreAssetsBranchPatternName)) {		
+		if(commit.getBranches().contains(Main.coreAssetsBranchPatternName)) {		
 			try{
 				
 				repo.getScm().checkout(commit.getHash());

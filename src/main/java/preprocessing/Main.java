@@ -1,7 +1,6 @@
 package preprocessing;
 
 import java.util.ArrayList;
-import tests.FunctionalTests;
 import java.util.Iterator;
 import org.repodriller.RepoDriller;
 import org.repodriller.RepositoryMining;
@@ -87,12 +86,8 @@ public class Main implements Study {
 			}
 		}
 		
-		//(optional) Save to EMF model 
-		
-		//2. Transform to csv files
-		
 		//3. print info
-	 	printCustomizations(); printPP(); printFilesInRelease(); printlnFeatures(); tests.FunctionalTests.runChecks();
+	 	//printCustomizations(); printPP(); printFilesInRelease(); printlnFeatures(); 
 	 	
 	 	ExportTarget export = new ExportToMySQLDatabase(Main.pathToResources+"/db-data/");
 		export.export();
