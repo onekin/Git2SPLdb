@@ -40,8 +40,10 @@ public class MineProductCustomizations{
 		for (Modification m : commit.getModifications()) { // for each modification in each commit. Modifications are one per file changed
 			System.out.println("INSIDE FOR ");
 			if( m.getNewPath().startsWith(Main.pathToWhereCustomizationsAreComputed)){ // only compute modifications that are performed to "path"
-				totalModifications.addAll ( computeFeatureCustomizationsInModification("NEWFile",commit,m,writer,this.productRelease));//comupte modification in the new file w.r.t the old file (additions and removals)
-				totalModifications.addAll ( computeFeatureCustomizationsInModification("OLDFile",commit,m,writer,this.productRelease));//compute modification in the old file w.r.r the new file (removals)
+				ArrayList<Customization> mod1 = computeFeatureCustomizationsInModification("OLDFile",commit,m,writer,this.productRelease);
+				ArrayList<Customization> mod2 = computeFeatureCustomizationsInModification("OLDFile",commit,m,writer,this.productRelease) ;
+				if (mod1!=null) totalModifications.addAll (mod1 );//comupte modification in the new file w.r.t the old file (additions and removals)
+				if (mod2!=null) totalModifications.addAll (mod2);//compute modification in the old file w.r.r the new file (removals)
 							
 			}
 		}
@@ -73,12 +75,14 @@ public class MineProductCustomizations{
 			list = FeatureAnalysisUtils.computeCustomizationDetails( m.getFileName(), m.getNewPath(), sourceCodeFile, lines, pr, commit) ; //get details of customizations
 			
 			/** JUST FOR PRINTING DETAILS; WE CAN REMOVE THIS **/
-			Iterator<Customization> it= list.iterator();
-			while (it.hasNext()){
-				Customization aux = it.next();
-				System.out.println(commit.getBranches()+"  "+m.getFileName()+" "+aux.getFeatureModifiedName()+ " "+ aux.getOperation());
-				writer.write(commit.getBranches(),aux.getFeatureModifiedName(),aux.getOperation());
-				
+			if (list!=null){ 
+				Iterator<Customization> it= list.iterator();
+				while (it.hasNext()){
+					Customization aux = it.next();
+					System.out.println(commit.getBranches()+"  "+m.getFileName()+" "+aux.getFeatureModifiedName()+ " "+ aux.getOperation());
+					writer.write(commit.getBranches(),aux.getFeatureModifiedName(),aux.getOperation());
+					
+				}
 			}
 			counter++;
 		}	

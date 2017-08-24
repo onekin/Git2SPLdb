@@ -31,7 +31,7 @@ public class ProductPortfolio {
 		Iterator<Product> it =this.products.iterator();
 		while (it.hasNext()){
 			Product p = it.next();
-			if (p.getReleaseBranchName().equals(name))
+			if (p.getBranchName().equals(name))
 					return p; 
 		}
 		return null;

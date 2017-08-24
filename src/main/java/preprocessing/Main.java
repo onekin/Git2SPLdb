@@ -94,7 +94,7 @@ public class Main implements Study {
 		//3. print info
 	 	printCustomizations(); printPP(); printFilesInRelease(); printlnFeatures(); tests.FunctionalTests.runChecks();
 	 	
-	 	ExportTarget export = new ExportToMySQLDatabase(Main.pathToResources+"/db-data/inserts.sql");
+	 	ExportTarget export = new ExportToMySQLDatabase(Main.pathToResources+"/db-data/");
 		export.export();
 	}
 
@@ -243,7 +243,7 @@ public class Main implements Study {
 			Product p;
 			while (it.hasNext()){
 				p=it.next();
-				System.out.println("PRODUCT  name " +	p.getReleaseBranchName());
+				System.out.println("PRODUCT  name " +	p.getBranchName());
 				System.out.println("Origin Comit " +	p.getOriginCommit().getHash());
 				System.out.println(" releases count:" + p.getReleases().size());
 				System.out.println(" releases to string: " + p.getReleases().toString());

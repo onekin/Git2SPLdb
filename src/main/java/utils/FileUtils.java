@@ -20,17 +20,18 @@ public class FileUtils {
 	
 	static int coreAssetFileCounter = 0;
 	static int productAssetFileCounter = 0;
+	private static PrintWriter out;
 	
 	
 	
-	public static void writeToFile(String path, String text){
+	public static  void writeToFile(String path, String text){
 		
 		try {
-			PrintWriter out = new PrintWriter(path);
+			out = new PrintWriter(path);
 			out.println(text);
+			out.close();
 			
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		

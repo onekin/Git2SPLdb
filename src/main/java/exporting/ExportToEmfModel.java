@@ -2,9 +2,9 @@ package exporting;
 
 public class ExportToEmfModel implements ExportTarget{
 
-	public String export() {
+	public void export() {
 		// TODO Auto-generated method stub
-		return "";
+	
 		
 	}
 

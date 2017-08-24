@@ -15,7 +15,7 @@ import org.repodriller.domain.Commit;
 public class Product {
 
 	
-	String releaseBranchName=null;
+	String branchName=null;
 	ArrayList<ProductRelease> releases= new ArrayList<ProductRelease>();
 	ProductPortfolio inPortfolio=null;
 	
@@ -25,17 +25,15 @@ public class Product {
 
 	public Product(Commit originCommit, String releaseBranchName, ProductPortfolio inPortfolio){
 		this.originCommit = originCommit;
-		this.releaseBranchName = releaseBranchName;	
+		this.branchName = releaseBranchName;	
 		this.inPortfolio = inPortfolio;
 	}
 	
-	public String getReleaseBranchName() {
-		return releaseBranchName;
+	public String getBranchName() {
+		return branchName;
 	}
 
-	public void setReleaseBranchName(String releaseBranchName) {
-		this.releaseBranchName = releaseBranchName;
-	}
+	
 
 	public ArrayList<RevCommit> getCommitList() {
 		return commitList;

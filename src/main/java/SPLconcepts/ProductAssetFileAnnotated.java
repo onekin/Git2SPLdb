@@ -22,7 +22,7 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 	ProductRelease fromPRelease; 
 
 	HashMap <Integer,String> featureToCodeMapping = new HashMap<Integer, String>();
-	ArrayList<String> featureList= new ArrayList<String>();
+	ArrayList<Feature> featureList= new ArrayList<Feature>();
 	
 	public ProductAssetFileAnnotated(int id, String fileName, String path, String content, int totalLines, ProductRelease pr ) {
 		this.id= id;
@@ -75,12 +75,12 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 	}
 
 
-	public ArrayList<String> getFeatureList() {
+	public ArrayList<Feature> getFeatureList() {
 		return featureList;
 	}
 
 
-	public void setFeatureList(ArrayList<String> featureList) {
+	public void setFeatureList(ArrayList<Feature> featureList) {
 		this.featureList = featureList;
 	}
 

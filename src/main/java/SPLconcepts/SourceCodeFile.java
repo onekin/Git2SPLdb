@@ -19,6 +19,6 @@ public interface SourceCodeFile {
 	public String getFileName();
 	public int getId();
 	public int getTotalLines();
-	public ArrayList<String> getFeatureList();
+	public ArrayList<Feature> getFeatureList();
 	
 }

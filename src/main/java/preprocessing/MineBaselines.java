@@ -49,10 +49,11 @@ public class MineBaselines implements CommitVisitor {
 					
 					SourceCodeFile CAfile;
 					for(RepositoryFile file : files) {//Mining Files for baseline
-						if(!file.getFile().getAbsolutePath().contains(Main.pathToWhereCustomizationsAreComputed)) continue;
-						CAfile= new CoreAssetFileAnnotated(utils.FileUtils.getCoreAssetFileCounter(), file.getFile().getName(),  file.getFile().getPath(), file.getSourceCode(), file.getSourceCode().split("\n").length, CABaseline);
-						CABaseline.addCoreAssetFile(CAfile);
-						mineFeaturesInBaseline(CABaseline);
+						if(file.getFile().getAbsolutePath().contains(Main.pathToWhereCustomizationsAreComputed)){
+							CAfile= new CoreAssetFileAnnotated(utils.FileUtils.getCoreAssetFileCounter(), file.getFile().getName(),  file.getFile().getPath(), file.getSourceCode(), file.getSourceCode().split("\n").length, CABaseline);
+							CABaseline.addCoreAssetFile(CAfile);
+							mineFeaturesInBaseline(CABaseline);
+						}
 				
 					
 					writer.write(
@@ -79,16 +80,23 @@ public class MineBaselines implements CommitVisitor {
 		
 		while(it.hasNext()){
 			ca = it.next();
-			values = utils.FeatureAnalysisUtils.extractFeatureMapFromFile(ca.getContent()).values();
-			ite= values.iterator();
+			
+			HashMap<Integer, String> map = utils.FeatureAnalysisUtils.extractFeatureMapFromCoreAsset(ca); //line-feature map
+			if (map == null) return;
+			
+			values = map.values();//all the features in the file - repeteated!!
+			ite= values.iterator();//all the identified feature
 			while (ite.hasNext()){
 				value = ite.next();
-				if (!utils.FeatureAnalysisUtils.isFeatureInFeaturesList(value)){
-					Feature f = new Feature(value, value);
+				Feature f = new Feature(value, value);
+				if (!utils.FeatureAnalysisUtils.isFeatureInFeaturesList(Main.features, value)){
 					Main.features.add(f);
-					baseline.addFeature(f);
-					ca.getFeatureList().add(f.getIdFeature());
 				}
+				if (!utils.FeatureAnalysisUtils.isFeatureInFeaturesList( ca.getFeatureList(), value ) ){
+					ca.getFeatureList().add(f);
+				}
+				if(!utils.FeatureAnalysisUtils.isFeatureInFeaturesList(  baseline.getFeatures(), value))
+					baseline.addFeature(f);
 					
 			}
 			

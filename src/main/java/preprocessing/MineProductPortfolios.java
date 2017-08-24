@@ -79,7 +79,7 @@ public class MineProductPortfolios implements CommitVisitor {
 						  writer.write(
 								  pp.getPortfolioID(),
 								  pp.getDerivedFrom().getCommit().getHash(), 
-								  p.getReleaseBranchName(),
+								  p.getBranchName(),
 								  p.getReleases().get(i).getIdRelease(),
 								  p.getReleases().get(i).getReleaseDate());
 					  }
@@ -99,9 +99,9 @@ public class MineProductPortfolios implements CommitVisitor {
 		  try{
 			  Repository repository = new FileRepository(preprocessing.Main.productRepo+"/.git");
 			  Git git = new Git(repository);
-			  Iterable<RevCommit> revCommits = git.log().add(repository.resolve(p.getReleaseBranchName())).call();
+			  Iterable<RevCommit> revCommits = git.log().add(repository.resolve(p.getBranchName())).call();
 			  
-			  System.out.println("Commits for branch: "+p.getReleaseBranchName());
+			  System.out.println("Commits for branch: "+p.getBranchName());
 		        for(RevCommit revCommit : revCommits){
 		          if(revCommit.getName().equals(p.getOriginCommit().getHash())) break; // do not add commits belonging to the core asset baselines
 		        	p.getCommitList().add(revCommit);

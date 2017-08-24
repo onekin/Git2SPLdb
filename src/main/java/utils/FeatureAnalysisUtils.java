@@ -14,6 +14,7 @@ import SPLconcepts.Customization;
 import SPLconcepts.Feature;
 import SPLconcepts.ProductAssetFileAnnotated;
 import SPLconcepts.ProductRelease;
+import SPLconcepts.SourceCodeFile;
 
 
 public class FeatureAnalysisUtils {
@@ -25,6 +26,7 @@ public class FeatureAnalysisUtils {
 		ArrayList <Customization>	featureModificationDetailList  = new  ArrayList <Customization> (); 
     
 		HashMap<Integer, String> map = extractFeatureMapFromFile(fileContent);
+		if(map==null) return null;
 		 
 		Iterator<DiffLine> diffLineIterator = lines.iterator(); //iteratate diffs 
 		
@@ -96,18 +98,20 @@ public class FeatureAnalysisUtils {
 */
 	
 
-	public static HashMap <Integer,String>  extractFeatureMapFromFile (String content ) {//Read the file lineByLine
+	public static HashMap <Integer,String>  extractFeatureMapFromCoreAsset (SourceCodeFile file) {//Read the file lineByLine
 		
 		HashMap <Integer,String> featureToCodeMapping = new HashMap<Integer, String>();
 		ArrayList<String> featureList= new ArrayList<String>();
+		String content = file.getContent();
+	//	if (!content.contains(Main.annotationPatternBeginning)) return null; 
 		
 		try {
 		
 			String[] lines = content.split("\n");
 			
-			String line = null;
 			int counter=1;
 			String featureName="undefined";
+			
 			for(int i=0;i<lines.length;i++){
 				if (lines[i].contains(Main.annotationPatternBeginning )){		
 					featureToCodeMapping.put(counter,featureName);
@@ -117,7 +121,47 @@ public class FeatureAnalysisUtils {
 					featureList.add(featureName);
 				}else{
 					if (lines[i].contains(Main.annotationPatternEnd)){
+						featureToCodeMapping.put(counter,featureName);
+						featureName="undefined";
+					}
+					else{
+						featureToCodeMapping.put(counter,featureName);
+					}
+				}
+				counter ++;
+			}
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	 
+		
+		return featureToCodeMapping;
+	}
+
+public static HashMap <Integer,String>  extractFeatureMapFromFile (String content) {//Read the file lineByLine
+		
+		HashMap <Integer,String> featureToCodeMapping = new HashMap<Integer, String>();
+		ArrayList<String> featureList= new ArrayList<String>();
+	
+		if (!content.contains(Main.annotationPatternBeginning)) return null; 
+		
+		try {
+		
+			String[] lines = content.split("\n");
+			
+			int counter=1;
+			String featureName="undefined";
+			
+			for(int i=0;i<lines.length;i++){
+				if (lines[i].contains(Main.annotationPatternBeginning )){		
+					featureToCodeMapping.put(counter,featureName);
+					featureName=lines[i].split("pv:hasFeature")[1];
 					
+					featureName = featureName.split("'")[1];
+					featureList.add(featureName);
+				}else{
+					if (lines[i].contains(Main.annotationPatternEnd)){
 						featureToCodeMapping.put(counter,featureName);
 						featureName="undefined";
 					}
@@ -137,8 +181,8 @@ public class FeatureAnalysisUtils {
 	}
 
 	
-	public static boolean isFeatureInFeaturesList(String name){
-		Iterator<Feature>  it= Main.features.iterator();
+	public static boolean isFeatureInFeaturesList(ArrayList<Feature> featureList, String name){
+		Iterator<Feature>  it= featureList.iterator();
 		Feature f;
 		while (it.hasNext()){
 			f = it.next();
