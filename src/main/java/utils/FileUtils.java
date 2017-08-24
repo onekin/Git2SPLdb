@@ -18,8 +18,8 @@ import SPLconcepts.SourceCodeFile;
 
 public class FileUtils {
 	
-	static int coreAssetFileCounter = 0;
-	static int productAssetFileCounter = 0;
+
+	
 	private static PrintWriter out;
 	
 	
@@ -88,12 +88,24 @@ public class FileUtils {
 		return null;
 	}
 
-	public static int getCoreAssetFileCounter(){
-		return coreAssetFileCounter++;
+	public static void writeToFile(String path, ArrayList<String> allInserts) {
+		Iterator<String> it = allInserts.iterator();
+		String st;
+		
+		
+			try {
+				 out = new PrintWriter(path);
+				while (it.hasNext()){
+				  st=it.next();
+				  out.append(st);
+				}
+				out.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
+
 	
-	public static int getProductAssetFileCounter(){
-		return productAssetFileCounter++;
-	}
 
 }

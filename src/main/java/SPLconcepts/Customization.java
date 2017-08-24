@@ -9,9 +9,12 @@ public class Customization{
 	Integer lineOfCodeModified;
 	SourceCodeFile productFile;
 	SourceCodeFile coreAssetFile;
+	boolean isNewAsset;
+	boolean isNewFeature;
 	ProductRelease inRelease=null;
 
-	public Customization(String featureName, String modType, int lineOfCodeModified, SourceCodeFile productFile, SourceCodeFile coreAssetFile, ProductRelease inRelease) {
+	public Customization(String featureName, String modType, int lineOfCodeModified, SourceCodeFile productFile, 
+			SourceCodeFile coreAssetFile, ProductRelease inRelease, int featureFound, int assetFound) {
 		
 		this.featureModifiedName=featureName;
 		this.operation=modType;
@@ -19,7 +22,27 @@ public class Customization{
 		this. coreAssetFile=coreAssetFile;
 		this. productFile=productFile;	
 		this.inRelease = inRelease;
+		if (featureFound==1) this.isNewFeature = false;
+		else this.isNewFeature = true;
+			
+		if (assetFound==1) this.isNewAsset = false;
+		else this.isNewAsset = true;
+			
+		
 	}
+
+	public boolean getIsNewAsset() {
+		return isNewAsset;
+	}
+
+	public void setIsNewAsset(boolean isNewAsset) {
+		this.isNewAsset = isNewAsset;
+	}
+
+	public boolean getIsNewFeature() {
+		return isNewFeature;
+	}
+
 
 	public SourceCodeFile getProductFile() {
 		return productFile;

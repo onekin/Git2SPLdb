@@ -1,9 +1,9 @@
 Product,Feature,Churn
+[productBerlin],English,ADDED
 [productBerlin],English,REMOVED
-[productBerlin],English,REMOVED
-[productBerlin],AirPressure,REMOVED
-[productBerlin],WindSpeed,REMOVED
-[productBerlin],German,REMOVED
+[productBerlin],AirPressure,ADDED
+[productBerlin],WindSpeed,ADDED
+[productBerlin],German,ADDED
 [productBerlin],AirPressure,REMOVED
 [productBerlin],WindSpeed,REMOVED
 [productBerlin],German,REMOVED

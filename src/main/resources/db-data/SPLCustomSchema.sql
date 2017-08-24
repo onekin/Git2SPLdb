@@ -158,7 +158,11 @@ CREATE TABLE IF NOT EXISTS `SPLCustombd`.`Customization` (
   `operation` VARCHAR(256) NOT NULL,
   `CoreAsset_idCoreAsset` INT NULL,
   `ProductAsset_idProductAsset` INT NOT NULL,
-  `Feature_idFeature` VARCHAR(256) NOT NULL,
+  `Feature_idFeature` VARCHAR(256) NULL,
+  `isNewFeature` INT,
+  `isNewAsset` INT , 
+  `featureNameModified` VARCHAR(256),
+
   PRIMARY KEY (`idCustomization`),
   INDEX `fk_Customization_CoreAsset1_idx` (`CoreAsset_idCoreAsset` ASC),
   INDEX `fk_Customization_ProductAsset1_idx` (`ProductAsset_idProductAsset` ASC),

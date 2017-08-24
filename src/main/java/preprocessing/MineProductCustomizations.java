@@ -40,7 +40,7 @@ public class MineProductCustomizations{
 		for (Modification m : commit.getModifications()) { // for each modification in each commit. Modifications are one per file changed
 			System.out.println("INSIDE FOR ");
 			if( m.getNewPath().startsWith(Main.pathToWhereCustomizationsAreComputed)){ // only compute modifications that are performed to "path"
-				ArrayList<Customization> mod1 = computeFeatureCustomizationsInModification("OLDFile",commit,m,writer,this.productRelease);
+				ArrayList<Customization> mod1 = computeFeatureCustomizationsInModification("NEWFile",commit,m,writer,this.productRelease);
 				ArrayList<Customization> mod2 = computeFeatureCustomizationsInModification("OLDFile",commit,m,writer,this.productRelease) ;
 				if (mod1!=null) totalModifications.addAll (mod1 );//comupte modification in the new file w.r.t the old file (additions and removals)
 				if (mod2!=null) totalModifications.addAll (mod2);//compute modification in the old file w.r.r the new file (removals)

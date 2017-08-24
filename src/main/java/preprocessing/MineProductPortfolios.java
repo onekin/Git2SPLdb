@@ -70,7 +70,7 @@ public class MineProductPortfolios implements CommitVisitor {
 						  &&
 						 (!brName.equals(Main.coreAssetsBranchPatternName)))
 				  {
-					  p = new Product(commit, brName, pp);
+					  p = new Product(utils.Utils.getNewProductId(), commit, brName, pp);
 					  computeAllReleasesForProduct(p,repo);
 					  pp.addProductToPortfolio(p);
 					  
@@ -144,7 +144,7 @@ public class MineProductPortfolios implements CommitVisitor {
 			SourceCodeFile PAFile;
 			for(RepositoryFile file : files) {//Mining Files for baseline
 				if(!file.getFile().getAbsolutePath().contains(Main.pathToWhereCustomizationsAreComputed)) continue;
-				PAFile= new ProductAssetFileAnnotated(utils.FileUtils.getProductAssetFileCounter(), file.getFile().getName(),  file.getFile().getPath(), file.getSourceCode(), file.getSourceCode().split("\n").length, pr1);
+				PAFile= new ProductAssetFileAnnotated(utils.Utils.getProductAssetFileCounter(), file.getFile().getName(),  file.getFile().getPath(), file.getSourceCode(), file.getSourceCode().split("\n").length, pr1);
 				pr1.getProductAssets().add((ProductAssetFileAnnotated) PAFile);
 	
 		}

@@ -1,6 +1,6 @@
-INSERT INTO Product ( name, ProductPortfolio_idPortfolio) VALUES
-('productNewYork','SPLconcepts.ProductPortfolio@3532ec19'),
-('productBerlin','SPLconcepts.ProductPortfolio@3532ec19'),
-('productDonosti','SPLconcepts.ProductPortfolio@3532ec19'),
-('productBilbao','SPLconcepts.ProductPortfolio@68c4039c');
+INSERT INTO Product ( idProduct, name, ProductPortfolio_idPortfolio) VALUES
+(1,'productNewYork','Series 1.X'),
+(2,'productBerlin','Series 1.X'),
+(3,'productDonosti','Series 1.X'),
+(4,'productBilbao','Series 2.X');
 

@@ -14,16 +14,18 @@ import org.repodriller.domain.Commit;
 
 public class Product {
 
+	int id;
+
 	
 	String branchName=null;
 	ArrayList<ProductRelease> releases= new ArrayList<ProductRelease>();
 	ProductPortfolio inPortfolio=null;
 	
 	ArrayList<RevCommit> commitList=new ArrayList<RevCommit>();
-	
 	Commit originCommit =null;
 
-	public Product(Commit originCommit, String releaseBranchName, ProductPortfolio inPortfolio){
+	public Product(int id, Commit originCommit, String releaseBranchName, ProductPortfolio inPortfolio){
+		this.id = id;
 		this.originCommit = originCommit;
 		this.branchName = releaseBranchName;	
 		this.inPortfolio = inPortfolio;
@@ -34,6 +36,18 @@ public class Product {
 	}
 
 	
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public void setBranchName(String branchName) {
+		this.branchName = branchName;
+	}
 
 	public ArrayList<RevCommit> getCommitList() {
 		return commitList;

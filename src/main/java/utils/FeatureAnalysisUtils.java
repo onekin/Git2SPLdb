@@ -9,6 +9,7 @@ import org.repodriller.domain.Commit;
 import org.repodriller.domain.DiffLine;
 
 import preprocessing.Main;
+import SPLconcepts.CoreAssetBaseline;
 import SPLconcepts.CoreAssetFileAnnotated;
 import SPLconcepts.Customization;
 import SPLconcepts.Feature;
@@ -43,10 +44,15 @@ public class FeatureAnalysisUtils {
 			featureName= map.get(lineNumber);
 			
 		   	if(modType!="KEPT"){//a line that reserces as diff context 
-		    	//System.out.println("feature changed: "+featureName+ " mod-type: "+modType+ " line num:"+lineNumber);
+		   		//(String featureName, String modType, int lineOfCodeModified, SourceCodeFile productFile, 
+		   		//		SourceCodeFile coreAssetFile, ProductRelease inRelease, int isNewFeature, int isNewAsset)
 		    	Customization cust = new Customization(featureName, modType, lineNumber,
 		    			utils.FileUtils.getCoreAssetByProductAssetName(fileName, pr), 
-		    			utils.FileUtils.getProductAssetByFileName(fileName, pr), pr);
+		    			utils.FileUtils.getProductAssetByFileName(fileName, pr),
+		    			pr, 
+		    			isFeatureInBaseline(pr.getFromProduct().getInPortfolio().getDerivedFrom(), featureName),
+		    			isAssetInBaseline(pr.getFromProduct().getInPortfolio().getDerivedFrom(), fileName)
+		    			);
 		    	featureModificationDetailList.add(cust);
 		   				
 		   	}
@@ -56,47 +62,43 @@ public class FeatureAnalysisUtils {
 	}
 	
 	
-	/**
-	public HashMap <Integer,String>  extractFeatureMapFromFile(File file) {//Read the file lineByLine
-		HashMap <Integer,String> featureToCodeMapping = new HashMap<Integer, String>();
-		ArrayList<String> featureList= new ArrayList<String>();
-		FileInputStream fis;
-		try {
-			fis = new FileInputStream(file);
-			//Construct BufferedReader from InputStreamReader
-			BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-			String line = null;
-			int counter=1;
-			String featureName="none";
-			
-			while ((line = br.readLine()) != null){
-				if (line.contains(Customs.annotationPatternBeginning)){		
-					featureToCodeMapping.put(counter,featureName);
-					featureName=line.split("pv:hasFeature")[1];
-					featureList.add(featureName);
-				}else{
-					if (line.contains(Customs.annotationPatternEnd)){
-					
-						featureToCodeMapping.put(counter,featureName);
-						featureName="none";
-					}
-					else{
-						featureToCodeMapping.put(counter,featureName);
-					}
-				}
-				counter ++;
-			}
-			br.close();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	 
+
+	private static int isAssetInBaseline(CoreAssetBaseline baseline,
+			String fileName) {
+		ArrayList<SourceCodeFile> list = baseline.getCoreAssetFiles();
+		Iterator<SourceCodeFile> it = list.iterator();
+		SourceCodeFile ca;
 		
-		return featureToCodeMapping;
+		while(it.hasNext()){
+			ca = it.next();
+			System.out.println("AQUUUUIQ");
+			System.out.println(ca.getFileName()+"== "+(fileName));
+			if (ca.getFileName().equals(fileName))
+				return 1;
+		}
+		
+		return 0;
 	}
-*/
-	
+
+
+
+	private static int isFeatureInBaseline(CoreAssetBaseline baseline,
+			String featureName) {
+		
+		ArrayList<Feature> list = baseline.getFeatures();
+		
+		Iterator<Feature> it = list.iterator();
+		Feature f;
+		
+		while(it.hasNext()){
+			f = it.next();
+			if (f.getIdFeature().equals(featureName))
+				return 1;
+		}
+		return 0;
+	}
+
+
 
 	public static HashMap <Integer,String>  extractFeatureMapFromCoreAsset (SourceCodeFile file) {//Read the file lineByLine
 		

@@ -24,6 +24,9 @@ import preprocessing.Main;
 public class Utils {
 	
 	static int customizationCounter = 0;
+	static int coreAssetFileCounter = 0;
+	static int productAssetFileCounter = 0;
+	static int productCounter = 0;
 
 
 	
@@ -91,10 +94,7 @@ public class Utils {
 		
 	}
 		  
-		static public int getNewCustomizationId(){
-			customizationCounter ++;
-			return customizationCounter;
-		}
+	
 
 		public static Iterable<RevCommit> getCommitsInBranch(String branchName) {
 			
@@ -123,5 +123,26 @@ public class Utils {
 			
 			return false;
 		}
+
+		static public int getNewCustomizationId(){
+			customizationCounter ++;
+			return customizationCounter;
+		}
+		
+		static public int getNewProductId(){
+			productCounter ++;
+			return productCounter;
+		}
+		
+		public static int getProductAssetFileCounter() {
+			 productAssetFileCounter++;
+			return productAssetFileCounter;
+		}
+
+		public static int getCoreAssetFileCounter() {
+			coreAssetFileCounter ++;
+			return coreAssetFileCounter;
+		}
+		
 	
 }
