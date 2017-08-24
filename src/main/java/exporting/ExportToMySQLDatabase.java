@@ -31,56 +31,9 @@ public class ExportToMySQLDatabase implements ExportTarget {
 	public void export(){
 		
 		try{
-			String inserts0 ="";
-			ArrayList<String> allInserts = new ArrayList<String>();
 			
-			inserts0 = generateInsertsFor_SPL_Table();
-		//	utils.FileUtils.writeToFile(this.pathToDataFile+"0insertsSPL.sql",inserts0);
-			
-			
-			String inserts1 =    generateInsertsFor_CoreAssetBaseline_Table();
-			//		utils.FileUtils.writeToFile(this.pathToDataFile+"1insertsCABaseline.sql",inserts1);
-			
-			String inserts2 = generateInsertsFor_Feature_Table();
-			//	utils.FileUtils.writeToFile(this.pathToDataFile+"2insertsFeature.sql",inserts2);
-			
-			String inserts3 = generateInsertsFor_CoreAsset_Baseline_has_Feature();
-			//	utils.FileUtils.writeToFile(this.pathToDataFile+"3insertsCABaseline_has_Feature.sql",inserts3);
-			
-			String inserts4 = generateInsertsFor_CoreAssets_Table();
-			//	utils.FileUtils.writeToFile(this.pathToDataFile+"4insertsCoreAssets.sql",inserts4);
-			
-			String inserts5 = generateInsertsFor_CoreAsset_has_Feature_Table();
-			//	utils.FileUtils.writeToFile(this.pathToDataFile+"5insertsCAhasFeature.sql",inserts5);
-			
-			String inserts6 = generateInsertsFor_ProductPortfolio_Table();
-			//	utils.FileUtils.writeToFile(this.pathToDataFile+"6insertsPortpolios.sql",inserts6);
-			
-			String inserts7 = generateInsertsFor_Product_Table();
-			//	utils.FileUtils.writeToFile(this.pathToDataFile+"7insertsProducts.sql",inserts7);
-			
-			String inserts8 = generateInsertsFor_Product_Release_Table();
-			//		utils.FileUtils.writeToFile(this.pathToDataFile+"8insertsProductRelease.sql",inserts8);
-			
-			String inserts9 = generateInsertsFor_Product_Asset_table();
-			//		utils.FileUtils.writeToFile(this.pathToDataFile+"9insertsProductAsset.sql",inserts9);
-			
-			String inserts10 = generateInsertsFor_Customization_Table();
-			//		utils.FileUtils.writeToFile(this.pathToDataFile+"10insertsCustomization.sql",inserts10);
-			
-			
-			allInserts.add(inserts0);
-			allInserts.add(inserts1);
-			allInserts.add(inserts2);
-			allInserts.add(inserts3);
-			allInserts.add(inserts4);
-			allInserts.add(inserts5);
-			allInserts.add(inserts6);
-			allInserts.add(inserts7);
-			allInserts.add(inserts8);
-			allInserts.add(inserts9);
-			allInserts.add(inserts10);
-			utils.FileUtils.writeToFile(this.pathToDataFile+"allInserts.sql",allInserts);
+			generateInserts();
+			generateViewsForCustomizationAnalysis();
 			
 		}catch (Exception e ){
 			e.printStackTrace();
@@ -88,6 +41,73 @@ public class ExportToMySQLDatabase implements ExportTarget {
 
 	}
 	
+	private void generateViewsForCustomizationAnalysis() {
+		// TODO Auto-generated method stub
+		
+		//Views For alluvial diagram
+		
+		
+	}
+
+
+
+
+	private void generateInserts() {
+		String inserts0 ="";
+		ArrayList<String> allInserts = new ArrayList<String>();
+		
+		inserts0 = generateInsertsFor_SPL_Table();
+	//	utils.FileUtils.writeToFile(this.pathToDataFile+"0insertsSPL.sql",inserts0);
+		
+		
+		String inserts1 =    generateInsertsFor_CoreAssetBaseline_Table();
+		//		utils.FileUtils.writeToFile(this.pathToDataFile+"1insertsCABaseline.sql",inserts1);
+		
+		String inserts2 = generateInsertsFor_Feature_Table();
+		//	utils.FileUtils.writeToFile(this.pathToDataFile+"2insertsFeature.sql",inserts2);
+		
+		String inserts3 = generateInsertsFor_CoreAsset_Baseline_has_Feature();
+		//	utils.FileUtils.writeToFile(this.pathToDataFile+"3insertsCABaseline_has_Feature.sql",inserts3);
+		
+		String inserts4 = generateInsertsFor_CoreAssets_Table();
+		//	utils.FileUtils.writeToFile(this.pathToDataFile+"4insertsCoreAssets.sql",inserts4);
+		
+		String inserts5 = generateInsertsFor_CoreAsset_has_Feature_Table();
+		//	utils.FileUtils.writeToFile(this.pathToDataFile+"5insertsCAhasFeature.sql",inserts5);
+		
+		String inserts6 = generateInsertsFor_ProductPortfolio_Table();
+		//	utils.FileUtils.writeToFile(this.pathToDataFile+"6insertsPortpolios.sql",inserts6);
+		
+		String inserts7 = generateInsertsFor_Product_Table();
+		//	utils.FileUtils.writeToFile(this.pathToDataFile+"7insertsProducts.sql",inserts7);
+		
+		String inserts8 = generateInsertsFor_Product_Release_Table();
+		//		utils.FileUtils.writeToFile(this.pathToDataFile+"8insertsProductRelease.sql",inserts8);
+		
+		String inserts9 = generateInsertsFor_Product_Asset_table();
+		//		utils.FileUtils.writeToFile(this.pathToDataFile+"9insertsProductAsset.sql",inserts9);
+		
+		String inserts10 = generateInsertsFor_Customization_Table();
+		//		utils.FileUtils.writeToFile(this.pathToDataFile+"10insertsCustomization.sql",inserts10);
+		
+		allInserts.add(inserts0);
+		allInserts.add(inserts1);
+		allInserts.add(inserts2);
+		allInserts.add(inserts3);
+		allInserts.add(inserts4);
+		allInserts.add(inserts5);
+		allInserts.add(inserts6);
+		allInserts.add(inserts7);
+		allInserts.add(inserts8);
+		allInserts.add(inserts9);
+		allInserts.add(inserts10);
+		utils.FileUtils.writeToFile(this.pathToDataFile+"data-inserts.sql",allInserts);
+		
+	}
+
+
+
+
 	private String generateInsertsFor_ProductPortfolio_Table() {
 		String insert="INSERT INTO ProductPortfolio (idPortfolio,SPL_idSPL, CoreAssetBAseline_idBaseline) VALUES\n";
 		ArrayList<ProductPortfolio> list = Main.spl.getProductPortfolios();
