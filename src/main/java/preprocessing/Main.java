@@ -27,7 +27,7 @@ public class Main implements Study {
 	public static String coreAssetsRepo; // Users/Onekin/Documents/workspace/WeatherStationSPL
 	public static String productRepo;
 	public static String pathToResources; //Users/Onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resource/alluvial/sankey.csv
-	//public static String pathToAuxWorkSpace; //Users/Onekin/temp/aux.txt
+	
 	public static String pathToWhereCustomizationsAreComputed;//"input"
 		
 		/**Settings for Git repos and annotation based SPLs*/
@@ -51,7 +51,6 @@ public class Main implements Study {
 		/**
 		 * /Users/onekin/Documents/workspace/WeatherStationSPL
 			/Users/onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resources
-			/Users/onekin/Desktop/aux.txt
 			"input"
 		 * 
 		 * */
