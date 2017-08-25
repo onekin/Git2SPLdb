@@ -144,7 +144,7 @@ public class MineProductPortfolios implements CommitVisitor {
 			SourceCodeFile PAFile;
 			for(RepositoryFile file : files) {//Mining Files for baseline
 				if(!file.getFile().getAbsolutePath().contains(Main.pathToWhereCustomizationsAreComputed)) continue;
-				PAFile= new ProductAssetFileAnnotated(utils.Utils.getProductAssetFileCounter(), file.getFile().getName(),  file.getFile().getPath(), file.getSourceCode(), file.getSourceCode().split("\n").length, pr1);
+				PAFile= new ProductAssetFileAnnotated(utils.Utils.getNewProductAssetId(), file.getFile().getName(),  file.getFile().getPath(), file.getSourceCode(), file.getSourceCode().split("\n").length, pr1);
 				pr1.getProductAssets().add((ProductAssetFileAnnotated) PAFile);
 	
 		}

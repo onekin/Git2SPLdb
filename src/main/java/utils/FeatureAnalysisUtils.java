@@ -44,11 +44,12 @@ public class FeatureAnalysisUtils {
 			featureName= map.get(lineNumber);
 			
 		   	if(modType!="KEPT"){//a line that reserces as diff context 
-		   		//(String featureName, String modType, int lineOfCodeModified, SourceCodeFile productFile, 
+		   		//(String featureName, String modType, int lineOfCodeModified, 
+		   		//SourceCodeFile productFile, 
 		   		//		SourceCodeFile coreAssetFile, ProductRelease inRelease, int isNewFeature, int isNewAsset)
 		    	Customization cust = new Customization(featureName, modType, lineNumber,
-		    			utils.FileUtils.getCoreAssetByProductAssetName(fileName, pr), 
 		    			utils.FileUtils.getProductAssetByFileName(fileName, pr),
+		    			utils.FileUtils.getCoreAssetByProductAssetName(fileName, pr), 
 		    			pr, 
 		    			isFeatureInBaseline(pr.getFromProduct().getInPortfolio().getDerivedFrom(), featureName),
 		    			isAssetInBaseline(pr.getFromProduct().getInPortfolio().getDerivedFrom(), fileName)

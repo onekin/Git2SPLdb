@@ -20,6 +20,7 @@ import SPLconcepts.ProductAssetFileAnnotated;
 import SPLconcepts.ProductPortfolio;
 import SPLconcepts.ProductRelease;
 import SPLconcepts.SPL;
+import SPLconcepts.SourceCodeFile;
 
 public class Main implements Study {
 	
@@ -87,6 +88,14 @@ public class Main implements Study {
 		
 		//3. print info
 	 	//printCustomizations(); printPP(); printFilesInRelease(); printlnFeatures(); 
+	 	System.out.println("Core Asset counter:" +utils.Utils.getCoreAssetFileCounter());
+	 	System.out.println("Product Asset counter :" +utils.Utils.getProductAssetFileCounter());
+	 	for(int i=0; i< 2; i++){
+	 		ArrayList<SourceCodeFile> assets = spl.getCoreAssetBaseline(i).getCoreAssetFiles();
+	 		for (int j=0; j< assets.size(); j++){
+	 			System.out.println("ASSET ID:"+assets.get(j).getId());
+	 		}
+	 	}
 	 	
 	 	ExportTarget export = new ExportToMySQLDatabase(Main.pathToResources+"/db-data/");
 		export.export();

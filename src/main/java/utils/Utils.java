@@ -134,14 +134,30 @@ public class Utils {
 			return productCounter;
 		}
 		
-		public static int getProductAssetFileCounter() {
+		public static int getNewProductAssetId() {
 			 productAssetFileCounter++;
 			return productAssetFileCounter;
 		}
 
-		public static int getCoreAssetFileCounter() {
+		public static int getNewCoreAssetId() {
 			coreAssetFileCounter ++;
 			return coreAssetFileCounter;
+		}
+
+		public static int getCustomizationCounter() {
+			return customizationCounter;
+		}
+
+		public static int getCoreAssetFileCounter() {
+			return coreAssetFileCounter;
+		}
+
+		public static int getProductAssetFileCounter() {
+			return productAssetFileCounter;
+		}
+
+		public static int getProductCounter() {
+			return productCounter;
 		}
 		
 	

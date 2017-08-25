@@ -56,7 +56,7 @@ public class MineProductCustomizations{
 		int counter=1;
 		List<DiffLine> lines = null;
 		
-		String sourceCodeFile;
+		String sourceCode;
 		DiffParser parsedDiff = new DiffParser(m.getDiff());
 		int numberOfBlock= parsedDiff.getBlocks().size();//how many blocks in the diff
 		System.out.println("\n\n\n------------------Commit:"+commit.getHash()+"---------");
@@ -70,9 +70,9 @@ public class MineProductCustomizations{
 			else if (operation == "OLDFile") 
 				lines = parsedDiff.getBlocks().get(counter-1).getLinesInOldFile(); //deleted lines
 			
-			sourceCodeFile= m.getSourceCode();
+			sourceCode= m.getSourceCode();
 			
-			list = FeatureAnalysisUtils.computeCustomizationDetails( m.getFileName(), m.getNewPath(), sourceCodeFile, lines, pr, commit) ; //get details of customizations
+			list = FeatureAnalysisUtils.computeCustomizationDetails( m.getFileName(), m.getNewPath(), sourceCode, lines, pr, commit) ; //get details of customizations
 			
 			/** JUST FOR PRINTING DETAILS; WE CAN REMOVE THIS **/
 			if (list!=null){ 
