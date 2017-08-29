@@ -47,29 +47,22 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		//Views For alluvial diagram
 		ArrayList<String> views=new ArrayList<String>();
 		
-		views.add(generateAlluvialFeatureBased());
-		
-		
+		views.add(generateAlluvialFeatureBased());		
 		utils.FileUtils.writeToFile(this.pathToDataFile+"views.sql",views);
 		
 	}
 
 
-
-
 	private String generateAlluvialFeatureBased() {
-		String view = "create view CustomizaionGBProductFeature AS"
-		+"select idBaseline, c.featureNameModified, p.id, p.name, pr.idRelease, count(idCustomization) AS churn"
+		String view = "create view Customizationgbproductfeature AS"
+		+"select idBaseline as 'idbaseline', c.featureNameModified as 'featuremodified' , p.idproduct as 'idproduct', p.name as 'name', pr.idRelease as 'idrelease', count(idCustomization) AS churn"
 		+"from coreassetbaseline b INNER JOIN coreasset ca on idBaseline=ca.coreassetbaseline_idbaseline"
 		+"inner join customization c on c.coreasset_idcoreasset=ca.idcoreasset"
 		+"inner join productasset pa on pa.idProductasset=c.productasset_idproductasset"
 		+"inner join productrelease pr on pr.idrelease=pa.productrelease_idRelease"
 		+"inner join product p on p.idProduct=pr.product_idproduct"
 		+"group by idBaseline,featureNameModified,pr.idRelease";
-		
-		
 		return view;
-		
 	}
 
 
@@ -401,7 +394,6 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		//https://stackoverflow.com/questions/19743851/base64-java-encode-and-decode-a-string
 		String   bytesEncoded = Base64.encode(str.getBytes());
 	//	System.out.println("ecncoded value is " + new String(bytesEncoded ));
-
 		// Decode data on other side, by processing encoded data
 	//	byte[] valueDecoded= Base64.decode(bytesEncoded );
 		//System.out.println("Decoded value is " + new String(valueDecoded));
