@@ -229,6 +229,44 @@ CREATE TABLE IF NOT EXISTS `SPLCustombd`.`CoreAsset_has_Feature` (
 ENGINE = InnoDB;
 
 
+
+-- -----------------------------------------------------
+-- VIEWS For Alluvial
+-- -----------------------------------------------------
+create view Customizationgbproductfeature AS 
+select UUID() as 'id', idBaseline as 'idbaseline', c.featureNameModified as 'featuremodified' , p.idproduct as 'idproduct', p.name as 'name', pr.idRelease as 'idrelease', count(idCustomization) AS churn
+from coreassetbaseline b INNER JOIN coreasset ca on idBaseline=ca.coreassetbaseline_idbaseline
+inner join customization c on c.coreasset_idcoreasset=ca.idcoreasset
+inner join productasset pa on pa.idProductasset=c.productasset_idproductasset
+inner join productrelease pr on pr.idrelease=pa.productrelease_idRelease
+inner join product p on p.idProduct=pr.product_idproduct
+group by idBaseline,featureNameModified,pr.idRelease
+order by idBaseline;
+
+- -----------------------------------------------------
+-- VIEWS For TrafficLight
+-- -----------------------------------------------------
+
+Create view customizationbgfile as
+select UUID() as 'id', ca.idcoreasset as 'idcoreasset', ca.path as 'path', ca.name as 'cafilename', idBaseline as 'idbaseline', c.featureNameModified as 'featuremodified', count(idCustomization) AS 'churn', count(Distinct p.idProduct) as 'numberofproductscustomizing'
+from coreassetbaseline b INNER JOIN coreasset ca on idBaseline=ca.coreassetbaseline_idbaseline
+inner join coreasset_has_feature  cahf on ca.idcoreasset=cahf.coreasset_idcoreasset
+inner join feature f on f.idfeature = cahf.feature_idfeature
+inner join customization c on f.idfeature = c.feature_idfeature
+inner join productasset pa on pa.idProductasset=c.productasset_idproductasset
+inner join productrelease pr on pr.idrelease=pa.productrelease_idRelease
+inner join product p on p.idProduct=pr.product_idproduct
+group by idBaseline, ca.idcoreasset, featureNameModified
+order by path;
+
+
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+
+
+
+
