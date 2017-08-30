@@ -26,8 +26,6 @@ public class ExportToMySQLDatabase implements ExportTarget {
 	}
 	
 	
-
-	
 	public void export(){
 		
 		try{

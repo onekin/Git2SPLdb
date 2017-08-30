@@ -37,7 +37,7 @@ public class Main implements Study {
 		public static String coreAssetsBranchPatternName="master";
 		public static String coreAssetsReleaseName="baseline";
 		public static String productsReleaseName="product";
-		public final static String annotationPatternBeginning="PV:IFCOND(pv:hasFeature"; //PV:IFCOND(pv:hasFeature('FeatureName'))
+		public final static String annotationPatternBeginning="pv:hasFeature"; //PV:IFCOND(pv:hasFeature
 		public final static String annotationPatternEnd="PV:ENDCOND";
 	
 
