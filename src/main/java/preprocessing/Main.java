@@ -37,8 +37,8 @@ public class Main implements Study {
 		public static String coreAssetsBranchPatternName="master";
 		public static String coreAssetsReleaseName="baseline";
 		public static String productsReleaseName="product";
-		public final static String annotationPatternBeginning="pv:hasFeature";// "PV:IFCOND(pv:hasFeature";//
-		public final static String annotationPatternEnd="PV:ENDCOND";
+		public final static String annotationPatternBeginning= "pv:hasFeature";//pv:hasFeature
+		public final static String annotationPatternEnd="PV:ENDCOND";//"PV:ENDCOND";
 	
 
 	public static SPL spl;
@@ -87,7 +87,7 @@ public class Main implements Study {
 		}
 		
 		//3. print info
-	 	printCustomizations(); printPP();// printFilesInRelease();// printlnFeatures(); 
+	 	printCustomizations(); printPP(); printFilesInRelease(); printlnFeatures(); 
 	 	System.out.println("Core Asset counter:" +utils.Utils.getCoreAssetFileCounter());
 	 	System.out.println("Product Asset counter :" +utils.Utils.getProductAssetFileCounter());
 	 	for(int i=0; i< 2; i++){
@@ -199,22 +199,26 @@ public class Main implements Study {
 		ArrayList<ProductPortfolio> ppList = Main.spl.getProductPortfolioList();
 		Iterator<ProductPortfolio> it = ppList.iterator();
 		
+
+		
 		ProductPortfolio pp;
 		while(it.hasNext()){
 			pp = it.next();
 			ArrayList<Product> products= pp.getProducts();
-			Iterator<Product> i= products.iterator();
+			Iterator<Product> productIt= products.iterator();
 			Product p;
 			ArrayList<ProductRelease> listPR;
-			while(i.hasNext()){
-				p=  i.next();
+			while(productIt.hasNext()){
+				p=  productIt.next();
 				listPR=p.getReleases();
 				Iterator<ProductRelease> prIt = listPR.iterator();
+				ArrayList<Customization> custs;
 				while(prIt.hasNext()){
-					ArrayList<Customization> custs = prIt.next().getCustomizations();
+					custs = prIt.next().getCustomizations();
 					Iterator<Customization> ite = custs.iterator();
+					Customization cust;
 					while(ite.hasNext()){
-						Customization cust = ite.next();
+						cust = ite.next();
 						System.out.println(
 								//"ID:"+cust.getCustomizationId()+"\n"+
 								"In release: " +cust.getInRelease().getIdRelease()+"\n"+

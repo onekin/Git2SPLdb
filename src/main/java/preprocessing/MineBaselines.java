@@ -45,24 +45,24 @@ public class MineBaselines implements CommitVisitor {
 				Main.spl.addBaseline(CABaseline);
 				
 					List<RepositoryFile> files = repo.getScm().files();
-					
+					System.out.println("Number of files in Baseline:"+files.size());
 					SourceCodeFile CAfile;
-					for(RepositoryFile file : files) {//Mining Files for baseline
+					for(RepositoryFile file : files) { //Mining Files for baseline
 						if(file.getFile().getAbsolutePath().contains(Main.pathToWhereCustomizationsAreComputed)){
 							CAfile= new CoreAssetFileAnnotated(utils.Utils.getNewCoreAssetId(), file.getFile().getName(),  file.getFile().getPath(), file.getSourceCode(), file.getSourceCode().split("\n").length, CABaseline);
 							CABaseline.addCoreAssetFile(CAfile);
-							mineFeaturesInBaseline(CABaseline);
+						//	mineFeaturesInBaseline(CABaseline);
 						}
-				
+						writer.write(
+								CABaseline.getId(),	
+								CABaseline.getReleaseDate(),
+								file.getFullName(),
+								file.getSourceCode().split("\n").length);
 					
-					writer.write(
-							CABaseline.getId(),	
-							CABaseline.getReleaseDate(),
-							file.getFullName(),
-							file.getSourceCode().split("\n").length);
-					
-				}
+					}
+				mineFeaturesInBaseline(CABaseline);//mining what features are in the baseline
 			} finally {
+				System.out.println("RESET!!!");
 					repo.getScm().reset();
 			}	
 		}
@@ -76,12 +76,13 @@ public class MineBaselines implements CommitVisitor {
 		SourceCodeFile ca;
 		Iterator<String> ite;
 		String value;
-		
+		System.out.println("mining features in baseline:"+baseline.getId()+"with files:"+listFiles.size());
 		while(it.hasNext()){
 			ca = it.next();
 			
+			System.out.println("CA is "+ ca.getFileName() +"\nlenght:"+ca.getContent().length());
 			HashMap<Integer, String> map = utils.FeatureAnalysisUtils.extractFeatureMapFromFile(ca.getContent()); //line-feature map
-			if (map == null) return;
+			if (map == null) continue;
 			
 			values = map.values();//all the features in the file - repeteated!!
 			ite= values.iterator();//all the identified feature
@@ -100,6 +101,7 @@ public class MineBaselines implements CommitVisitor {
 			}
 			
 		}
+		System.out.println("Features in baseline:"+baseline.getFeatures().toString());
 		
 	}
 

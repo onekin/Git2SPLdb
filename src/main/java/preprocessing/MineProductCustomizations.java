@@ -34,7 +34,7 @@ public class MineProductCustomizations{
 	public ArrayList<Customization> mine(SCMRepository repo, Commit commit, PersistenceMechanism writer) {//for each commit belonging to the product release at hand
 		if(headerFlag==false){
 			headerFlag=true;
-			writer.write("Product","Feature","Churn");
+			writer.write("Product","Feature","File","Churn");
 		}
 		ArrayList<Customization> totalModifications = new ArrayList<Customization>();
 		
@@ -46,8 +46,9 @@ public class MineProductCustomizations{
 				if (mod1!=null) totalModifications.addAll (mod1);//comupte modification in the new file w.r.t the old file (additions and removals)
 				if (mod2!=null) totalModifications.addAll (mod2);//compute modification in the old file w.r.r the new file (removals)
 					*/
-				totalModifications.addAll (computeFeatureCustomizationsInModification("NEWFile",commit,m,writer,this.productRelease));
+				
 				totalModifications.addAll (computeFeatureCustomizationsInModification("OLDFile",commit,m,writer,this.productRelease));
+				totalModifications.addAll (computeFeatureCustomizationsInModification("NEWFile",commit,m,writer,this.productRelease));
 			}
 		}
 		productRelease.getCustomizations().addAll(totalModifications);
@@ -66,7 +67,7 @@ public class MineProductCustomizations{
 		System.out.println("ProductBranch-- File name--- Feature changed ---Operation ---LOCs");
 		System.out.println("------------------------------------------------------------------");
 		
-		ArrayList<Customization> list =null;
+		ArrayList<Customization> list = new ArrayList<Customization>();
 		while (counter<=numberOfBlock){//analyze those lines that are removed/added in the new file
 			if(operation=="NEWFile")	
 				lines = parsedDiff.getBlocks().get(counter-1).getLinesInNewFile();//added new lines
@@ -75,15 +76,17 @@ public class MineProductCustomizations{
 			
 			sourceCode= m.getSourceCode();//source 
 			
-			list = FeatureAnalysisUtils.computeCustomizationDetails( m.getFileName(), m.getNewPath(), sourceCode, lines, pr, commit) ; //get details of customizations
+			ArrayList<Customization> listilla = FeatureAnalysisUtils.computeCustomizationDetails( m.getFileName(), m.getNewPath(), sourceCode, lines, pr, commit) ;
+			if(listilla!=null)
+				list.addAll(listilla); //get details of customizations
 			
 			/** JUST FOR PRINTING DETAILS; WE CAN REMOVE THIS **/
 			if (list!=null){ 
 				Iterator<Customization> it= list.iterator();
 				while (it.hasNext()){
 					Customization aux = it.next();
-					System.out.println(commit.getBranches()+"  "+m.getFileName()+" "+aux.getFeatureModifiedName()+ " "+ aux.getOperation());
-					writer.write(commit.getBranches(),aux.getFeatureModifiedName(),aux.getOperation());
+					System.out.println(commit.getBranches()+"  "+m.getFileName()+" "+aux.getFeatureModifiedName()+ " "+aux.getCoreAssetFile().getFileName() +" "+aux.getOperation());
+					writer.write(commit.getBranches(),aux.getFeatureModifiedName(),aux.getCoreAssetFile().getFileName(), aux.getOperation());
 					
 				}
 			}

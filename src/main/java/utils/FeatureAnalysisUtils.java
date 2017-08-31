@@ -72,8 +72,8 @@ public class FeatureAnalysisUtils {
 		
 		while(it.hasNext()){
 			ca = it.next();
-			System.out.println("AQUUUUIQ");
-			System.out.println(ca.getFileName()+"== "+(fileName));
+			//System.out.println("AQUUUUIQ");
+			//System.out.println(ca.getFileName()+"== "+(fileName));
 			if (ca.getFileName().equals(fileName))
 				return 1;
 		}
@@ -161,13 +161,12 @@ public static HashMap <Integer,String>  extractFeatureMapFromFile (String conten
 				if (lines[i].contains(Main.annotationPatternBeginning )){		
 					featureToCodeMapping.put(counter,featureName);
 					featureName=lines[i].split(Main.annotationPatternBeginning)[1];
-					
-					featureName = featureName.split("'")[1];
 					featureList.add(featureName);
+					featureName = featureName.split("'")[1];
 				}else{
 					if (lines[i].contains(Main.annotationPatternEnd)){
-						featureToCodeMapping.put(counter,featureName);
 						featureName="undefined";
+						featureToCodeMapping.put(counter,featureName);
 					}
 					else{
 						featureToCodeMapping.put(counter,featureName);
