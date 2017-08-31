@@ -259,6 +259,21 @@ group by idBaseline, ca.idCoreasset, featuremodified;
 
 
 
+-- -----------------------------------------------------
+-- VIEWS For ReuseLevel
+-- -----------------------------------------------------
+
+create view customizationsbyoperation AS
+
+select UUID() as 'id', pa.name as 'pa_name', p.idproduct as 'idproduct', p.name as 'product_name', pr.idrelease as 'idrelease', c.operation as 'operation', count(c.operation) as 'locs' , ca.size as 'ca_size', pa.size as 'pa_size',  pa.size-ca.size as 'delta'
+from productasset pa
+inner join customization c on c.productasset_idproductasset = pa.idproductasset
+inner join productrelease pr on pr.idrelease = pa.productrelease_idrelease
+inner join product p on p.idproduct = pr.product_idproduct
+inner join coreasset ca on ca.idcoreasset = c.coreasset_idcoreasset
+group by pa.idproductasset, pr.idrelease, c.operation , ca.idcoreasset;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
