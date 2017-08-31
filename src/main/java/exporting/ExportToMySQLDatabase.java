@@ -31,53 +31,15 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		try{
 			
 			generateInserts();
-			//generateViewsForCustomizationAnalysis();
-		
-			
+	
 		}catch (Exception e ){
 			e.printStackTrace();
 		}
 
 	}
 	
-	private void generateViewsForCustomizationAnalysis() {
-		// TODO Auto-generated method stub
-		
-		//Views For alluvial diagram
-		ArrayList<String> views=new ArrayList<String>();
-		
-		views.add(generateAlluvialFeatureBased());		
-		views.add(generateTreeMapCABasedCustomizationView());
-		utils.FileUtils.writeToFile(this.pathToDataFile+"views.sql",views);
-		
-	}
 
-	private String generateTreeMapCABasedCustomizationView(){
-		String view = "Create view customizationbgfileView as"
-			+ " select ca.idcoreasset as 'idcoreasset', ca.path as 'path', ca.name as 'productfilename', idBaseline as 'idbaseline', c.featureNameModified as 'featuremodified', count(idCustomization) AS 'churn', count(Distinct p.idProduct) as 'numberofproductscustomizing'"
-			+ " from coreassetbaseline b INNER JOIN coreasset ca on idBaseline=ca.coreassetbaseline_idbaseline"
-			+ "inner join coreasset_has_feature  cahf on ca.idcoreasset=cahf.coreasset_idcoreasset"
-			+ "inner join feature f on f.idfeature = cahf.feature_idfeature"
-			+ "inner join customization c on f.idfeature = c.feature_idfeature"
-			+ "inner join productasset pa on pa.idProductasset=c.productasset_idproductasset"
-			+ "inner join productrelease pr on pr.idrelease=pa.productrelease_idRelease"
-			+ "inner join product p on p.idProduct=pr.product_idproduct"
-			+ "group by idBaseline, ca.idcoreasset, featureNameModified";
-		return view;
-		
-	}
 
-	private String generateAlluvialFeatureBased() {
-		String view = "create view CustomizationgbproductfeatureView AS "
-		+" \nselect idBaseline as 'idbaseline', c.featureNameModified as 'featuremodified' , p.idproduct as 'idproduct', p.name as 'name', pr.idRelease as 'idrelease', count(idCustomization) AS churn"
-		+" \nfrom coreassetbaseline b INNER JOIN coreasset ca on idBaseline=ca.coreassetbaseline_idbaseline"
-		+" \ninner join customization c on c.coreasset_idcoreasset=ca.idcoreasset"
-		+" \ninner join productasset pa on pa.idProductasset=c.productasset_idproductasset"
-		+" \ninner join productrelease pr on pr.idrelease=pa.productrelease_idRelease"
-		+" \ninner join product p on p.idProduct=pr.product_idproduct"
-		+" \ngroup by idBaseline,featureNameModified,pr.idRelease;";
-		return view;
-	}
 	
 
 
@@ -273,7 +235,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 				}
 				if (i+1 < products.size()) insert=insert.concat(",\n");
 			}
-			//if (x+1 < portfolios.size()) insert=insert.concat(",\n");
+			if (x+1 < portfolios.size()) insert=insert.concat(",\n");
 		}
 		
 		insert=insert.concat(";\n");

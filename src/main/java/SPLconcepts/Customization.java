@@ -22,12 +22,15 @@ public class Customization{
 		this. coreAssetFile=coreAssetFile;
 		this. productFile=productFile;	
 		this.inRelease = inRelease;
+		
 		if (featureFound==1) this.isNewFeature = false;
 		else this.isNewFeature = true;
 			
 		if (assetFound==1) this.isNewAsset = false;
 		else this.isNewAsset = true;
-			
+		
+		
+		
 		
 	}
 

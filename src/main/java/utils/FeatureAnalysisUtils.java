@@ -101,7 +101,7 @@ public class FeatureAnalysisUtils {
 
 
 
-	public static HashMap <Integer,String>  extractFeatureMapFromCoreAsset (SourceCodeFile file) {//Read the file lineByLine
+/*	public static HashMap <Integer,String>  extractFeatureMapFromCoreAsset (SourceCodeFile file) {//Read the file lineByLine
 		
 		HashMap <Integer,String> featureToCodeMapping = new HashMap<Integer, String>();
 		ArrayList<String> featureList= new ArrayList<String>();
@@ -118,19 +118,20 @@ public class FeatureAnalysisUtils {
 			for(int i=0;i<lines.length;i++){
 				if (lines[i].contains(Main.annotationPatternBeginning )){		
 					featureToCodeMapping.put(counter,featureName);
-					featureName=lines[i].split("pv:hasFeature")[1];
-					
-					featureName = featureName.split("'")[1];
+					featureName=lines[i].split(Main.annotationPatternBeginning)[1];
 					featureList.add(featureName);
-				}else{
-					if (lines[i].contains(Main.annotationPatternEnd)){
-						featureToCodeMapping.put(counter,featureName);
-						featureName="undefined";
-					}
-					else{
-						featureToCodeMapping.put(counter,featureName);
-					}
+					featureName = featureName.split("'")[1];
+					
 				}
+				if (lines[i].contains(Main.annotationPatternEnd)){
+						featureName="undefined";// last line of a feature annotation does not belong to that feature
+						featureToCodeMapping.put(counter,featureName);
+						
+				}
+				if(!(lines[i].contains(Main.annotationPatternEnd)) && !(lines[i].contains(Main.annotationPatternBeginning) )) {
+						featureToCodeMapping.put(counter,featureName);
+				}
+				
 				counter ++;
 			}
 		
@@ -140,7 +141,7 @@ public class FeatureAnalysisUtils {
 	 
 		
 		return featureToCodeMapping;
-	}
+	}*/
 
 public static HashMap <Integer,String>  extractFeatureMapFromFile (String content) {//Read the file lineByLine
 		
@@ -159,7 +160,7 @@ public static HashMap <Integer,String>  extractFeatureMapFromFile (String conten
 			for(int i=0;i<lines.length;i++){
 				if (lines[i].contains(Main.annotationPatternBeginning )){		
 					featureToCodeMapping.put(counter,featureName);
-					featureName=lines[i].split("pv:hasFeature")[1];
+					featureName=lines[i].split(Main.annotationPatternBeginning)[1];
 					
 					featureName = featureName.split("'")[1];
 					featureList.add(featureName);

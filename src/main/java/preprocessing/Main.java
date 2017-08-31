@@ -37,7 +37,7 @@ public class Main implements Study {
 		public static String coreAssetsBranchPatternName="master";
 		public static String coreAssetsReleaseName="baseline";
 		public static String productsReleaseName="product";
-		public final static String annotationPatternBeginning="pv:hasFeature"; //PV:IFCOND(pv:hasFeature
+		public final static String annotationPatternBeginning="pv:hasFeature";// "PV:IFCOND(pv:hasFeature";//
 		public final static String annotationPatternEnd="PV:ENDCOND";
 	
 
@@ -87,7 +87,7 @@ public class Main implements Study {
 		}
 		
 		//3. print info
-	 	//printCustomizations(); printPP(); printFilesInRelease(); printlnFeatures(); 
+	 	printCustomizations(); printPP();// printFilesInRelease();// printlnFeatures(); 
 	 	System.out.println("Core Asset counter:" +utils.Utils.getCoreAssetFileCounter());
 	 	System.out.println("Product Asset counter :" +utils.Utils.getProductAssetFileCounter());
 	 	for(int i=0; i< 2; i++){
@@ -192,7 +192,7 @@ public class Main implements Study {
 		    commitCustomizationsDetails.addAll( mineCust.mine(GitRepository.singleProject(productRepo), GitRepository.singleProject(productRepo).getScm().getCommit(cs.getId()), new CSVFile (pathToResources+"/spl-data/customizations-"+name+"+.csv")));
 		}
 		//HERE WE HAVE ALL CUSTOMIZATION DETAILS for the release into list "commitCustomizationsDetails"
-		productRelease.getCustomizations().addAll(commitCustomizationsDetails);
+	//	productRelease.getCustomizations().addAll(commitCustomizationsDetails);
 	}
 	
 	private void printCustomizations() {
@@ -217,12 +217,12 @@ public class Main implements Study {
 						Customization cust = ite.next();
 						System.out.println(
 								//"ID:"+cust.getCustomizationId()+"\n"+
-								"In release" +cust.getInRelease().getIdRelease()+"\n"+
-								"Product file"+cust.getProductFile().getFileName()+"\n"+
-								"Core Asset file:"+cust.getCoreAssetFile().getFileName()+"\n"+
-								"Feature modified:"+cust.getFeatureModifiedName() +"\n"+
-								"Operation:"+cust.getOperation()+"\n"+
-								"LineChanged:"+cust.getLineOfCodeModified()+"\n-------------------");		
+								"In release: " +cust.getInRelease().getIdRelease()+"\n"+
+								"Product file: "+cust.getProductFile().getFileName()+"\n"+
+								"Core Asset file: "+cust.getCoreAssetFile().getFileName()+"\n"+
+								"Feature modified: "+cust.getFeatureModifiedName() +"\n"+
+								"Operation: "+cust.getOperation()+"\n"+
+								"LineChanged: "+cust.getLineOfCodeModified()+"\n-------------------");		
 					}
 					
 				}

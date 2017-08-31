@@ -80,7 +80,7 @@ public class MineBaselines implements CommitVisitor {
 		while(it.hasNext()){
 			ca = it.next();
 			
-			HashMap<Integer, String> map = utils.FeatureAnalysisUtils.extractFeatureMapFromCoreAsset(ca); //line-feature map
+			HashMap<Integer, String> map = utils.FeatureAnalysisUtils.extractFeatureMapFromFile(ca.getContent()); //line-feature map
 			if (map == null) return;
 			
 			values = map.values();//all the features in the file - repeteated!!
