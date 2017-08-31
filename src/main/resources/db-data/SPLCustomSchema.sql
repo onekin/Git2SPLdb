@@ -265,13 +265,23 @@ group by idBaseline, ca.idCoreasset, featuremodified;
 
 create view customizationsbyoperation AS
 
-select UUID() as 'id', pa.name as 'pa_name', p.idproduct as 'idproduct', p.name as 'product_name', pr.idrelease as 'idrelease', c.operation as 'operation', count(c.operation) as 'locs' , ca.size as 'ca_size', pa.size as 'pa_size',  pa.size-ca.size as 'delta'
+select UUID() as 'id', pa.name as 'pa_name', p.idproduct as 'idproduct', p.name as 'product_name', pa.path, pr.idrelease as 'idrelease', c.operation as 'operation', count(c.operation) as 'locs' , ca.size as 'ca_size', pa.size as 'pa_size',  pa.size-ca.size as 'delta'
 from productasset pa
 inner join customization c on c.productasset_idproductasset = pa.idproductasset
 inner join productrelease pr on pr.idrelease = pa.productrelease_idrelease
 inner join product p on p.idproduct = pr.product_idproduct
 inner join coreasset ca on ca.idcoreasset = c.coreasset_idcoreasset
 group by pa.idproductasset, pr.idrelease, c.operation , ca.idcoreasset;
+
+
+-- -----------------------------------------------------
+-- VIEWS For retrieving not reused product assets
+-- -----------------------------------------------------
+
+create view notcustomizedproductassets AS 
+select UUID() as 'id',pa.idproductasset, pa.name, pa.path,pa.content,pa.size, pr.idrelease
+from productasset pa inner join productrelease pr on pa.productrelease_idrelease=pr.idrelease
+where idproductasset NOT IN (select productasset_idproductasset from customization);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
