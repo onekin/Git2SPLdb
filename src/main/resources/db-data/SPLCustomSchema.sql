@@ -21,7 +21,7 @@ USE `SPLCustombd` ;
 -- Table `SPLCustombd`.`SPL`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `SPLCustombd`.`SPL` (
-  `idSPL` VARCHAR(256) NOT NULL,
+  `idSPL` VARCHAR(200) NOT NULL,
   PRIMARY KEY (`idSPL`))
 ENGINE = InnoDB;
 
@@ -30,9 +30,9 @@ ENGINE = InnoDB;
 -- Table `SPLCustombd`.`CoreAssetBaseline`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `SPLCustombd`.`CoreAssetBaseline` (
-  `idBaseline` VARCHAR(256) NOT NULL,
+  `idBaseline` VARCHAR(200) NOT NULL,
   `releaseDate` DATETIME NOT NULL,
-  `SPL_idSPL` VARCHAR(256) NOT NULL,
+  `SPL_idSPL` VARCHAR(200) NOT NULL,
   PRIMARY KEY (`idBaseline`),
   INDEX `fk_CoreAssetBaseline_SPL1_idx` (`SPL_idSPL` ASC),
   CONSTRAINT `fk_CoreAssetBaseline_SPL1`
@@ -47,8 +47,8 @@ ENGINE = InnoDB;
 -- Table `SPLCustombd`.`Feature`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `SPLCustombd`.`Feature` (
-  `idFeature` VARCHAR(256) NOT NULL,
-  `name` VARCHAR(256) NULL,
+  `idFeature` VARCHAR(200) NOT NULL,
+  `name` VARCHAR(200) NULL,
   PRIMARY KEY (`idFeature`))
 ENGINE = InnoDB;
 
@@ -58,11 +58,11 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `SPLCustombd`.`CoreAsset` (
   `idCoreAsset` INT NOT NULL,
-  `name` VARCHAR(256) NOT NULL,
-  `path` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(200) NOT NULL,
+  `path` VARCHAR(200) NOT NULL,
   `content` LONGTEXT NOT NULL,
   `size` INT NOT NULL,
-  `CoreAssetBaseline_idBaseline` VARCHAR(256) NOT NULL,
+  `CoreAssetBaseline_idBaseline` VARCHAR(200) NOT NULL,
   PRIMARY KEY (`idCoreAsset`),
   INDEX `fk_CoreAsset_CoreAssetBaseline1_idx` (`CoreAssetBaseline_idBaseline` ASC),
   CONSTRAINT `fk_CoreAsset_CoreAssetBaseline1`
@@ -77,9 +77,9 @@ ENGINE = InnoDB;
 -- Table `SPLCustombd`.`ProductPortfolio`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `SPLCustombd`.`ProductPortfolio` (
-  `idPortfolio` VARCHAR(256) NOT NULL,
-  `SPL_idSPL` VARCHAR(256) NOT NULL,
-  `CoreAssetBaseline_idBaseline` VARCHAR(256) NOT NULL,
+  `idPortfolio` VARCHAR(200) NOT NULL,
+  `SPL_idSPL` VARCHAR(200) NOT NULL,
+  `CoreAssetBaseline_idBaseline` VARCHAR(200) NOT NULL,
   PRIMARY KEY (`idPortfolio`),
   INDEX `fk_ProductPortfolio_SPL1_idx` (`SPL_idSPL` ASC),
   INDEX `fk_ProductPortfolio_CoreAssetBaseline1_idx` (`CoreAssetBaseline_idBaseline` ASC),
@@ -101,8 +101,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `SPLCustombd`.`Product` (
   `idProduct` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(256) NULL,
-  `ProductPortfolio_idPortfolio` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(200) NULL,
+  `ProductPortfolio_idPortfolio` VARCHAR(200) NOT NULL,
   INDEX `fk_Product_ProductPortfolio1_idx` (`ProductPortfolio_idPortfolio` ASC),
   PRIMARY KEY (`idProduct`),
   CONSTRAINT `fk_Product_ProductPortfolio1`
@@ -117,7 +117,7 @@ ENGINE = InnoDB;
 -- Table `SPLCustombd`.`ProductRelease`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `SPLCustombd`.`ProductRelease` (
-  `idRelease` VARCHAR(256) NOT NULL,
+  `idRelease` VARCHAR(200) NOT NULL,
   `releaseDate` DATETIME NOT NULL,
   `Product_idProduct` INT NOT NULL,
   PRIMARY KEY (`idRelease`),
@@ -135,11 +135,11 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `SPLCustombd`.`ProductAsset` (
   `idProductAsset` INT NOT NULL,
-  `name` VARCHAR(256) NOT NULL,
-  `path` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(200) NOT NULL,
+  `path` VARCHAR(200) NOT NULL,
   `content` LONGTEXT NOT NULL,
   `size` INT NOT NULL,
-  `ProductRelease_idRelease` VARCHAR(256) NOT NULL,
+  `ProductRelease_idRelease` VARCHAR(200) NOT NULL,
   PRIMARY KEY (`idProductAsset`),
   INDEX `fk_ProductAsset_ProductRelease1_idx` (`ProductRelease_idRelease` ASC),
   CONSTRAINT `fk_ProductAsset_ProductRelease1`
@@ -155,13 +155,13 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `SPLCustombd`.`Customization` (
   `idCustomization` INT NOT NULL AUTO_INCREMENT,
-  `operation` VARCHAR(256) NOT NULL,
+  `operation` VARCHAR(200) NOT NULL,
   `CoreAsset_idCoreAsset` INT NULL,
   `ProductAsset_idProductAsset` INT NOT NULL,
-  `Feature_idFeature` VARCHAR(256) NULL,
+  `Feature_idFeature` VARCHAR(200) NULL,
   `isNewFeature` INT,
   `isNewAsset` INT , 
-  `featureNameModified` VARCHAR(256),
+  `featureNameModified` VARCHAR(200),
 
   PRIMARY KEY (`idCustomization`),
   INDEX `fk_Customization_CoreAsset1_idx` (`CoreAsset_idCoreAsset` ASC),
@@ -189,8 +189,8 @@ ENGINE = InnoDB;
 -- Table `SPLCustombd`.`CoreAssetBaseline_has_Feature`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `SPLCustombd`.`CoreAssetBaseline_has_Feature` (
-  `CoreAssetBaseline_idBaseline` VARCHAR(256) NOT NULL,
-  `Feature_idFeature` VARCHAR(256) NOT NULL,
+  `CoreAssetBaseline_idBaseline` VARCHAR(200) NOT NULL,
+  `Feature_idFeature` VARCHAR(200) NOT NULL,
   PRIMARY KEY (`CoreAssetBaseline_idBaseline`, `Feature_idFeature`),
   INDEX `fk_CoreAssetBaseline_has_Feature_Feature1_idx` (`Feature_idFeature` ASC),
   INDEX `fk_CoreAssetBaseline_has_Feature_CoreAssetBaseline1_idx` (`CoreAssetBaseline_idBaseline` ASC),
