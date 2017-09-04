@@ -1,4 +1,4 @@
-# SPLCustomWithRepoDriller
+#Git2SPLdb
 A tool that mines Git repositories where SPLs are being developed. 
 It computes the customization effort for SPL products (i.e. what featuares have been customized and how much).
 Finally, it outputs a set of CSV and jSons so that the data can be visualized as D3.js diagrams.
