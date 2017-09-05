@@ -1,0 +1,13 @@
+Product,Feature,File,Churn
+[ProductBerlin],English,sensors.js,REMOVED
+[ProductBerlin],English,sensors.js,ADDED
+[ProductBerlin],AirPressure,settings.js,REMOVED
+[ProductBerlin],WindSpeed,settings.js,REMOVED
+[ProductBerlin],AirPressure,settings.js,REMOVED
+[ProductBerlin],WindSpeed,settings.js,REMOVED
+[ProductBerlin],German,settings.js,REMOVED
+[ProductBerlin],AirPressure,settings.js,ADDED
+[ProductBerlin],WindSpeed,settings.js,ADDED
+[ProductBerlin],AirPressure,settings.js,ADDED
+[ProductBerlin],WindSpeed,settings.js,ADDED
+[ProductBerlin],German,settings.js,ADDED

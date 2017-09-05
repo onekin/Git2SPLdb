@@ -72,22 +72,34 @@ public class Main implements Study {
 		//1. mine from Git repository to SPL model
 		this.spl=new SPL(this.productRepo);
 		this.features= new ArrayList<Feature>(); 
+		
+		//1.Mine core asset baselines
 		mineCoreAssetBaselines();
+		
+		//2. Mine product portfolios derived from coreasset baselines
 		mineProductPorfolios();
-		
-	//	System.out.println("Main.spl.getProductPortfoliosSize() ="+Main.spl.getProductPortfoliosSize());
-	//	System.out.println(Main.spl.getProductPortfolio(0).getProductFromPortfolio(0));
-		
+	
+		//3. Mine product customizations for each product found
 		for(int i=0; i< Main.spl.getProductPortfoliosSize(); i++){
-			for (int j=0; j < spl.getProductPortfolio(i).getNumberOfProductsInPortfolio();j++){//for each product in porfolio, execute mineCustomizations
-				for (int z=0; z < spl.getProductPortfolio(i).getProductFromPortfolio(j).getReleases().size(); z++)
-					mineCustomizationEffort(spl.getProductPortfolio(i).getProductFromPortfolio(j).getReleases().get(z),"Release-"+spl.getProductPortfolio(i).getProductFromPortfolio(j).getReleases().get(z).getIdRelease()+z);
-					
-			}
+			if (spl.getProductPortfolio(i).getProducts() != null)
+				for (int j=0; j < spl.getProductPortfolio(i).getNumberOfProductsInPortfolio();j++){//for each product in porfolio, execute mineCustomizations
+					for (int z=0; z < spl.getProductPortfolio(i).getProductFromPortfolio(j).getReleases().size(); z++)
+						mineCustomizationEffort(spl.getProductPortfolio(i).getProductFromPortfolio(j).getReleases().get(z),"Release-"+spl.getProductPortfolio(i).getProductFromPortfolio(j).getReleases().get(z).getIdRelease()+z);
+						
+				}
 		}
 		
-		//3. print info
-	 	printCustomizations(); printPP(); printFilesInRelease(); printlnFeatures(); 
+		//4.Print info
+		//printing();
+		
+	 	//4.Export to mysql database 
+	 	ExportTarget export = new ExportToMySQLDatabase(Main.pathToResources+"/db-data/");
+		export.export();
+	}
+
+
+	private void printing() {
+		printCustomizations(); printPP(); printFilesInRelease(); printlnFeatures(); 
 	 	System.out.println("Core Asset counter:" +utils.Utils.getCoreAssetFileCounter());
 	 	System.out.println("Product Asset counter :" +utils.Utils.getProductAssetFileCounter());
 	 	for(int i=0; i< 2; i++){
@@ -96,11 +108,8 @@ public class Main implements Study {
 	 			System.out.println("ASSET ID:"+assets.get(j).getId());
 	 		}
 	 	}
-	 	
-	 	ExportTarget export = new ExportToMySQLDatabase(Main.pathToResources+"/db-data/");
-		export.export();
+		
 	}
-
 
 	private void printlnFeatures() {
 		System.out.println("-------Printing feature list-------------");

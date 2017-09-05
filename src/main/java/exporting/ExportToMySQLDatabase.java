@@ -124,11 +124,13 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
 			products = pp.getProducts();
-			for (int i=0; i < products.size(); i++){
-				insert=insert.concat("("+products.get(i).getId()+",'"+products.get(i).getBranchName()+"','"+products.get(i).getInPortfolio().getPortfolioID()+"')");
-				if (i +1 < products.size()) insert=insert.concat(",\n");
+			if(products!=null) {
+				for (int i=0; i < products.size(); i++){
+					insert=insert.concat("("+products.get(i).getId()+",'"+products.get(i).getBranchName()+"','"+products.get(i).getInPortfolio().getPortfolioID()+"')");
+					if (i +1 < products.size()) insert=insert.concat(",\n");
+				}
+				if (x +1 < portfolios.size()) insert=insert.concat(",\n");
 			}
-			if (x +1 < portfolios.size()) insert=insert.concat(",\n");
 		}
 		insert=insert.concat(";\n");
 		return insert;	
@@ -145,15 +147,17 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
 			products = pp.getProducts();
-			for (int i=0; i < products.size(); i++){
-				 releases = products.get(i).getReleases();
-				for (int j=0; j< releases.size(); j++){
-					insert=insert.concat("('"+releases.get(j).getIdRelease()+"','"+ convertDateToMysqlForm(releases.get(j).getReleaseDate())+"',"+releases.get(j).getFromProduct().getId()+")");
-					if (j +1 < releases.size()) insert=insert.concat(",\n");
+			if(products!=null) {
+				for (int i=0; i < products.size(); i++){
+					 releases = products.get(i).getReleases();
+					for (int j=0; j< releases.size(); j++){
+						insert=insert.concat("('"+releases.get(j).getIdRelease()+"','"+ convertDateToMysqlForm(releases.get(j).getReleaseDate())+"',"+releases.get(j).getFromProduct().getId()+")");
+						if (j +1 < releases.size()) insert=insert.concat(",\n");
+					}
+					if (i +1 < products.size()) insert=insert.concat(",\n");
 				}
-				if (i +1 < products.size()) insert=insert.concat(",\n");
+				if (x +1 < portfolios.size()) insert=insert.concat(",\n");
 			}
-			if (x +1 < portfolios.size()) insert=insert.concat(",\n");
 		}
 		insert=insert.concat(";\n");
 		return insert;	
@@ -175,20 +179,21 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
 			products = pp.getProducts();
-			
-			for (int i=0; i < products.size(); i++){
-				 releases = products.get(i).getReleases();
-				for (int j=0; j< releases.size(); j++){
-					assets = releases.get(j).getProductAssets();
-					for (int z=0; z < assets.size(); z++){
-						insert=insert.concat("("+assets.get(z).getId() +",'"+assets.get(z).getFileName()+"','"+assets.get(z).getPath()+"','"+encodeToBase64 (assets.get(z).getContent())+"',"+assets.get(z).getTotalLines()+",'"+releases.get(j).getIdRelease()+"')");
-						if (z+1 < assets.size()) insert=insert.concat(",\n");
+			if(products!=null) {
+				for (int i=0; i < products.size(); i++){
+					 releases = products.get(i).getReleases();
+					for (int j=0; j< releases.size(); j++){
+						assets = releases.get(j).getProductAssets();
+						for (int z=0; z < assets.size(); z++){
+							insert=insert.concat("("+assets.get(z).getId() +",'"+assets.get(z).getFileName()+"','"+assets.get(z).getPath()+"','"+encodeToBase64 (assets.get(z).getContent())+"',"+assets.get(z).getTotalLines()+",'"+releases.get(j).getIdRelease()+"')");
+							if (z+1 < assets.size()) insert=insert.concat(",\n");
+						}
+						if (j +1 < releases.size()) insert=insert.concat(",\n");
 					}
-					if (j +1 < releases.size()) insert=insert.concat(",\n");
+					if (i+1  < products.size() ) insert=insert.concat(",\n");
 				}
-				if (i+1  < products.size() ) insert=insert.concat(",\n");
+				if (x+1 <  portfolios.size())  insert=insert.concat(",\n");
 			}
-			if (x+1 <  portfolios.size())  insert=insert.concat(",\n");
 		}
 
 		insert=insert.concat(";\n");
@@ -211,31 +216,32 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
 			products = pp.getProducts();
-			
-			for (int i=0; i < products.size(); i++){
-				 releases = products.get(i).getReleases();
-				for (int j=0; j< releases.size(); j++){
-					customs = releases.get(j).getCustomizations();
-					for(int z=0; z < customs.size(); z++){
-						cust = customs.get(z);
-						if(cust.getIsNewFeature()==true && cust.getIsNewAsset()==true)
-							 insert=insert.concat("('"+cust.getOperation()    +"',"+"null"+","+cust.getProductFile().getId()+","+ "null" +","+ cust.getIsNewFeature()+","+cust.getIsNewAsset()+ ",'" +cust.getFeatureModifiedName()+"'" +")");
-						else 
-							if (cust.getIsNewFeature()==false && cust.getIsNewAsset()==false)
-							  insert=insert.concat("('"+cust.getOperation()    +"',"+cust.getCoreAssetFile().getId()+","+cust.getProductFile().getId()+",'"+cust.getFeatureModifiedName() +"',"+ cust.getIsNewFeature()+","+cust.getIsNewAsset()+ ",'" +cust.getFeatureModifiedName()+"'" +")");
+			if (products!=null) {
+				for (int i=0; i < products.size(); i++){
+					 releases = products.get(i).getReleases();
+					for (int j=0; j< releases.size(); j++){
+						customs = releases.get(j).getCustomizations();
+						for(int z=0; z < customs.size(); z++){
+							cust = customs.get(z);
+							if(cust.getIsNewFeature()==true && cust.getIsNewAsset()==true)
+								 insert=insert.concat("('"+cust.getOperation()    +"',"+"null"+","+cust.getProductFile().getId()+","+ "null" +","+ cust.getIsNewFeature()+","+cust.getIsNewAsset()+ ",'" +cust.getFeatureModifiedName()+"'" +")");
 							else 
-								if (cust.getIsNewFeature()==true && cust.getIsNewAsset()==false)
-									 insert=insert.concat("('"+cust.getOperation()    +"',"+cust.getCoreAssetFile().getId()+","+cust.getProductFile().getId()+","+"null" +","+ cust.getIsNewFeature()+","+cust.getIsNewAsset()+ ",'" +cust.getFeatureModifiedName()+"'" +")");
-								else if (cust.getIsNewFeature()==false && cust.getIsNewAsset()==true)
-									 insert=insert.concat("('"+cust.getOperation()    +"',"+"null"+","+cust.getProductFile().getId()+",'"+cust.getFeatureModifiedName() +"',"+ cust.getIsNewFeature()+","+cust.getIsNewAsset()+ ",'" +cust.getFeatureModifiedName()+"'" +")");
-									
-						if (z+1 < customs.size()) insert=insert.concat(",\n");
+								if (cust.getIsNewFeature()==false && cust.getIsNewAsset()==false)
+								  insert=insert.concat("('"+cust.getOperation()    +"',"+cust.getCoreAssetFile().getId()+","+cust.getProductFile().getId()+",'"+cust.getFeatureModifiedName() +"',"+ cust.getIsNewFeature()+","+cust.getIsNewAsset()+ ",'" +cust.getFeatureModifiedName()+"'" +")");
+								else 
+									if (cust.getIsNewFeature()==true && cust.getIsNewAsset()==false)
+										 insert=insert.concat("('"+cust.getOperation()    +"',"+cust.getCoreAssetFile().getId()+","+cust.getProductFile().getId()+","+"null" +","+ cust.getIsNewFeature()+","+cust.getIsNewAsset()+ ",'" +cust.getFeatureModifiedName()+"'" +")");
+									else if (cust.getIsNewFeature()==false && cust.getIsNewAsset()==true)
+										 insert=insert.concat("('"+cust.getOperation()    +"',"+"null"+","+cust.getProductFile().getId()+",'"+cust.getFeatureModifiedName() +"',"+ cust.getIsNewFeature()+","+cust.getIsNewAsset()+ ",'" +cust.getFeatureModifiedName()+"'" +")");
+										
+							if (z+1 < customs.size()) insert=insert.concat(",\n");
+						}
+						if (j+1 < releases.size()) insert=insert.concat(",\n");
 					}
-					if (j+1 < releases.size()) insert=insert.concat(",\n");
+					if (i+1 < products.size()) insert=insert.concat(",\n");
 				}
-				if (i+1 < products.size()) insert=insert.concat(",\n");
+				if (x+1 < portfolios.size()) insert=insert.concat(",\n");
 			}
-			if (x+1 < portfolios.size()) insert=insert.concat(",\n");
 		}
 		
 		insert=insert.concat(";\n");
