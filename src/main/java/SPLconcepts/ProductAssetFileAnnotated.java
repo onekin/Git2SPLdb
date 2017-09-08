@@ -14,8 +14,9 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 	int totalLines;
 	ProductRelease fromPRelease; 
 
-	HashMap <Integer,String> featureToCodeMapping = new HashMap<Integer, String>();
+	HashMap <Integer,ArrayList<String>> featureToCodeMapping = new HashMap <Integer,ArrayList<String>>();
 	ArrayList<Feature> featureList= new ArrayList<Feature>();
+	ArrayList<VariationPoint> variationPoints = new ArrayList<VariationPoint>();
 	
 	public ProductAssetFileAnnotated(int id, String fileName, String path, String content, int totalLines, ProductRelease pr ) {
 		this.id= id;
@@ -57,13 +58,13 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 	}
 
 
-	public HashMap<Integer, String> getFeatureToCodeMapping() {
+	public HashMap <Integer,ArrayList<String>> getFeatureToCodeMapping() {
 		return featureToCodeMapping;
 	}
 
 
 	public void setFeatureToCodeMapping(
-			HashMap<Integer, String> featureToCodeMapping) {
+			HashMap <Integer,ArrayList<String>> featureToCodeMapping) {
 		this.featureToCodeMapping = featureToCodeMapping;
 	}
 
@@ -106,5 +107,11 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 	public String getFileName() {
 		
 		return fileName;
+	}
+
+
+	public ArrayList<VariationPoint> getVariationPointList() {
+
+		return variationPoints;
 	}
 }

@@ -27,6 +27,7 @@ public class Utils {
 	static int coreAssetFileCounter = 0;
 	static int productAssetFileCounter = 0;
 	static int productCounter = 0;
+	static int vpCounter = 0;
 
 
 	
@@ -144,21 +145,13 @@ public class Utils {
 			return coreAssetFileCounter;
 		}
 
-		public static int getCustomizationCounter() {
-			return customizationCounter;
+	
+		
+		public static int getVPId() {
+			vpCounter++;
+			return vpCounter;
 		}
-
-		public static int getCoreAssetFileCounter() {
-			return coreAssetFileCounter;
-		}
-
-		public static int getProductAssetFileCounter() {
-			return productAssetFileCounter;
-		}
-
-		public static int getProductCounter() {
-			return productCounter;
-		}
+		
 		
 	
 }

@@ -13,8 +13,10 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 	CoreAssetBaseline fromBaseline;
 
 
-	HashMap <Integer,String> featureToCodeMapping = new HashMap<Integer, String>();
+	HashMap <Integer,ArrayList<String>> featureToCodeMapping = new HashMap<Integer, ArrayList<String>>();
 	ArrayList<Feature> featureList= new ArrayList<Feature>();
+	ArrayList<VariationPoint> variationPoints;
+	
 	
 	public CoreAssetFileAnnotated(int id, String fileName, String path, String content, int totalLines, CoreAssetBaseline CABaseline) {
 
@@ -74,12 +76,9 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 		this.content = content;
 	}
 
-	public HashMap<Integer, String> getFeatureToCodeMapping() {
-		return featureToCodeMapping;
-	}
+	
 
-	public void setFeatureToCodeMapping(
-			HashMap<Integer, String> featureToCodeMapping) {
+	public void setFeatureToCodeMapping(HashMap<Integer, ArrayList<String>> featureToCodeMapping) {
 		this.featureToCodeMapping = featureToCodeMapping;
 	}
 
@@ -87,5 +86,12 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 		return featureList;
 	}
 
+	public ArrayList<VariationPoint> getVariationPointList() {
 
+		return variationPoints;
+	}
+
+	public HashMap <Integer,ArrayList<String>> getFeatureToCodeMapping() {
+		return featureToCodeMapping;
+	}
 }

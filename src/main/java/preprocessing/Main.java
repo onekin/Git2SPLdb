@@ -37,7 +37,7 @@ public class Main implements Study {
 		public static String coreAssetsBranchPatternName="master";
 		public static String coreAssetsReleaseName="baseline";
 		public static String productsReleaseName="product";
-		public final static String annotationPatternBeginning= "pv:hasFeature";//pv:hasFeature
+		public final static String annotationPatternBeginning= "hasFeature";//pv:hasFeature
 		public final static String annotationPatternEnd="PV:ENDCOND";//"PV:ENDCOND";
 	
 
@@ -87,13 +87,15 @@ public class Main implements Study {
 		}
 		
 		//3. print info
-	 	printCustomizations(); printPP(); printFilesInRelease(); printlnFeatures(); 
-	 	System.out.println("Core Asset counter:" +utils.Utils.getCoreAssetFileCounter());
-	 	System.out.println("Product Asset counter :" +utils.Utils.getProductAssetFileCounter());
-	 	for(int i=0; i< 2; i++){
+	 //	printCustomizations(); printPP(); printFilesInRelease(); printlnFeatures(); 
+		printCoreAssetsAndVariationPoints();
+	 	//System.out.println("Core Asset counter:" +utils.Utils.getCoreAssetFileCounter());
+	 	//System.out.println("Product Asset counter :" +utils.Utils.getProductAssetFileCounter());
+	 	for(int i=0; i< spl.getCoreAssetBaselineSize(); i++){
 	 		ArrayList<SourceCodeFile> assets = spl.getCoreAssetBaseline(i).getCoreAssetFiles();
 	 		for (int j=0; j< assets.size(); j++){
 	 			System.out.println("ASSET ID:"+assets.get(j).getId());
+	 			System.out.println("Feature-to-code:"+assets.get(j).getFeatureToCodeMapping());
 	 		}
 	 	}
 	 	
@@ -101,6 +103,11 @@ public class Main implements Study {
 		export.export();
 	}
 
+
+	private void printCoreAssetsAndVariationPoints() {
+		// TODO Auto-generated method stub
+		
+	}
 
 	private void printlnFeatures() {
 		System.out.println("-------Printing feature list-------------");
@@ -140,7 +147,7 @@ public class Main implements Study {
 		.process(new MineBaselines(), new CSVFile (pathToResources+"/spl-data/baselines.csv"))
 		.mine();
 		System.out.println("Finished processing CoreAsset Baselines");
-	//	System.out.println(spl.getCoreAssetBaseline(0).getCoreAsset(0).getContent());
+		System.out.println(spl.getCoreAssetBaseline(0).getCoreAsset(5).getFeatureToCodeMapping());
 		
 	}
 
@@ -191,8 +198,6 @@ public class Main implements Study {
 		    MineProductCustomizations mineCust = new MineProductCustomizations(productRelease);
 		    commitCustomizationsDetails.addAll( mineCust.mine(GitRepository.singleProject(productRepo), GitRepository.singleProject(productRepo).getScm().getCommit(cs.getId()), new CSVFile (pathToResources+"/spl-data/customizations-"+name+"+.csv")));
 		}
-		//HERE WE HAVE ALL CUSTOMIZATION DETAILS for the release into list "commitCustomizationsDetails"
-	//	productRelease.getCustomizations().addAll(commitCustomizationsDetails);
 	}
 	
 	private void printCustomizations() {
