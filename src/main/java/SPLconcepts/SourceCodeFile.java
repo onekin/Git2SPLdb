@@ -25,5 +25,6 @@ public interface SourceCodeFile {
 	public ArrayList<VariationPoint> getVariationPointList();
 	public 	HashMap <Integer,ArrayList<String>> getFeatureToCodeMapping();
 	public  void setFeatureToCodeMapping (HashMap <Integer, ArrayList<String>>  featureToCodeMapping);
+	public  void setVariationPoints (ArrayList<VariationPoint> variationPoints);
 	
 }

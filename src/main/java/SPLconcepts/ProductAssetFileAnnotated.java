@@ -114,4 +114,9 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 
 		return variationPoints;
 	}
+
+
+	public void setVariationPoints(ArrayList<VariationPoint> variationPoints) {
+		this.variationPoints = variationPoints;
+	}
 }

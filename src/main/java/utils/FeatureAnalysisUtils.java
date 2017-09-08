@@ -101,7 +101,7 @@ public class FeatureAnalysisUtils {
 
 
 
-public static HashMap <Integer,ArrayList <String>>  extractFeatureMapFromFile (SourceCodeFile file) {//Read the file lineByLine
+public static HashMap <Integer,ArrayList <String>>  extractFeatureMapFromFile (SourceCodeFile file, CoreAssetBaseline baseline) {//Read the file lineByLine
 		
 		HashMap <Integer,ArrayList <String>> featureToCodeMapping = new HashMap<Integer, ArrayList <String>>();
 		
@@ -119,12 +119,16 @@ public static HashMap <Integer,ArrayList <String>>  extractFeatureMapFromFile (S
 			ArrayList<String> listFeatures = new ArrayList<String>();
 			HashMap <Integer,String> currentExpressionsInNestedLevels = new HashMap<Integer,String>();//pair of nesting level, and expression
 			
+			
 			for(int i=0;i<lines.length;i++){
-				if (lines[i].contains(Main.annotationPatternBeginning )){
-					
-					VariationPoint vp = new VariationPoint(Utils.getVPId(), lines[i],i);
+				VariationPoint vp = null;
+				if (lines[i].contains(Main.annotationPatternBeginning)){
+					 
+					vp = new VariationPoint(Utils.getVPId(), lines[i],i);//newVariation point
 					variationPoints.add(vp);
-					
+					vp.setExpression(lines[i]);
+					vp.setFeatures(findFeaturesByNames(listFeatures,baseline));
+					 System.out.println("Variation Point Created "+vp.toString());
 					nestingLevel++;//level 0 is when we are inside a VP
 					currentExpressionsInNestedLevels.put(nestingLevel,lines[i]);
 						if (nestingLevel> 0){//we need to add all the features for all the nesting levels.
@@ -133,13 +137,10 @@ public static HashMap <Integer,ArrayList <String>>  extractFeatureMapFromFile (S
 								listFeatures.addAll(extractAllFeaturesFromTheExpression(currentExpressionsInNestedLevels.get(k)));
 						}else
 							listFeatures = extractAllFeaturesFromTheExpression(currentExpressionsInNestedLevels.get(nestingLevel));
-						featureToCodeMapping.put(counter,listFeatures);
 						
 				}else{
 					if (lines[i].contains(Main.annotationPatternEnd)){
 						nestingLevel--;
-						featureToCodeMapping.put(counter,listFeatures);
-					
 					}
 					else{//no pattern has been found; we might be inside VPs (nested or not)
 						if(nestingLevel==-1){
@@ -154,14 +155,18 @@ public static HashMap <Integer,ArrayList <String>>  extractFeatureMapFromFile (S
 							for(int k=0; k<=nestingLevel;k++)
 								listFeatures.addAll(extractAllFeaturesFromTheExpression(currentExpressionsInNestedLevels.get(k)));
 						}
-						featureToCodeMapping.put(counter,listFeatures);//no features to which the line belongs to
-						
+											
 					}
 				}
+				featureToCodeMapping.put(counter,listFeatures);
+				
 				System.out.println(file.getFileName()+"; Line: "+counter+" belongs to: "+listFeatures.toString());
+				
 				counter ++;
 			}
 			file.setFeatureToCodeMapping(featureToCodeMapping);
+			file.setVariationPoints(variationPoints);
+			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -169,6 +174,26 @@ public static HashMap <Integer,ArrayList <String>>  extractFeatureMapFromFile (S
 	 
 		return featureToCodeMapping;
 	}
+
+private static ArrayList<Feature> findFeaturesByNames(ArrayList<String> listFeatures, CoreAssetBaseline baseline) {
+	Iterator<String> itNames = listFeatures.iterator();
+	
+	String name; Feature f;
+	ArrayList<Feature> features = new ArrayList<Feature>();
+	
+	while(itNames.hasNext()){
+		name =itNames.next();
+		Iterator<Feature> itFeatures = baseline.getFeatures().iterator();
+		while(itFeatures.hasNext()){
+			f = itFeatures.next();
+			if (f.getName().equals(name))
+				features.add(f);
+		}
+	}
+	return features;
+}
+
+
 
 //ESTE METODO ESTA DUPLICADO PARA EL COMPUTO DE LAS CUSTOMIZACIONES!!!!
 public static HashMap <Integer,ArrayList <String>>  extractFeatureMapFromFile (String content) {//Read the file lineByLine

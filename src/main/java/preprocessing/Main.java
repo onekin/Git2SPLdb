@@ -89,6 +89,7 @@ public class Main implements Study {
 		//3. print info
 	 //	printCustomizations(); printPP(); printFilesInRelease(); printlnFeatures(); 
 		printCoreAssetsAndVariationPoints();
+		
 	 	//System.out.println("Core Asset counter:" +utils.Utils.getCoreAssetFileCounter());
 	 	//System.out.println("Product Asset counter :" +utils.Utils.getProductAssetFileCounter());
 	 	for(int i=0; i< spl.getCoreAssetBaselineSize(); i++){
@@ -101,6 +102,7 @@ public class Main implements Study {
 	 	
 	 	ExportTarget export = new ExportToMySQLDatabase(Main.pathToResources+"/db-data/");
 		export.export();
+		
 	}
 
 
@@ -130,9 +132,9 @@ public class Main implements Study {
 			if(ca.getFileName().equals("Weather Station User Manual.xml")){
 				System.out.println("RELEASE:" +p.getReleases().get(1).getIdRelease());
 				System.out.println("File number:" +i);
-			  System.out.println("File path:" +ca.getPath());
-			  System.out.println("File name:" +ca.getFileName());
-			  System.out.println("Content: \n "+ ca.getContent());
+				System.out.println("File path:" +ca.getPath());
+				System.out.println("File name:" +ca.getFileName());
+				System.out.println("Content: \n "+ ca.getContent());
 			}
 			i++;
 		}

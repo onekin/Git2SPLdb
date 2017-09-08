@@ -76,8 +76,6 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 		this.content = content;
 	}
 
-	
-
 	public void setFeatureToCodeMapping(HashMap<Integer, ArrayList<String>> featureToCodeMapping) {
 		this.featureToCodeMapping = featureToCodeMapping;
 	}
@@ -93,5 +91,8 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 
 	public HashMap <Integer,ArrayList<String>> getFeatureToCodeMapping() {
 		return featureToCodeMapping;
+	}
+	public void setVariationPoints(ArrayList<VariationPoint> variationPoints) {
+		this.variationPoints = variationPoints;
 	}
 }

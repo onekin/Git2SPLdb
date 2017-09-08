@@ -52,7 +52,7 @@ public class MineBaselines implements CommitVisitor {
 						if(file.getFile().getAbsolutePath().contains(Main.pathToWhereCustomizationsAreComputed)){
 							CAfile= new CoreAssetFileAnnotated(utils.Utils.getNewCoreAssetId(), file.getFile().getName(),  file.getFile().getPath(), file.getSourceCode(), file.getSourceCode().split("\n").length, CABaseline);
 							
-							CAfile.setFeatureToCodeMapping(extractCAFileFeaturesAndVPs(CAfile));
+							CAfile.setFeatureToCodeMapping(extractCAFileFeaturesAndVPs(CAfile, CABaseline));
 							//CABaseline.addCoreAssetFile(CAfile);
 							cas.add(CAfile);
 						}
@@ -84,7 +84,7 @@ public class MineBaselines implements CommitVisitor {
 	
 
 
-	private HashMap<Integer, ArrayList<String>> extractCAFileFeaturesAndVPs(SourceCodeFile ca) {		
+	private HashMap<Integer, ArrayList<String>> extractCAFileFeaturesAndVPs(SourceCodeFile ca, CoreAssetBaseline baseline) {		
 		Collection<ArrayList<String>> values = null;
 		Iterator<ArrayList<String>> ite;
 		ArrayList<String> valueList;
@@ -92,7 +92,7 @@ public class MineBaselines implements CommitVisitor {
 		String variable;
 		
 		
-		HashMap<Integer, ArrayList <String>> map = utils.FeatureAnalysisUtils.extractFeatureMapFromFile(ca); //line-feature map
+		HashMap<Integer, ArrayList <String>> map = utils.FeatureAnalysisUtils.extractFeatureMapFromFile(ca,baseline); //line-feature map
 		System.out.println("Map "+map);
 
 		if (map == null) return null;
