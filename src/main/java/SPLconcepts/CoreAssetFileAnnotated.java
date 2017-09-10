@@ -11,6 +11,7 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 	String content;
 	int totalLines;
 	CoreAssetBaseline fromBaseline;
+	String relativePath;
 
 
 	HashMap <Integer,ArrayList<String>> featureToCodeMapping = new HashMap<Integer, ArrayList<String>>();
@@ -18,7 +19,7 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 	ArrayList<VariationPoint> variationPoints;
 	
 	
-	public CoreAssetFileAnnotated(int id, String fileName, String path, String content, int totalLines, CoreAssetBaseline CABaseline) {
+	public CoreAssetFileAnnotated(int id, String fileName, String path, String content, int totalLines, CoreAssetBaseline CABaseline, String relativePath) {
 
 		this.id= id;
 		this.fileName=fileName;
@@ -26,6 +27,7 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 		this.content = content;
 		this.totalLines = totalLines; 
 		this.fromBaseline = CABaseline ;
+		this.relativePath = relativePath;
 	}
 	
 	public int getId() {
@@ -84,7 +86,7 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 		return featureList;
 	}
 
-	public ArrayList<VariationPoint> getVariationPointList() {
+	public ArrayList<VariationPoint> getVariationPoints() {
 
 		return variationPoints;
 	}
@@ -95,4 +97,17 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 	public void setVariationPoints(ArrayList<VariationPoint> variationPoints) {
 		this.variationPoints = variationPoints;
 	}
+
+	public String getRelativePath() {
+		return relativePath;
+	}
+
+	public void setRelativePath(String relativePath) {
+		this.relativePath = relativePath;
+	}
+
+	public void setFeatureList(ArrayList<Feature> featureList) {
+		this.featureList = featureList;
+	}
+	
 }

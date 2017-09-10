@@ -23,6 +23,7 @@ import SPLconcepts.CoreAssetBaseline;
 import SPLconcepts.CoreAssetFileAnnotated;
 import SPLconcepts.Feature;
 import SPLconcepts.SourceCodeFile;
+import SPLconcepts.VariationPoint;
 
 public class MineBaselines implements CommitVisitor {
 
@@ -48,26 +49,36 @@ public class MineBaselines implements CommitVisitor {
 					List<RepositoryFile> files = repo.getScm().files();
 					System.out.println("Number of files in Baseline:"+files.size());
 					SourceCodeFile CAfile = null;
+					
 					for(RepositoryFile file : files) { //Mining Files for baseline
 						if(file.getFile().getAbsolutePath().contains(Main.pathToWhereCustomizationsAreComputed)){
-							CAfile= new CoreAssetFileAnnotated(utils.Utils.getNewCoreAssetId(), file.getFile().getName(),  file.getFile().getPath(), file.getSourceCode(), file.getSourceCode().split("\n").length, CABaseline);
+							CAfile= new CoreAssetFileAnnotated(utils.Utils.getNewCoreAssetId(), file.getFile().getName(),  file.getFile().getPath(), file.getSourceCode(), 
+									file.getSourceCode().split("\n").length, CABaseline,
+									Main.pathToWhereCustomizationsAreComputed.concat(file.getFile().getAbsolutePath().split(Main.pathToWhereCustomizationsAreComputed)[1]));
 							
 							CAfile.setFeatureToCodeMapping(extractCAFileFeaturesAndVPs(CAfile, CABaseline));
 							//CABaseline.addCoreAssetFile(CAfile);
 							cas.add(CAfile);
+							System.out.println(CAfile.toString());
+							System.out.println(CAfile.getFeatureToCodeMapping());
+							writer.write( CABaseline.getId(),	 
+									CABaseline.getReleaseDate(), 
+									file.getFullName(), 
+									file.getSourceCode().split("\n").length, 
+									CAfile.getFeatureToCodeMapping());
+							
+							//meter las features del CA en el baseline
+							ArrayList<Feature> features = CAfile.getFeatureList();
+							
+							Iterator<Feature> iterator = features.iterator();
+							Feature feature;
+							while (iterator.hasNext()){
+								feature = iterator.next();
+								if(!utils.FeatureAnalysisUtils.isFeatureInFeaturesList(CABaseline.getFeatures(), feature.getName()));
+								CABaseline.addFeature(feature);
+							}
 						}
-						writer.write( CABaseline.getId(),	 CABaseline.getReleaseDate(), file.getFullName(), file.getSourceCode().split("\n").length, CAfile.getFeatureToCodeMapping());
 						
-						//meter las features del CA en el baseline
-						ArrayList<Feature> features = CAfile.getFeatureList();
-						
-						Iterator<Feature> iterator = features.iterator();
-						Feature feature;
-						while (iterator.hasNext()){
-							feature = iterator.next();
-							if(!utils.FeatureAnalysisUtils.isFeatureInFeaturesList(CABaseline.getFeatures(), feature.getName()));
-							CABaseline.addFeature(feature);
-						}
 					
 					}//endfor
 					
@@ -93,14 +104,21 @@ public class MineBaselines implements CommitVisitor {
 		
 		
 		HashMap<Integer, ArrayList <String>> map = utils.FeatureAnalysisUtils.extractFeatureMapFromFile(ca,baseline); //line-feature map
+		ArrayList<VariationPoint> vps = utils.FeatureAnalysisUtils.extractVPsFromFile(ca, baseline);
+		
 		System.out.println("Map "+map);
+		System.out.println("VPs "+vps);
 
 		if (map == null) return null;
 		
 		ca.setFeatureToCodeMapping(map);
-		System.out.println("Map for file "+ca.getId()+ " is " +ca.getFeatureToCodeMapping().toString());
+		ca.setVariationPoints(vps);
 		
-		values = map.values();//ArrayList with repered features
+		System.out.println("CoreAsset Mining. Feature-to-code Map for file "+ca.getId()+ " is " +ca.getFeatureToCodeMapping().toString());
+		System.out.println("CoreAsset Mining. VPs for file "+ca.getId()+ " is " +ca.getVariationPoints().toString());
+		
+		
+		values = map.values();//ArrayList with repeted features
 		ite= values.iterator();
 		while (ite.hasNext()){
 			valueList = ite.next();

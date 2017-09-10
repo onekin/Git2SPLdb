@@ -22,9 +22,10 @@ public interface SourceCodeFile {
 	public int getId();
 	public int getTotalLines();
 	public ArrayList<Feature> getFeatureList();
-	public ArrayList<VariationPoint> getVariationPointList();
-	public 	HashMap <Integer,ArrayList<String>> getFeatureToCodeMapping();
-	public  void setFeatureToCodeMapping (HashMap <Integer, ArrayList<String>>  featureToCodeMapping);
-	public  void setVariationPoints (ArrayList<VariationPoint> variationPoints);
+	public ArrayList<VariationPoint> getVariationPoints();
+	public HashMap <Integer,ArrayList<String>> getFeatureToCodeMapping();
+	public void setFeatureToCodeMapping (HashMap <Integer, ArrayList<String>>  featureToCodeMapping);
+	public void setVariationPoints (ArrayList<VariationPoint> variationPoints);
+	public String getRelativePath();
 	
 }

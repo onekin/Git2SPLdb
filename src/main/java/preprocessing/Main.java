@@ -29,7 +29,7 @@ public class Main implements Study {
 	public static String productRepo;
 	public static String pathToResources; //Users/Onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resource/alluvial/sankey.csv
 	
-	public static String pathToWhereCustomizationsAreComputed;//"input"
+	public static String pathToWhereCustomizationsAreComputed;//"input", or, src/onekin
 		
 		/**Settings for Git repos and annotation based SPLs*/
 	
@@ -87,8 +87,9 @@ public class Main implements Study {
 		}
 		
 		//3. print info
-	 //	printCustomizations(); printPP(); printFilesInRelease(); printlnFeatures(); 
-		printCoreAssetsAndVariationPoints();
+	 	printCustomizations();
+		//printPP(); printFilesInRelease(); printlnFeatures(); 
+		//printCoreAssetsAndVariationPoints();
 		
 	 	//System.out.println("Core Asset counter:" +utils.Utils.getCoreAssetFileCounter());
 	 	//System.out.println("Product Asset counter :" +utils.Utils.getProductAssetFileCounter());
@@ -96,7 +97,7 @@ public class Main implements Study {
 	 		ArrayList<SourceCodeFile> assets = spl.getCoreAssetBaseline(i).getCoreAssetFiles();
 	 		for (int j=0; j< assets.size(); j++){
 	 			System.out.println("ASSET ID:"+assets.get(j).getId());
-	 			System.out.println("Feature-to-code:"+assets.get(j).getFeatureToCodeMapping());
+	 			//System.out.println("Feature-to-code:"+assets.get(j).getFeatureToCodeMapping());
 	 		}
 	 	}
 	 	
@@ -149,7 +150,8 @@ public class Main implements Study {
 		.process(new MineBaselines(), new CSVFile (pathToResources+"/spl-data/baselines.csv"))
 		.mine();
 		System.out.println("Finished processing CoreAsset Baselines");
-		System.out.println(spl.getCoreAssetBaseline(0).getCoreAsset(5).getFeatureToCodeMapping());
+		
+		System.out.println(spl.getCoreAssetBaseline(0).getCoreAsset(spl.getCoreAssetBaseline(0).getCoreAssetFiles().size()-1).getFeatureToCodeMapping());
 		
 	}
 
@@ -163,9 +165,7 @@ public class Main implements Study {
 		.mine();
 		
 	}
-	
-	
-	
+		
 	/****public List<ChangeSet> getCommitIDsToCommits(SCM scm, List<String> commits) {
 		List<ChangeSet> all = scm.getChangeSets();
 	
@@ -174,8 +174,7 @@ public class Main implements Study {
 			if(commits.contains(cs.getId())) {
 				filtered.add(cs);
 			}
-		}
-		
+		}		
 		return filtered;
 	}****/
 		
@@ -226,13 +225,17 @@ public class Main implements Study {
 					Customization cust;
 					while(ite.hasNext()){
 						cust = ite.next();
+						String expression = null;
+						if(cust.getVp()!=null)
+							expression = cust.getVp().getExpression();
+						
 						System.out.println(
-								//"ID:"+cust.getCustomizationId()+"\n"+
+								//"ID:"+cust.get()+"\n"+
 								"In release: " +cust.getInRelease().getIdRelease()+"\n"+
 								"Product file: "+cust.getProductFile().getFileName()+"\n"+
 								"Core Asset file: "+cust.getCoreAssetFile().getFileName()+"\n"+
-								"Feature modified: "+cust.getFeatureModifiedName() +"\n"+
 								"Operation: "+cust.getOperation()+"\n"+
+								"VP expression involved:" +expression+"\n"+
 								"LineChanged: "+cust.getLineOfCodeModified()+"\n-------------------");		
 					}
 					

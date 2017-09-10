@@ -1,1 +1,13 @@
 Product,Feature,File,Churn
+[product1],SPLconcepts.VariationPoint@6e131206,Asset.java,REMOVED
+[product1],SPLconcepts.VariationPoint@77eac51c,Asset.java,REMOVED
+[product1],null,Asset.java,REMOVED
+[product1],SPLconcepts.VariationPoint@225157ac,Asset.java,REMOVED
+[product1],SPLconcepts.VariationPoint@3be0a063,Asset.java,REMOVED
+[product1],SPLconcepts.VariationPoint@4d15063b,Asset.java,REMOVED
+[product1],SPLconcepts.VariationPoint@6e131206,Asset.java,ADDED
+[product1],SPLconcepts.VariationPoint@77eac51c,Asset.java,ADDED
+[product1],null,Asset.java,ADDED
+[product1],SPLconcepts.VariationPoint@225157ac,Asset.java,ADDED
+[product1],SPLconcepts.VariationPoint@3be0a063,Asset.java,ADDED
+[product1],SPLconcepts.VariationPoint@4d15063b,Asset.java,ADDED

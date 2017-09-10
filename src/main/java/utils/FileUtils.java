@@ -15,6 +15,7 @@ import SPLconcepts.CoreAssetBaseline;
 import SPLconcepts.ProductAssetFileAnnotated;
 import SPLconcepts.ProductRelease;
 import SPLconcepts.SourceCodeFile;
+import SPLconcepts.VariationPoint;
 
 public class FileUtils {
 	
@@ -91,8 +92,6 @@ public class FileUtils {
 	public static void writeToFile(String path, ArrayList<String> allInserts) {
 		Iterator<String> it = allInserts.iterator();
 		String st;
-		
-		
 			try {
 				 out = new PrintWriter(path);
 				while (it.hasNext()){
@@ -101,9 +100,41 @@ public class FileUtils {
 				}
 				out.close();
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+	}
+
+	public static ProductAssetFileAnnotated getProductAssetByFilePath(String path, ProductRelease pr) {
+		//System.out.println("Finding path:"+path);
+		ArrayList<ProductAssetFileAnnotated> listAssets = pr.getProductAssets();
+		if (listAssets!= null){
+			Iterator<ProductAssetFileAnnotated> it = listAssets.iterator();
+			while(it.hasNext()){
+				ProductAssetFileAnnotated pa = it.next();
+		//		System.out.println(pa.getRelativePath());
+				if(path.equals(pa.getRelativePath()))
+					return pa;
+			}
+		}
+		return null;
+	}
+	
+	public static SourceCodeFile getCoreAssetByProductAssetPath(String path, ProductRelease pr ) {
+		CoreAssetBaseline baseline = pr.getFromProduct().getInPortfolio().getDerivedFrom();
+		ArrayList<SourceCodeFile> caList = baseline.getCoreAssetFiles();
+		System.out.println("Finding path:"+path);
+		if (caList!= null){
+			Iterator<SourceCodeFile> it = caList.iterator();
+			while(it.hasNext()){
+				SourceCodeFile ca = it.next();
+				System.out.println(ca.getRelativePath());
+				if(path.equals(ca.getRelativePath()))
+					return ca;
+			}
+		
+		}
+
+		return null;
 	}
 
 	

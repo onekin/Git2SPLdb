@@ -10,6 +10,7 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 	int id;
 	String fileName;
 	String path;
+	String relativePath;
 	String content;
 	int totalLines;
 	ProductRelease fromPRelease; 
@@ -18,13 +19,29 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 	ArrayList<Feature> featureList= new ArrayList<Feature>();
 	ArrayList<VariationPoint> variationPoints = new ArrayList<VariationPoint>();
 	
-	public ProductAssetFileAnnotated(int id, String fileName, String path, String content, int totalLines, ProductRelease pr ) {
+	public ProductAssetFileAnnotated(int id, String fileName, String path, String content, int totalLines, ProductRelease pr , String relativepath) {
 		this.id= id;
 		this.fileName=fileName;
 		this.path = path;
 		this.content = content;
 		this.totalLines = totalLines;
 		this.fromPRelease = pr;
+		this.relativePath = relativepath;
+	}
+
+
+	public String getRelativePath() {
+		return relativePath;
+	}
+
+
+	public void setRelativePath(String relativePath) {
+		this.relativePath = relativePath;
+	}
+
+
+	public ArrayList<VariationPoint> getVariationPoints() {
+		return variationPoints;
 	}
 
 
@@ -107,12 +124,6 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 	public String getFileName() {
 		
 		return fileName;
-	}
-
-
-	public ArrayList<VariationPoint> getVariationPointList() {
-
-		return variationPoints;
 	}
 
 

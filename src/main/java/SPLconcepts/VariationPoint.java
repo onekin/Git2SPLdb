@@ -9,11 +9,13 @@ public class VariationPoint {
 	int lineInit;
 	int lineEnd;
 	ArrayList<Feature> features;
+	ArrayList<String> newFeatures;
+	VariationPoint parentVP;
 	
 	 
 	
 	public VariationPoint(int idVP, String expression, String body,
-			int lineInit, int lineEnd, ArrayList<Feature> features) {
+			int lineInit, int lineEnd, ArrayList<Feature> features, VariationPoint parentVP, ArrayList<String> newFeatures) {
 		super();
 		this.idVP = idVP;
 		this.expression = expression;
@@ -21,11 +23,16 @@ public class VariationPoint {
 		this.lineInit = lineInit;
 		this.lineEnd = lineEnd;
 		this.features=features;
+		this.parentVP = parentVP;
 	}
 	
 	
-	public VariationPoint(int id, String expression, int lineInit) {
+	public VariationPoint(int id, String expression, int lineInit, VariationPoint parentVP) {
 		this.idVP = id;
+		this.expression = expression;
+		this.lineInit = lineInit;
+		this.parentVP = parentVP;
+		this.body = "";
 	}
 
 
@@ -60,7 +67,6 @@ public class VariationPoint {
 		this.lineEnd = lineEnd;
 	}
 
-
 	public ArrayList<Feature> getFeatures() {
 		return features;
 	}
@@ -68,6 +74,26 @@ public class VariationPoint {
 
 	public void setFeatures(ArrayList<Feature> features) {
 		this.features = features;
+	}
+
+
+	public VariationPoint getParentVP() {
+		return parentVP;
+	}
+
+
+	public void setParentVP(VariationPoint parentVP) {
+		this.parentVP = parentVP;
+	}
+
+
+	public ArrayList<String> getNewFeatures() {
+		return newFeatures;
+	}
+
+
+	public void setNewFeatures(ArrayList<String> newFeatures) {
+		this.newFeatures = newFeatures;
 	}
 
 	

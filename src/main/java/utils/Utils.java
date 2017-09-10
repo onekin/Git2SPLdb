@@ -90,8 +90,11 @@ public class Utils {
 	
 	static public  String extractRefName(String refname, int extractIndex){
 		//refname e.g.= refs/tags/Baseline-v1.0
+		System.out.println ("In extractRefName: "+refname ) ;
 		String[] parsed = refname.split("/");
-		return parsed[extractIndex];
+		if (parsed[extractIndex]!=null)
+		  return parsed[extractIndex];
+		else return refname;
 		
 	}
 		  
