@@ -161,16 +161,17 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		
 		for ( int i=0; i < baselines.size(); i++){
 			assets = baselines.get(i).getCoreAssetFiles();
-			
 			for(int j=0; j< assets.size();j++){
 				vps=assets.get(j).getVariationPoints();
-				for(int z=0; z<vps.size();z++){
-					vp=vps.get(z);
-					if (vp.getParentVP()!=null)
-						insert=insert.concat(header).concat("("+vp.getIdVP()+",'"+encodeToBase64(vp.getExpression())+"','"+encodeToBase64(vp.getBody())+
-								"',"+vp.getLineInit()+","+vp.getLineEnd()+","+assets.get(j).getId()+",null,"+vp.getParentVP().getIdVP()+");\n");
-					else insert=insert.concat(header).concat("("+vp.getIdVP()+",'"+encodeToBase64(vp.getExpression())+"','"+encodeToBase64(vp.getBody())+"',"+vp.getLineInit()+","+vp.getLineEnd()+","+assets.get(j).getId()+",null,null"+");\n");
-				}
+				if(vps!=null) 
+					for(int z=0; z<vps.size();z++){
+						vp=vps.get(z);
+						if (vp.getParentVP()!=null)
+							insert=insert.concat(header).concat("("+vp.getIdVP()+",'"+encodeToBase64(vp.getExpression())+"','"+encodeToBase64(vp.getBody())+
+									"',"+vp.getLineInit()+","+vp.getLineEnd()+","+"null,"+assets.get(j).getId()+","+vp.getParentVP().getIdVP()+");\n");
+						else insert=insert.concat(header).concat("("+vp.getIdVP()+",'"+encodeToBase64(vp.getExpression())+"','"+encodeToBase64(vp.getBody())
+								+"',"+vp.getLineInit()+","+vp.getLineEnd()+",null,"+assets.get(j).getId()+",null"+");\n");
+					}
 			}
 		}
 	
@@ -330,7 +331,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 						vp = cust.getVp();//can be null
 						if(cust.getIsNewAsset()==true){
 							if(vp==null) 
-								insert=insert.concat(header).concat("('"+cust.getOperation() +"',"+"null"+","+cust.getProductFile().getId() +","+ "1"+ "," +", null );\n");
+								insert=insert.concat(header).concat("('"+cust.getOperation() +"',"+"null"+","+cust.getProductFile().getId() +","+ "1"+", null );\n");
 							else {
 								//compute also a customization for its parents VPs!!
 								insert=insert.concat(header).concat("('"+cust.getOperation()+"',"+"null"+","+cust.getProductFile().getId()+","+"1"+ ","+cust.getVp().getIdVP() +");\n");
@@ -353,7 +354,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 									parent = parent.getParentVP();
 								}
 							} 
-							else insert=insert.concat(header).concat("('"+cust.getOperation()+"',"+cust.getCoreAssetFile().getId()+","+cust.getProductFile().getId()+","+"0"+","+",null);\n");
+							else insert=insert.concat(header).concat("('"+cust.getOperation()+"',"+cust.getCoreAssetFile().getId()+","+cust.getProductFile().getId()+","+"0"+",null);\n");
 						}													
 					}
 				}

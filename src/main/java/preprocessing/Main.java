@@ -151,7 +151,7 @@ public class Main implements Study {
 		.mine();
 		System.out.println("Finished processing CoreAsset Baselines");
 		
-		System.out.println(spl.getCoreAssetBaseline(0).getCoreAsset(spl.getCoreAssetBaseline(0).getCoreAssetFiles().size()-1).getFeatureToCodeMapping());
+		//System.out.println(spl.getCoreAssetBaseline(0).getCoreAsset(spl.getCoreAssetBaseline(0).getCoreAssetFiles().size()-1).getFeatureToCodeMapping());
 		
 	}
 
