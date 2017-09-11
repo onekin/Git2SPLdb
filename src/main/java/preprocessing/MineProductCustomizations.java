@@ -77,7 +77,7 @@ public class MineProductCustomizations{
 			
 			sourceCode= m.getSourceCode();//source 	code in product asset		
 			
-			ArrayList<Customization> listilla = FeatureAnalysisUtils.computeCustomizationDetails( m.getFileName(), m.getNewPath(), sourceCode, lines, pr, commit) ;
+			ArrayList<Customization> listilla = FeatureAnalysisUtils.computeCustomizationDetails(m.getFileName(), m.getNewPath(), sourceCode, lines, pr, commit) ;
 			if(listilla!=null)
 				list.addAll(listilla); //get details of customizations
 			counter++;

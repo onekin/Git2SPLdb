@@ -29,7 +29,7 @@ public class FeatureAnalysisUtils {
 		
 		ArrayList <Customization>	featureModificationDetailList  = new  ArrayList <Customization> (); 
     
-		HashMap <Integer,ArrayList<String>> map = extractFeatureMapFromFile(content);
+		HashMap <Integer,ArrayList<String>> map = utils.FileUtils.getProductAssetByFilePath(path, pr).getFeatureToCodeMapping();// extractFeatureMapFromFile(content);
 		if(map==null) return null;
 		 
 		Iterator<DiffLine> diffLineIterator = lines.iterator(); //iteratate diffs 
@@ -52,11 +52,10 @@ public class FeatureAnalysisUtils {
 		   		VariationPoint vp = getVariationPointOfChangedAssetLine(paModified.getRelativePath(), pr, lineNumber);
 		   		
 		   		int newFeature=0;
-		   		int newAsset= 0;
-		   		if (vp!=null) {
+		   		int existingAsset = isAssetInBaseline(pr.getFromProduct().getInPortfolio().getDerivedFrom(),fileName);
+		   		if (vp!=null){//cuando no hay un VP
 		   			System.out.println("VP changed is "+vp.getIdVP());
-		   			newAsset = isAssetInBaseline(pr.getFromProduct().getInPortfolio().getDerivedFrom(),fileName);
-			   		if(vp.getNewFeatures()!=null)
+		   			if(vp.getNewFeatures()!=null)
 			   			newFeature = 1;
 			   		else newFeature = 0;	
 		   		} 
@@ -64,7 +63,7 @@ public class FeatureAnalysisUtils {
 		   		Customization cust = new  Customization(modType, lineNumber, paModified, 
 		   				ca, pr, 
 		   				newFeature,
-		   				newAsset,
+		   				existingAsset,
 		   				vp);	   	
 		   		
 		    	featureModificationDetailList.add(cust);
@@ -78,23 +77,23 @@ public class FeatureAnalysisUtils {
 
 	private static int isAssetInBaseline(CoreAssetBaseline baseline,
 			String fileName) {
+		
 		ArrayList<SourceCodeFile> list = baseline.getCoreAssetFiles();
 		Iterator<SourceCodeFile> it = list.iterator();
 		SourceCodeFile ca;
 		
 		while(it.hasNext()){
 			ca = it.next();
+			System.out.println("is asset in baseline? "+ca.getFileName()+ "    VS  "+fileName);
 			if (ca.getFileName().equals(fileName))
 				return 1;
 		}
-		
 		return 0;
 	}
 
 
 
-	private static int isFeatureInBaseline(CoreAssetBaseline baseline,
-			String featureName) {
+	private static int isFeatureInBaseline(CoreAssetBaseline baseline,String featureName) {
 		
 		ArrayList<Feature> list = baseline.getFeatures();
 		
@@ -250,71 +249,6 @@ Iterator<String> itNames = listFeatures.iterator();
 
 
 
-//TODO REMOVE!! ESTE METODO ESTA DUPLICADO PARA EL COMPUTO DE LAS CUSTOMIZACIONES!!!!
-public static HashMap <Integer,ArrayList <String>>  extractFeatureMapFromFile (String content) {//Read the file lineByLine
-	
-	HashMap <Integer,ArrayList <String>> featureToCodeMapping = new HashMap<Integer, ArrayList <String>>();
-	int nestingLevel=-1;
-	
-	if (!content.contains(Main.annotationPatternBeginning)) return null; //the file does not contain variability in it
-	
-	try {
-	
-		String[] lines = content.split("\n");
-		
-		int counter=1;
-		ArrayList<String> listFeatures = new ArrayList<String>();
-		HashMap <Integer,String> currentExpressionsInNestedLevels = new HashMap<Integer,String>();//pair of nesting level, and expression
-		
-		for(int i=0;i<lines.length;i++){
-			if (lines[i].contains(Main.annotationPatternBeginning )){
-				
-				nestingLevel++;//level 0 is when we are inside a VP
-				currentExpressionsInNestedLevels.put(nestingLevel,lines[i]);
-					if (nestingLevel> 0){//we need to add all the features for all the nesting levels.
-						listFeatures = new ArrayList<String>();
-						for(int k=0; k<=nestingLevel;k++)
-							listFeatures.addAll(extractAllFeaturesFromTheExpression(currentExpressionsInNestedLevels.get(k)));
-					}else
-						listFeatures = extractAllFeaturesFromTheExpression(currentExpressionsInNestedLevels.get(nestingLevel));
-					featureToCodeMapping.put(counter,listFeatures);
-					
-			}else{
-				if (lines[i].contains(Main.annotationPatternEnd)){
-					nestingLevel--;
-					featureToCodeMapping.put(counter,listFeatures);
-				
-				}
-				else{//no pattern has been found; we might be inside VPs (nested or not)
-					if(nestingLevel==-1){
-						listFeatures = new ArrayList<String>();
-					}
-					if (nestingLevel ==0){
-						listFeatures = extractAllFeaturesFromTheExpression (currentExpressionsInNestedLevels.get(nestingLevel)); 
-						
-					}
-					if (nestingLevel > 0) {
-						listFeatures = new ArrayList<String>();
-						for(int k=0; k<=nestingLevel;k++)
-							listFeatures.addAll(extractAllFeaturesFromTheExpression(currentExpressionsInNestedLevels.get(k)));
-					}
-					featureToCodeMapping.put(counter,listFeatures);//no features to which the line belongs to
-					
-				}
-			}
-			
-			counter ++;
-		}
-		
-		//print Feature to code mapping
-		
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
- 
-	return featureToCodeMapping;
-
-}
 
 
 
@@ -328,8 +262,6 @@ public static HashMap <Integer,ArrayList <String>>  extractFeatureMapFromFile (S
 		}
 	return listfeatures;
 }
-
-
 
 	public static boolean isFeatureInFeaturesList(ArrayList<Feature> featureList, String name){
 		Iterator<Feature>  it= featureList.iterator();

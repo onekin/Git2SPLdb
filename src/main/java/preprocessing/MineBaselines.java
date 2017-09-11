@@ -132,7 +132,6 @@ public class MineBaselines implements CommitVisitor {
 				if (!utils.FeatureAnalysisUtils.isFeatureInFeaturesList( ca.getFeatureList(), variable ) ){
 					ca.getFeatureList().add(f);
 				}
-				
 			}
 		}
 		return map;

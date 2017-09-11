@@ -29,7 +29,11 @@ public class Customization{
 		else this.isNewFeature = false;
 			
 		if (assetFound==1) this.isNewAsset = false;
-		else this.isNewAsset = true;
+		else{
+			this.isNewAsset = true;
+			System.out.print("NEW ASSSSSSETTT \n"+productFile.getFileName());
+		} 
+			
 		
 	}
 
