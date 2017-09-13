@@ -1,9 +1,9 @@
 Product,Feature,File,Churn
-[productBerlin],SPLconcepts.VariationPoint@3a67ba81,sensors.js,REMOVED
-[productBerlin],SPLconcepts.VariationPoint@3a67ba81,sensors.js,ADDED
-[productBerlin],SPLconcepts.VariationPoint@29ac379b,settings.js,REMOVED
-[productBerlin],SPLconcepts.VariationPoint@2e98339d,settings.js,REMOVED
-[productBerlin],SPLconcepts.VariationPoint@7a616139,settings.js,REMOVED
-[productBerlin],SPLconcepts.VariationPoint@29ac379b,settings.js,ADDED
-[productBerlin],SPLconcepts.VariationPoint@2e98339d,settings.js,ADDED
-[productBerlin],SPLconcepts.VariationPoint@7a616139,settings.js,ADDED
+[productBerlin],SPLconcepts.VariationPoint@2ed95f77,sensors.js,REMOVED
+[productBerlin],SPLconcepts.VariationPoint@2ed95f77,sensors.js,ADDED
+[productBerlin],SPLconcepts.VariationPoint@499148a0,settings.js,REMOVED
+[productBerlin],SPLconcepts.VariationPoint@2dd78402,settings.js,REMOVED
+[productBerlin],SPLconcepts.VariationPoint@27fd5e2c,settings.js,REMOVED
+[productBerlin],SPLconcepts.VariationPoint@499148a0,settings.js,ADDED
+[productBerlin],SPLconcepts.VariationPoint@2dd78402,settings.js,ADDED
+[productBerlin],SPLconcepts.VariationPoint@27fd5e2c,settings.js,ADDED
