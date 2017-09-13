@@ -1,4 +1,8 @@
 Portfolio-ID,DerivedFrom-baselineID,ProductName,ReleaseName,ReleaseDate
+<<<<<<< HEAD
 Series 1.X,aeb6c62a7eacd35303bd9872c692ad135a7d2907,productNewYork,productNewYork-v1.0,Sat Jun 24 20:38:29 CEST 2017
 Series 1.X,aeb6c62a7eacd35303bd9872c692ad135a7d2907,ProductBerlin,productBerline-v1.0,Sat Jun 24 20:28:07 CEST 2017
 Series 1.X,aeb6c62a7eacd35303bd9872c692ad135a7d2907,productDonosti,productDonosti-v1.0,Sat Jun 24 20:35:47 CEST 2017
+=======
+Series 1.X,f5bc4d210e0aa55d35b6be86748b811977e485d1,product1,product1-v1.0,Fri Sep 08 15:52:42 CEST 2017
+>>>>>>> vpanalysis

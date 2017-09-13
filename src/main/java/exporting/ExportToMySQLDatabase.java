@@ -15,6 +15,7 @@ import SPLconcepts.ProductAssetFileAnnotated;
 import SPLconcepts.ProductPortfolio;
 import SPLconcepts.ProductRelease;
 import SPLconcepts.SourceCodeFile;
+import SPLconcepts.VariationPoint;
 import preprocessing.Main;
 
 public class ExportToMySQLDatabase implements ExportTarget {
@@ -51,13 +52,16 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		
 		inserts0 = generateInsertsFor_SPL_Table();
 	//	utils.FileUtils.writeToFile(this.pathToDataFile+"0insertsSPL.sql",inserts0);
-		
-		
+				
 		String inserts1 =    generateInsertsFor_CoreAssetBaseline_Table();
 		//		utils.FileUtils.writeToFile(this.pathToDataFile+"1insertsCABaseline.sql",inserts1);
 		
 		String inserts2 = generateInsertsFor_Feature_Table();
 		//	utils.FileUtils.writeToFile(this.pathToDataFile+"2insertsFeature.sql",inserts2);
+		
+		String inserts10 = generateInsertsFor_VariationPoint_table();
+		
+		String inserts11 = generateInsertsFor_FeatureInVariationPoint_table();
 		
 		String inserts3 = generateInsertsFor_CoreAsset_Baseline_has_Feature();
 		//	utils.FileUtils.writeToFile(this.pathToDataFile+"3insertsCABaseline_has_Feature.sql",inserts3);
@@ -79,8 +83,9 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		
 		String inserts9 = generateInsertsFor_Product_Asset_table();
 		//		utils.FileUtils.writeToFile(this.pathToDataFile+"9insertsProductAsset.sql",inserts9);
+			
 		
-		String inserts10 = generateInsertsFor_Customization_Table();
+		String inserts12 = generateInsertsFor_Customization_Table();
 		//		utils.FileUtils.writeToFile(this.pathToDataFile+"10insertsCustomization.sql",inserts10);
 		
 		allInserts.add(inserts0);
@@ -94,10 +99,115 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		allInserts.add(inserts8);
 		allInserts.add(inserts9);
 		allInserts.add(inserts10);
+		allInserts.add(inserts11);
+		allInserts.add(inserts12);
 		utils.FileUtils.writeToFile(this.pathToDataFile+"data-inserts.sql",allInserts);
 		
 	}
 
+
+
+	private String generateInsertsFor_FeatureInVariationPoint_table() {
+		String insert="";
+		String header = "INSERT INTO feature_in_variationpoint (idfeature,idvariationpoint) VALUES\n";
+		//for each core asset in  baselines
+		//generate!!!
+		
+		//for each product in product releases
+		ProductPortfolio pp;
+		ArrayList<ProductRelease> releases ;
+		ArrayList<ProductAssetFileAnnotated> assets ;
+		ArrayList<Product> products;
+		ArrayList<ProductPortfolio> portfolios = Main.spl.getProductPortfolioList();
+		ArrayList<VariationPoint> vps;
+		VariationPoint vp;
+		ArrayList<Feature> featureList;
+		
+		for(int x=0; x < portfolios.size();x++){
+			pp=portfolios.get(x);
+			products = pp.getProducts();
+			for (int i=0; i < products.size(); i++){
+				 releases = products.get(i).getReleases();
+				for (int j=0; j< releases.size(); j++){
+					assets = releases.get(j).getProductAssets();
+					for (int z=0; z < assets.size(); z++){
+						vps= assets.get(z).getVariationPoints();
+						for (int k=0; k< vps.size();k++){
+							vp=vps.get(k);
+							featureList = vp.getFeatures();
+							for(int w=0; w<featureList.size(); w++){
+								insert=insert.concat(header).concat("('"+featureList.get(w).getIdFeature()+"',"+vp.getIdVP()+");\n");
+							}
+						}
+					}
+				}
+			}	
+		}
+		return insert;
+	}
+	
+
+
+	private String generateInsertsFor_VariationPoint_table() {
+		String insert="";
+		String header="INSERT INTO Variationpoint (idvariationpoint, expression, body, line_init, line_end, idproductasset, idcoreasset, greatest_parent_id) VALUES\n";
+		//for each core asset in  baselines
+		//generate!!!
+		
+		ArrayList<VariationPoint> vps;
+		VariationPoint vp;
+		ArrayList<CoreAssetBaseline> baselines = Main.spl.getCoreAssetBaselines();
+		ArrayList<SourceCodeFile> assets = null;
+		
+		for ( int i=0; i < baselines.size(); i++){
+			assets = baselines.get(i).getCoreAssetFiles();
+			for(int j=0; j< assets.size();j++){
+				vps=assets.get(j).getVariationPoints();
+				if(vps!=null) 
+					for(int z=0; z<vps.size();z++){
+						vp=vps.get(z);
+						if (vp.getParentVP()!=null)
+							insert=insert.concat(header).concat("("+vp.getIdVP()+",'"+encodeToBase64(vp.getExpression())+"','"+encodeToBase64(vp.getBody())+
+									"',"+vp.getLineInit()+","+vp.getLineEnd()+","+"null,"+assets.get(j).getId()+","+vp.getParentVP().getIdVP()+");\n");
+						else insert=insert.concat(header).concat("("+vp.getIdVP()+",'"+encodeToBase64(vp.getExpression())+"','"+encodeToBase64(vp.getBody())
+								+"',"+vp.getLineInit()+","+vp.getLineEnd()+",null,"+assets.get(j).getId()+",null"+");\n");
+					}
+			}
+		}
+	
+		//for each product in product releases
+		ProductPortfolio pp;
+		ArrayList<ProductRelease> releases ;
+		
+		ArrayList<Product> products;
+		ArrayList<ProductPortfolio> portfolios = Main.spl.getProductPortfolioList();
+		
+		ArrayList<ProductAssetFileAnnotated> passets;
+		for(int x=0; x < portfolios.size();x++){
+			pp=portfolios.get(x);
+			products = pp.getProducts();
+			for (int i=0; i < products.size(); i++){
+				 releases = products.get(i).getReleases();
+				for (int j=0; j< releases.size(); j++){
+					 passets = releases.get(j).getProductAssets();
+					for (int z=0; z < passets.size(); z++){
+						vps= passets.get(z).getVariationPoints();
+						for (int k=0; k< vps.size();k++){
+							vp=vps.get(k);
+							if (vp.getParentVP()!=null)
+								insert=insert.concat(header).concat("("+vp.getIdVP()+",'"+encodeToBase64(vp.getExpression())+"','"+encodeToBase64(vp.getBody())+
+										"',"+vp.getLineInit()+","+vp.getLineEnd()+","+passets.get(z).getId()+",null,"+vp.getParentVP().getIdVP()+");\n");
+							
+							else insert=insert.concat(header).concat("("+vp.getIdVP()+",'"+encodeToBase64(vp.getExpression())+"','"+encodeToBase64(vp.getBody())+"',"+vp.getLineInit()+","+vp.getLineEnd()+","+passets.get(z).getId()+",null,null"+");\n");
+								
+						}
+					}
+				}
+			}
+		}
+		
+		return insert;
+	}
 
 
 	private String generateInsertsFor_ProductPortfolio_Table() {
@@ -107,8 +217,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		for (int i=0; i < list.size(); i++){
 			insert=insert.concat("('"+list.get(i).getPortfolioID()+"','"+Main.spl.getId()+"','"+list.get(i).getDerivedFrom().getId()+"')");
 			if(i+1 < list.size()) 	insert=insert.concat(",\n");
-		}
-		
+		}		
 		insert=insert.concat(";\n");
 		return insert;
 	}
@@ -179,16 +288,15 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
 			products = pp.getProducts();
-			if(products!=null) {
-				for (int i=0; i < products.size(); i++){
-					 releases = products.get(i).getReleases();
-					for (int j=0; j< releases.size(); j++){
-						assets = releases.get(j).getProductAssets();
-						for (int z=0; z < assets.size(); z++){
-							insert=insert.concat("("+assets.get(z).getId() +",'"+assets.get(z).getFileName()+"','"+assets.get(z).getPath()+"','"+encodeToBase64 (assets.get(z).getContent())+"',"+assets.get(z).getTotalLines()+",'"+releases.get(j).getIdRelease()+"')");
-							if (z+1 < assets.size()) insert=insert.concat(",\n");
-						}
-						if (j +1 < releases.size()) insert=insert.concat(",\n");
+
+			
+			for (int i=0; i < products.size(); i++){
+				 releases = products.get(i).getReleases();
+				for (int j=0; j< releases.size(); j++){
+					assets = releases.get(j).getProductAssets();
+					for (int z=0; z < assets.size(); z++){		
+						insert=insert.concat("("+assets.get(z).getId() +",'"+assets.get(z).getFileName()+"','"+assets.get(z).getPath()+"','"+encodeToBase64 (assets.get(z).getContent())+"',"+assets.get(z).getTotalLines()+",'"+releases.get(j).getIdRelease()+"')");
+						if (z+1 < assets.size()) insert=insert.concat(",\n");
 					}
 					if (i+1  < products.size() ) insert=insert.concat(",\n");
 				}
@@ -202,49 +310,59 @@ public class ExportToMySQLDatabase implements ExportTarget {
 
 
 	private String generateInsertsFor_Customization_Table() {
-		String insert="INSERT INTO Customization (operation,CoreAsset_idCoreAsset,ProductAsset_idProductAsset,Feature_idFeature, isNewFeature, isNewAsset, featureNameModified) VALUES\n";
-		
+		String header="INSERT INTO Customization (operation,CoreAsset_idCoreAsset,ProductAsset_idProductAsset, isNewAsset, idvariationpoint) VALUES\n";
+		String insert="";
 		
 		ProductPortfolio pp;
 		ArrayList<ProductRelease> releases ;
 		ArrayList<Customization> customs ;
 		Customization cust ;
 		ArrayList<Product> products;
-		
+		VariationPoint vp,parent;
 		ArrayList<ProductPortfolio> portfolios = Main.spl.getProductPortfolioList();
 		
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
 			products = pp.getProducts();
-			if (products!=null) {
-				for (int i=0; i < products.size(); i++){
-					 releases = products.get(i).getReleases();
-					for (int j=0; j< releases.size(); j++){
-						customs = releases.get(j).getCustomizations();
-						for(int z=0; z < customs.size(); z++){
-							cust = customs.get(z);
-							if(cust.getIsNewFeature()==true && cust.getIsNewAsset()==true)
-								 insert=insert.concat("('"+cust.getOperation()    +"',"+"null"+","+cust.getProductFile().getId()+","+ "null" +","+ cust.getIsNewFeature()+","+cust.getIsNewAsset()+ ",'" +cust.getFeatureModifiedName()+"'" +")");
-							else 
-								if (cust.getIsNewFeature()==false && cust.getIsNewAsset()==false)
-								  insert=insert.concat("('"+cust.getOperation()    +"',"+cust.getCoreAssetFile().getId()+","+cust.getProductFile().getId()+",'"+cust.getFeatureModifiedName() +"',"+ cust.getIsNewFeature()+","+cust.getIsNewAsset()+ ",'" +cust.getFeatureModifiedName()+"'" +")");
-								else 
-									if (cust.getIsNewFeature()==true && cust.getIsNewAsset()==false)
-										 insert=insert.concat("('"+cust.getOperation()    +"',"+cust.getCoreAssetFile().getId()+","+cust.getProductFile().getId()+","+"null" +","+ cust.getIsNewFeature()+","+cust.getIsNewAsset()+ ",'" +cust.getFeatureModifiedName()+"'" +")");
-									else if (cust.getIsNewFeature()==false && cust.getIsNewAsset()==true)
-										 insert=insert.concat("('"+cust.getOperation()    +"',"+"null"+","+cust.getProductFile().getId()+",'"+cust.getFeatureModifiedName() +"',"+ cust.getIsNewFeature()+","+cust.getIsNewAsset()+ ",'" +cust.getFeatureModifiedName()+"'" +")");
-										
-							if (z+1 < customs.size()) insert=insert.concat(",\n");
+			
+			for (int i=0; i < products.size(); i++){
+				 releases = products.get(i).getReleases();
+				for (int j=0; j< releases.size(); j++){
+					customs = releases.get(j).getCustomizations();
+					for(int z=0; z < customs.size(); z++){
+						cust = customs.get(z);
+						vp = cust.getVp();//can be null
+						if(cust.getIsNewAsset()==true){
+							if(vp==null) 
+								insert=insert.concat(header).concat("('"+cust.getOperation() +"',"+"null"+","+cust.getProductFile().getId() +","+ "1"+", null );\n");
+							else {
+								//compute also a customization for its parents VPs!!
+								insert=insert.concat(header).concat("('"+cust.getOperation()+"',"+"null"+","+cust.getProductFile().getId()+","+"1"+ ","+cust.getVp().getIdVP() +");\n");
+								parent =vp.getParentVP();
+								while(parent!=null){
+									insert=insert.concat(header).concat("('"+cust.getOperation()+"',"+"null"+","+cust.getProductFile().getId()+","+"1"+ ","+parent.getIdVP() +");\n");
+									parent = parent.getParentVP();
+								}
+								
+							}
+								
 						}
-						if (j+1 < releases.size()) insert=insert.concat(",\n");
+							
+						else {
+							if(vp!=null){
+								insert=insert.concat(header).concat("('"+cust.getOperation() +"',"+cust.getCoreAssetFile().getId()+","+cust.getProductFile().getId()+","+"0"+","+cust.getVp().getIdVP() +");\n");
+								parent =vp.getParentVP();
+								while(parent!=null){
+									insert=insert.concat(header).concat("('"+cust.getOperation() +"',"+cust.getCoreAssetFile().getId()+","+cust.getProductFile().getId()+","+"0"+","+parent.getIdVP() +");\n");
+									parent = parent.getParentVP();
+								}
+							} 
+							else insert=insert.concat(header).concat("('"+cust.getOperation()+"',"+cust.getCoreAssetFile().getId()+","+cust.getProductFile().getId()+","+"0"+",null);\n");
+						}													
 					}
-					if (i+1 < products.size()) insert=insert.concat(",\n");
 				}
-				if (x+1 < portfolios.size()) insert=insert.concat(",\n");
 			}
 		}
-		
-		insert=insert.concat(";\n");
 		return insert;	
 	}
 

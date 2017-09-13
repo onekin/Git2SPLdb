@@ -88,7 +88,7 @@ public class Product {
 		this.inPortfolio = inPortfolio;
 	}
 
-	
+
 
 
 	

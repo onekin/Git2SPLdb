@@ -2,6 +2,7 @@ package preprocessing;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +26,7 @@ import SPLconcepts.ProductAssetFileAnnotated;
 import SPLconcepts.ProductPortfolio;
 import SPLconcepts.ProductRelease;
 import SPLconcepts.SourceCodeFile;
+import SPLconcepts.VariationPoint;
 
 public class MineProductPortfolios implements CommitVisitor {
 	
@@ -142,10 +144,28 @@ public class MineProductPortfolios implements CommitVisitor {
 			List<RepositoryFile> files = repo.getScm().files();
 			
 			SourceCodeFile PAFile;
-			for(RepositoryFile file : files) {//Mining Files for baseline
+			for(RepositoryFile file : files) {//Mining Files for a product release
+				
 				if(!file.getFile().getAbsolutePath().contains(Main.pathToWhereCustomizationsAreComputed)) continue;
-				PAFile= new ProductAssetFileAnnotated(utils.Utils.getNewProductAssetId(), file.getFile().getName(),  file.getFile().getPath(), file.getSourceCode(), file.getSourceCode().split("\n").length, pr1);
+				
+				PAFile= new ProductAssetFileAnnotated(utils.Utils.getNewProductAssetId(), file.getFile().getName(),  file.getFile().getPath(), file.getSourceCode(),
+						file.getSourceCode().split("\n").length, pr1,
+						Main.pathToWhereCustomizationsAreComputed.concat(file.getFile().getAbsolutePath().split(Main.pathToWhereCustomizationsAreComputed)[1]));
 				pr1.getProductAssets().add((ProductAssetFileAnnotated) PAFile);
+				
+				HashMap<Integer, ArrayList <String>> map = utils.FeatureAnalysisUtils.extractFeatureMapFromFile(PAFile, pr1.getFromProduct().getInPortfolio().getDerivedFrom()); //line-feature map
+				ArrayList<VariationPoint> vps = utils.FeatureAnalysisUtils.extractVPsFromFile(PAFile, pr1.getFromProduct().getInPortfolio().getDerivedFrom());
+				
+				System.out.println("Map "+map);
+				System.out.println("VPs "+vps);
+
+				if (map != null) {
+					PAFile.setFeatureToCodeMapping(map);
+					PAFile.setVariationPoints(vps);	
+				} 
+				
+				
+				
 	
 		}
 		} finally {

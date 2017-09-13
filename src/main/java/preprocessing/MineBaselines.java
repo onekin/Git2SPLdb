@@ -23,6 +23,7 @@ import SPLconcepts.CoreAssetBaseline;
 import SPLconcepts.CoreAssetFileAnnotated;
 import SPLconcepts.Feature;
 import SPLconcepts.SourceCodeFile;
+import SPLconcepts.VariationPoint;
 
 public class MineBaselines implements CommitVisitor {
 
@@ -39,71 +40,103 @@ public class MineBaselines implements CommitVisitor {
 		if(commit.getBranches().contains(Main.coreAssetsBranchPatternName)) {		
 			try{
 				
+				
 				repo.getScm().checkout(commit.getHash());
 				String baselineTag = Utils.getTagForACommitHash(commit.getHash());
 				CoreAssetBaseline CABaseline = new CoreAssetBaseline(commit, new Date (commit.getDate().getTimeInMillis()), baselineTag);
-				Main.spl.addBaseline(CABaseline);
+				ArrayList<SourceCodeFile> cas = new  ArrayList<SourceCodeFile>();	//files for the coreasset baseline
 				
 					List<RepositoryFile> files = repo.getScm().files();
 					System.out.println("Number of files in Baseline:"+files.size());
-					SourceCodeFile CAfile;
+					SourceCodeFile CAfile = null;
+					
 					for(RepositoryFile file : files) { //Mining Files for baseline
 						if(file.getFile().getAbsolutePath().contains(Main.pathToWhereCustomizationsAreComputed)){
-							CAfile= new CoreAssetFileAnnotated(utils.Utils.getNewCoreAssetId(), file.getFile().getName(),  file.getFile().getPath(), file.getSourceCode(), file.getSourceCode().split("\n").length, CABaseline);
-							CABaseline.addCoreAssetFile(CAfile);
-						//	mineFeaturesInBaseline(CABaseline);
+							CAfile= new CoreAssetFileAnnotated(utils.Utils.getNewCoreAssetId(), file.getFile().getName(),  file.getFile().getPath(), file.getSourceCode(), 
+									file.getSourceCode().split("\n").length, CABaseline,
+									Main.pathToWhereCustomizationsAreComputed.concat(file.getFile().getAbsolutePath().split(Main.pathToWhereCustomizationsAreComputed)[1]));
+							
+							CAfile.setFeatureToCodeMapping(extractCAFileFeaturesAndVPs(CAfile, CABaseline));
+							//CABaseline.addCoreAssetFile(CAfile);
+							cas.add(CAfile);
+							System.out.println(CAfile.toString());
+							System.out.println(CAfile.getFeatureToCodeMapping());
+							writer.write( CABaseline.getId(),	 
+									CABaseline.getReleaseDate(), 
+									file.getFullName(), 
+									file.getSourceCode().split("\n").length, 
+									CAfile.getFeatureToCodeMapping());
+							
+							//meter las features del CA en el baseline
+							ArrayList<Feature> features = CAfile.getFeatureList();
+							
+							Iterator<Feature> iterator = features.iterator();
+							Feature feature;
+							while (iterator.hasNext()){
+								feature = iterator.next();
+								if(!utils.FeatureAnalysisUtils.isFeatureInFeaturesList(CABaseline.getFeatures(), feature.getName()));
+								CABaseline.addFeature(feature);
+							}
 						}
-						writer.write(
-								CABaseline.getId(),	
-								CABaseline.getReleaseDate(),
-								file.getFullName(),
-								file.getSourceCode().split("\n").length);
+						
 					
-					}
-				mineFeaturesInBaseline(CABaseline);//mining what features are in the baseline
+					}//endfor
+					
+					CABaseline.setCoreAssetFiles(cas);
+					Main.spl.addBaseline(CABaseline);
+					
+					System.out.println("Features in baseline: "+CABaseline.getId()+" are:"+CABaseline.getFeatures().toString());
 			} finally {
-				System.out.println("RESET!!!");
+			
 					repo.getScm().reset();
 			}	
 		}
 	}
 	
-	private void mineFeaturesInBaseline(CoreAssetBaseline baseline) {
+
+
+	private HashMap<Integer, ArrayList<String>> extractCAFileFeaturesAndVPs(SourceCodeFile ca, CoreAssetBaseline baseline) {		
+		Collection<ArrayList<String>> values = null;
+		Iterator<ArrayList<String>> ite;
+		ArrayList<String> valueList;
+		Iterator<String> i;
+		String variable;
 		
-		 ArrayList<SourceCodeFile> listFiles = baseline.getCoreAssetFiles();
-		Iterator<SourceCodeFile> it = listFiles.iterator();
-		Collection<String> values = null;
-		SourceCodeFile ca;
-		Iterator<String> ite;
-		String value;
-		System.out.println("mining features in baseline:"+baseline.getId()+"with files:"+listFiles.size());
-		while(it.hasNext()){
-			ca = it.next();
-			
-			System.out.println("CA is "+ ca.getFileName() +"\nlenght:"+ca.getContent().length());
-			HashMap<Integer, String> map = utils.FeatureAnalysisUtils.extractFeatureMapFromFile(ca.getContent()); //line-feature map
-			if (map == null) continue;
-			
-			values = map.values();//all the features in the file - repeteated!!
-			ite= values.iterator();//all the identified feature
-			while (ite.hasNext()){
-				value = ite.next();
-				Feature f = new Feature(value, value);
-				if (!utils.FeatureAnalysisUtils.isFeatureInFeaturesList(Main.features, value)){
+		
+		HashMap<Integer, ArrayList <String>> map = utils.FeatureAnalysisUtils.extractFeatureMapFromFile(ca,baseline); //line-feature map
+		ArrayList<VariationPoint> vps = utils.FeatureAnalysisUtils.extractVPsFromFile(ca, baseline);
+		
+		System.out.println("Map "+map);
+		System.out.println("VPs "+vps);
+
+		if (map == null) return null;
+		
+		ca.setFeatureToCodeMapping(map);
+		ca.setVariationPoints(vps);
+		
+		System.out.println("CoreAsset Mining. Feature-to-code Map for file "+ca.getId()+ " is " +ca.getFeatureToCodeMapping().toString());
+		System.out.println("CoreAsset Mining. VPs for file "+ca.getId()+ " is " +ca.getVariationPoints().toString());
+		
+		
+		values = map.values();//ArrayList with repeted features
+		ite= values.iterator();
+		while (ite.hasNext()){
+			valueList = ite.next();
+			i = valueList.iterator();
+			while(i.hasNext()){
+				variable = i.next();
+				Feature f = new Feature(variable, variable);
+				if (!utils.FeatureAnalysisUtils.isFeatureInFeaturesList(Main.features, variable)){
 					Main.features.add(f);
 				}
-				if (!utils.FeatureAnalysisUtils.isFeatureInFeaturesList( ca.getFeatureList(), value ) ){
+				if (!utils.FeatureAnalysisUtils.isFeatureInFeaturesList( ca.getFeatureList(), variable ) ){
 					ca.getFeatureList().add(f);
 				}
-				if(!utils.FeatureAnalysisUtils.isFeatureInFeaturesList(  baseline.getFeatures(), value))
-					baseline.addFeature(f);
-					
 			}
-			
 		}
-		System.out.println("Features in baseline:"+baseline.getFeatures().toString());
-		
+		return map;
 	}
+
 
 	public boolean isCommitTagged(SCMRepository repo, Commit c){
 	//	repo.

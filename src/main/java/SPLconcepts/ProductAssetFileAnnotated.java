@@ -10,20 +10,38 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 	int id;
 	String fileName;
 	String path;
+	String relativePath;
 	String content;
 	int totalLines;
 	ProductRelease fromPRelease; 
 
-	HashMap <Integer,String> featureToCodeMapping = new HashMap<Integer, String>();
+	HashMap <Integer,ArrayList<String>> featureToCodeMapping = new HashMap <Integer,ArrayList<String>>();
 	ArrayList<Feature> featureList= new ArrayList<Feature>();
+	ArrayList<VariationPoint> variationPoints = new ArrayList<VariationPoint>();
 	
-	public ProductAssetFileAnnotated(int id, String fileName, String path, String content, int totalLines, ProductRelease pr ) {
+	public ProductAssetFileAnnotated(int id, String fileName, String path, String content, int totalLines, ProductRelease pr , String relativepath) {
 		this.id= id;
 		this.fileName=fileName;
 		this.path = path;
 		this.content = content;
 		this.totalLines = totalLines;
 		this.fromPRelease = pr;
+		this.relativePath = relativepath;
+	}
+
+
+	public String getRelativePath() {
+		return relativePath;
+	}
+
+
+	public void setRelativePath(String relativePath) {
+		this.relativePath = relativePath;
+	}
+
+
+	public ArrayList<VariationPoint> getVariationPoints() {
+		return variationPoints;
 	}
 
 
@@ -57,13 +75,13 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 	}
 
 
-	public HashMap<Integer, String> getFeatureToCodeMapping() {
+	public HashMap <Integer,ArrayList<String>> getFeatureToCodeMapping() {
 		return featureToCodeMapping;
 	}
 
 
 	public void setFeatureToCodeMapping(
-			HashMap<Integer, String> featureToCodeMapping) {
+			HashMap <Integer,ArrayList<String>> featureToCodeMapping) {
 		this.featureToCodeMapping = featureToCodeMapping;
 	}
 
@@ -106,5 +124,10 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 	public String getFileName() {
 		
 		return fileName;
+	}
+
+
+	public void setVariationPoints(ArrayList<VariationPoint> variationPoints) {
+		this.variationPoints = variationPoints;
 	}
 }

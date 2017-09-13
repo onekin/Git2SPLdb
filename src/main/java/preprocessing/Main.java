@@ -29,7 +29,7 @@ public class Main implements Study {
 	public static String productRepo;
 	public static String pathToResources; //Users/Onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resource/alluvial/sankey.csv
 	
-	public static String pathToWhereCustomizationsAreComputed;//"input"
+	public static String pathToWhereCustomizationsAreComputed;//"input", or, src/onekin
 		
 		/**Settings for Git repos and annotation based SPLs*/
 	
@@ -37,7 +37,7 @@ public class Main implements Study {
 		public static String coreAssetsBranchPatternName="master";
 		public static String coreAssetsReleaseName="baseline";
 		public static String productsReleaseName="product";
-		public final static String annotationPatternBeginning= "pv:hasFeature";//pv:hasFeature
+		public final static String annotationPatternBeginning= "hasFeature";//pv:hasFeature
 		public final static String annotationPatternEnd="PV:ENDCOND";//"PV:ENDCOND";
 	
 
@@ -99,16 +99,20 @@ public class Main implements Study {
 
 
 	private void printing() {
-		printCustomizations(); printPP(); printFilesInRelease(); printlnFeatures(); 
-	 	System.out.println("Core Asset counter:" +utils.Utils.getCoreAssetFileCounter());
-	 	System.out.println("Product Asset counter :" +utils.Utils.getProductAssetFileCounter());
-	 	for(int i=0; i< 2; i++){
+	
+	 	printCustomizations();
+		//printPP(); printFilesInRelease(); printlnFeatures(); 
+		//printCoreAssetsAndVariationPoints();
+		
+	 	//System.out.println("Core Asset counter:" +utils.Utils.getCoreAssetFileCounter());
+	 	//System.out.println("Product Asset counter :" +utils.Utils.getProductAssetFileCounter());
+	 	for(int i=0; i< spl.getCoreAssetBaselineSize(); i++){
 	 		ArrayList<SourceCodeFile> assets = spl.getCoreAssetBaseline(i).getCoreAssetFiles();
 	 		for (int j=0; j< assets.size(); j++){
 	 			System.out.println("ASSET ID:"+assets.get(j).getId());
+	 			//System.out.println("Feature-to-code:"+assets.get(j).getFeatureToCodeMapping());
 	 		}
 	 	}
-		
 	}
 
 	private void printlnFeatures() {
@@ -132,9 +136,9 @@ public class Main implements Study {
 			if(ca.getFileName().equals("Weather Station User Manual.xml")){
 				System.out.println("RELEASE:" +p.getReleases().get(1).getIdRelease());
 				System.out.println("File number:" +i);
-			  System.out.println("File path:" +ca.getPath());
-			  System.out.println("File name:" +ca.getFileName());
-			  System.out.println("Content: \n "+ ca.getContent());
+				System.out.println("File path:" +ca.getPath());
+				System.out.println("File name:" +ca.getFileName());
+				System.out.println("Content: \n "+ ca.getContent());
 			}
 			i++;
 		}
@@ -149,7 +153,8 @@ public class Main implements Study {
 		.process(new MineBaselines(), new CSVFile (pathToResources+"/spl-data/baselines.csv"))
 		.mine();
 		System.out.println("Finished processing CoreAsset Baselines");
-	//	System.out.println(spl.getCoreAssetBaseline(0).getCoreAsset(0).getContent());
+		
+		//System.out.println(spl.getCoreAssetBaseline(0).getCoreAsset(spl.getCoreAssetBaseline(0).getCoreAssetFiles().size()-1).getFeatureToCodeMapping());
 		
 	}
 
@@ -163,9 +168,7 @@ public class Main implements Study {
 		.mine();
 		
 	}
-	
-	
-	
+		
 	/****public List<ChangeSet> getCommitIDsToCommits(SCM scm, List<String> commits) {
 		List<ChangeSet> all = scm.getChangeSets();
 	
@@ -174,8 +177,7 @@ public class Main implements Study {
 			if(commits.contains(cs.getId())) {
 				filtered.add(cs);
 			}
-		}
-		
+		}		
 		return filtered;
 	}****/
 		
@@ -200,8 +202,6 @@ public class Main implements Study {
 		    MineProductCustomizations mineCust = new MineProductCustomizations(productRelease);
 		    commitCustomizationsDetails.addAll( mineCust.mine(GitRepository.singleProject(productRepo), GitRepository.singleProject(productRepo).getScm().getCommit(cs.getId()), new CSVFile (pathToResources+"/spl-data/customizations-"+name+"+.csv")));
 		}
-		//HERE WE HAVE ALL CUSTOMIZATION DETAILS for the release into list "commitCustomizationsDetails"
-	//	productRelease.getCustomizations().addAll(commitCustomizationsDetails);
 	}
 	
 	private void printCustomizations() {
@@ -228,13 +228,17 @@ public class Main implements Study {
 					Customization cust;
 					while(ite.hasNext()){
 						cust = ite.next();
+						String expression = null;
+						if(cust.getVp()!=null)
+							expression = cust.getVp().getExpression();
+						
 						System.out.println(
-								//"ID:"+cust.getCustomizationId()+"\n"+
+								//"ID:"+cust.get()+"\n"+
 								"In release: " +cust.getInRelease().getIdRelease()+"\n"+
 								"Product file: "+cust.getProductFile().getFileName()+"\n"+
 								"Core Asset file: "+cust.getCoreAssetFile().getFileName()+"\n"+
-								"Feature modified: "+cust.getFeatureModifiedName() +"\n"+
 								"Operation: "+cust.getOperation()+"\n"+
+								"VP expression involved:" +expression+"\n"+
 								"LineChanged: "+cust.getLineOfCodeModified()+"\n-------------------");		
 					}
 					

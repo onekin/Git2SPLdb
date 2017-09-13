@@ -11,12 +11,15 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 	String content;
 	int totalLines;
 	CoreAssetBaseline fromBaseline;
+	String relativePath;
 
 
-	HashMap <Integer,String> featureToCodeMapping = new HashMap<Integer, String>();
+	HashMap <Integer,ArrayList<String>> featureToCodeMapping = new HashMap<Integer, ArrayList<String>>();
 	ArrayList<Feature> featureList= new ArrayList<Feature>();
+	ArrayList<VariationPoint> variationPoints;
 	
-	public CoreAssetFileAnnotated(int id, String fileName, String path, String content, int totalLines, CoreAssetBaseline CABaseline) {
+	
+	public CoreAssetFileAnnotated(int id, String fileName, String path, String content, int totalLines, CoreAssetBaseline CABaseline, String relativePath) {
 
 		this.id= id;
 		this.fileName=fileName;
@@ -24,6 +27,7 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 		this.content = content;
 		this.totalLines = totalLines; 
 		this.fromBaseline = CABaseline ;
+		this.relativePath = relativePath;
 	}
 	
 	public int getId() {
@@ -74,12 +78,7 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 		this.content = content;
 	}
 
-	public HashMap<Integer, String> getFeatureToCodeMapping() {
-		return featureToCodeMapping;
-	}
-
-	public void setFeatureToCodeMapping(
-			HashMap<Integer, String> featureToCodeMapping) {
+	public void setFeatureToCodeMapping(HashMap<Integer, ArrayList<String>> featureToCodeMapping) {
 		this.featureToCodeMapping = featureToCodeMapping;
 	}
 
@@ -87,5 +86,28 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 		return featureList;
 	}
 
+	public ArrayList<VariationPoint> getVariationPoints() {
 
+		return variationPoints;
+	}
+
+	public HashMap <Integer,ArrayList<String>> getFeatureToCodeMapping() {
+		return featureToCodeMapping;
+	}
+	public void setVariationPoints(ArrayList<VariationPoint> variationPoints) {
+		this.variationPoints = variationPoints;
+	}
+
+	public String getRelativePath() {
+		return relativePath;
+	}
+
+	public void setRelativePath(String relativePath) {
+		this.relativePath = relativePath;
+	}
+
+	public void setFeatureList(ArrayList<Feature> featureList) {
+		this.featureList = featureList;
+	}
+	
 }
