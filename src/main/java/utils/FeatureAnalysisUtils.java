@@ -296,7 +296,7 @@ Iterator<String> itNames = listFeatures.iterator();
 					if (nestingLevel==0)
 					  vp = new VariationPoint(Utils.getVPId(), lines[i],i+1,null);//newVariation point
 					else vp = new VariationPoint(Utils.getVPId(), lines[i],i+1,currentVPsInNestingLevels.get(nestingLevel-1));
-					vp.setFeatures(findFeaturesByNames( extractAllFeaturesFromTheExpression (lines[i]),baseline) );
+					vp.setFeatures(findFeaturesByNames(extractAllFeaturesFromTheExpression (lines[i]),baseline) );
 					vp.setNewFeatures(findNewFeaturesByNames(extractAllFeaturesFromTheExpression (lines[i]),baseline) );
 					variationPoints.add(vp);
 					currentVPsInNestingLevels.put(nestingLevel, vp);				
@@ -336,7 +336,8 @@ Iterator<String> itNames = listFeatures.iterator();
 				" LineInit:"+ var.getLineInit() +
 				" LineEnd:"+ var.getLineEnd() +
 				" Parent?:"+ var.getParentVP()+ 
-				" Body:"+ var.getBody() );
+				" Body:"+ var.getBody() +
+				" \nfeatures:"+ var.getFeatures().toString());
 			}		
 		} catch (Exception e) {
 			e.printStackTrace();

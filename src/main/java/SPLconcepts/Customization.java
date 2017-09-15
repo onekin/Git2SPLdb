@@ -33,8 +33,7 @@ public class Customization{
 			this.isNewAsset = true;
 			System.out.print("NEW ASSSSSSETTT \n"+productFile.getFileName());
 		} 
-			
-		
+
 	}
 
 	

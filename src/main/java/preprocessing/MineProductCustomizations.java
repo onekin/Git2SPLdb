@@ -31,7 +31,7 @@ public class MineProductCustomizations{
 	}
 
 
-	public ArrayList<Customization> mine(SCMRepository repo, Commit commit, PersistenceMechanism writer) {//for each commit belonging to the product release at hand
+	public ArrayList<Customization> mine    (SCMRepository repo, Commit commit, PersistenceMechanism writer) {//for each commit belonging to the product release at hand
 		if(headerFlag==false){
 			headerFlag=true;
 			writer.write("Product","Feature","File","Churn");
