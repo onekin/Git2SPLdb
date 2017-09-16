@@ -33,7 +33,7 @@ public class FeatureAnalysisUtils {
 		if(map==null) return null;
 		 
 		Iterator<DiffLine> diffLineIterator = lines.iterator(); //iteratate diffs 
-		
+		ProductAssetFileAnnotated paModified = utils.FileUtils.getProductAssetByFilePath(path, pr);
 		int lineNumber=0;
 		String modType=null;
 		DiffLine aux=null;
@@ -47,7 +47,7 @@ public class FeatureAnalysisUtils {
 			featureNames= map.get(lineNumber);
 			
 		   	if(modType!="KEPT"){//a line that serves as diff context 
-		   		ProductAssetFileAnnotated paModified = utils.FileUtils.getProductAssetByFilePath(path, pr);
+		   		
 		   		SourceCodeFile ca = utils.FileUtils.getCoreAssetByProductAssetPath(paModified.getRelativePath(), pr);
 		   		VariationPoint vp = getVariationPointOfChangedAssetLine(paModified.getRelativePath(), pr, lineNumber);
 		   		

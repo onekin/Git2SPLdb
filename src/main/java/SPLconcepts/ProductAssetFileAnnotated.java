@@ -14,6 +14,8 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 	String content;
 	int totalLines;
 	ProductRelease fromPRelease; 
+	String relative_diff;
+	String absolute_diff;
 
 	HashMap <Integer,ArrayList<String>> featureToCodeMapping = new HashMap <Integer,ArrayList<String>>();
 	ArrayList<Feature> featureList= new ArrayList<Feature>();
@@ -129,5 +131,25 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 
 	public void setVariationPoints(ArrayList<VariationPoint> variationPoints) {
 		this.variationPoints = variationPoints;
+	}
+
+
+	public String getRelative_diff() {
+		return relative_diff;
+	}
+
+
+	public void setRelative_diff(String relative_diff) {
+		this.relative_diff = relative_diff;
+	}
+
+
+	public String getAbsolute_diff() {
+		return absolute_diff;
+	}
+
+
+	public void setAbsolute_diff(String absolute_diff) {
+		this.absolute_diff = absolute_diff;
 	}
 }

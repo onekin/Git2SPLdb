@@ -232,7 +232,7 @@ public class Main implements Study {
 								//"ID:"+cust.get()+"\n"+
 								"In release: " +cust.getInRelease().getIdRelease()+"\n"+
 								"Product file: "+cust.getProductFile().getFileName()+"\n"+
-								"Core Asset file: "+cust.getCoreAssetFile().getFileName()+"\n"+
+							//	"Core Asset file: "+cust.getCoreAssetFile().getFileName()+"\n"+
 								"Operation: "+cust.getOperation()+"\n"+
 								"VP expression involved:" +expression+"\n"+
 								"LineChanged: "+cust.getLineOfCodeModified()+"\n-------------------");		

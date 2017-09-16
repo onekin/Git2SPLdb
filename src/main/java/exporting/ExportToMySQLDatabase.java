@@ -270,7 +270,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 
 
 	private String generateInsertsFor_Product_Asset_table() {
-		String insert="INSERT INTO ProductAsset (idProductAsset, name, path, content, size, ProductRelease_idRelease) VALUES\n";
+		String insert="INSERT INTO ProductAsset (idProductAsset, name, path, content, size, ProductRelease_idRelease, absolute_diff, relative_diff) VALUES\n";
 		
 		
 		ProductPortfolio pp;
@@ -291,7 +291,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 					assets = releases.get(j).getProductAssets();
 					for (int z=0; z < assets.size(); z++){
 				
-						insert=insert.concat("("+assets.get(z).getId() +",'"+assets.get(z).getFileName()+"','"+assets.get(z).getPath()+"','"+encodeToBase64 (assets.get(z).getContent())+"',"+assets.get(z).getTotalLines()+",'"+releases.get(j).getIdRelease()+"')");
+						insert=insert.concat("("+assets.get(z).getId() +",'"+assets.get(z).getFileName()+"','"+assets.get(z).getPath()+"','"+encodeToBase64 (assets.get(z).getContent())+"',"+assets.get(z).getTotalLines()+",'"+releases.get(j).getIdRelease()+"','"+encodeToBase64(assets.get(z).getAbsolute_diff())+"','"+encodeToBase64(assets.get(z).getRelative_diff())+"')");
 						if (z+1 < assets.size()) insert=insert.concat(",\n");
 					}
 					if (j +1 < releases.size()) insert=insert.concat(",\n");
