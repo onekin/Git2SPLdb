@@ -126,6 +126,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
 			products = pp.getProducts();
+			if (products==null) continue;
 			for (int i=0; i < products.size(); i++){
 				 releases = products.get(i).getReleases();
 				for (int j=0; j< releases.size(); j++){
@@ -150,7 +151,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 
 	private String generateInsertsFor_VariationPoint_table() {
 		String insert="";
-		String header="INSERT INTO Variationpoint (idvariationpoint, expression, body, line_init, line_end, idproductasset, idcoreasset, greatest_parent_id) VALUES\n";
+		String header="INSERT INTO Variationpoint (idvariationpoint, expression, body, line_init, line_end, idproductasset, idcoreasset, parent) VALUES\n";
 		//for each core asset in  baselines
 		//generate!!!
 		
@@ -186,6 +187,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
 			products = pp.getProducts();
+			if(products==null) continue;
 			for (int i=0; i < products.size(); i++){
 				 releases = products.get(i).getReleases();
 				for (int j=0; j< releases.size(); j++){
@@ -233,6 +235,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
 			products = pp.getProducts();
+			if (products== null) continue;
 			for (int i=0; i < products.size(); i++){
 				insert=insert.concat("("+products.get(i).getId()+",'"+products.get(i).getBranchName()+"','"+products.get(i).getInPortfolio().getPortfolioID()+"')");
 				if (i +1 < products.size()) insert=insert.concat(",\n");
@@ -254,6 +257,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
 			products = pp.getProducts();
+			if(products==null) continue;
 			for (int i=0; i < products.size(); i++){
 				 releases = products.get(i).getReleases();
 				for (int j=0; j< releases.size(); j++){
@@ -284,7 +288,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
 			products = pp.getProducts();
-			
+			if(products==null) continue;
 			for (int i=0; i < products.size(); i++){
 				 releases = products.get(i).getReleases();
 				for (int j=0; j< releases.size(); j++){
@@ -321,7 +325,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
 			products = pp.getProducts();
-			
+			if(products==null) continue;
 			for (int i=0; i < products.size(); i++){
 				 releases = products.get(i).getReleases();
 				for (int j=0; j< releases.size(); j++){
@@ -489,6 +493,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 	private String encodeToBase64(String str){
 		// encode data on your side using BASE64
 		//https://stackoverflow.com/questions/19743851/base64-java-encode-and-decode-a-string
+		if (str ==null) return null;
 		String   bytesEncoded = Base64.encode(str.getBytes());
 	//	System.out.println("ecncoded value is " + new String(bytesEncoded ));
 		// Decode data on other side, by processing encoded data

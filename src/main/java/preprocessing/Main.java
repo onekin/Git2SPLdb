@@ -79,14 +79,16 @@ public class Main implements Study {
 	//	System.out.println(Main.spl.getProductPortfolio(0).getProductFromPortfolio(0));
 		
 		for(int i=0; i< Main.spl.getProductPortfoliosSize(); i++){
+			if(spl.getProductPortfolio(i).getProducts()==null) continue;
 			for (int j=0; j < spl.getProductPortfolio(i).getNumberOfProductsInPortfolio();j++){//for each product in porfolio, execute mineCustomizations
+				
 				for (int z=0; z < spl.getProductPortfolio(i).getProductFromPortfolio(j).getReleases().size(); z++)
 					mineCustomizationEffort(spl.getProductPortfolio(i).getProductFromPortfolio(j).getReleases().get(z),"Release-"+spl.getProductPortfolio(i).getProductFromPortfolio(j).getReleases().get(z).getIdRelease()+z);			
 			}
 		}
 		
 		//3. print info
-	 	printCustomizations();
+	 	//printCustomizations();
 		//printPP(); printFilesInRelease(); printlnFeatures(); 
 		//printCoreAssetsAndVariationPoints();
 		
