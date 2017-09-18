@@ -163,9 +163,10 @@ public static HashMap <Integer,ArrayList <String>>  extractFeatureMapFromFile (S
 						
 				}else{
 					if (lines[i].contains(Main.annotationPatternEnd)){
+						
 						nestingLevel--;
 					}
-					else{//no pattern has been found; we might be inside VPs (nested or not)
+					//else{//no pattern has been found; we might be inside VPs (nested or not)
 						if(nestingLevel==-1){
 							listFeatures = new ArrayList<String>();
 						}
@@ -179,7 +180,7 @@ public static HashMap <Integer,ArrayList <String>>  extractFeatureMapFromFile (S
 								listFeatures.addAll(extractAllFeaturesFromTheExpression(currentExpressionsInNestedLevels.get(k)));
 						}
 											
-					}
+				//	}
 				}
 				
 				featureToCodeMapping.put(counter,listFeatures);
@@ -331,6 +332,7 @@ Iterator<String> itNames = listFeatures.iterator();
 			System.out.println("------ Variation Points ---------");
 			while (it.hasNext()) {
 				var = it.next();
+				
 				System.out.println("Var "+var.getIdVP()+ 
 				" Expression:"+var.getExpression() +
 				" LineInit:"+ var.getLineInit() +

@@ -396,6 +396,25 @@ inner join productrelease pr on pr.idrelease=pa.productrelease_idRelease
 inner join product p on p.idProduct=pr.product_idproduct
 group by f.name, pr.idrelease, pa.idproductasset, vp.idvariationpoint;
 
+
+-- -----------------------------------------------------
+-- View `SPLCustombd`.`customizationsByVPandPR`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `SPLCustombd`.`customizationsByFeature`;
+USE `SPLCustombd`;
+Create  OR REPLACE view  `customizationsByFeature` AS
+
+select UUID() as 'id', ca.idcoreasset as coreasset_id, ca.name as ca_name, f.idfeature as feature_id, pr.idrelease as product_release, count(*) as amount
+
+from coreasset ca inner join customization c on ca.idcoreasset=c.coreasset_idcoreasset
+inner join variationpoint vp on vp.idvariationpoint = c.idvariationpoint
+inner join feature_in_variationpoint fvp on fvp.idvariationpoint = vp.idvariationpoint
+inner join feature f on f.idfeature = fvp.idfeature
+inner join productasset pa on pa.idproductasset=c.productasset_idproductasset
+inner join productrelease pr on pr.idrelease=pa.productrelease_idrelease
+group by ca.idcoreasset, f.idfeature, pr.idrelease;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
