@@ -1,1 +1,6 @@
 /spl-data/*
+/spl-data
+/spl-data/data-inserts.sql
+/spl-data/olapInserts.sql
+/spl-data/olapCustoms.mwb.bak
+/spl-data/diagram.mwb.bak
