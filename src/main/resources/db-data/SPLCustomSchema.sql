@@ -360,8 +360,7 @@ DROP TABLE IF EXISTS `SPLCustombd`.`customizationsbyoperation`;
 USE `SPLCustombd`;
 create  OR REPLACE view customizationsbyoperation AS
 
-select UUID() as 'id', pa.name as 'pa_name', p.idproduct as 'idproduct', pa.idproductasset as 'idproductasset', ca.idcoreasset as 'idcoreasset'
-p.name as 'product_name', pa.path, pr.idrelease as 'idrelease', c.operation as 'operation', count(c.operation) as 'locs' , ca.size as 'ca_size', pa.size as 'pa_size',  pa.size-ca.size as 'delta'
+select UUID() as 'id', pa.name as 'pa_name', p.idproduct as 'idproduct', pa.idproductasset as 'idproductasset', ca.idcoreasset as 'idcoreasset', p.name as 'product_name', pa.path, pr.idrelease as 'idrelease', c.operation as 'operation', count(c.operation) as 'locs' , ca.size as 'ca_size', pa.size as 'pa_size',  pa.size-ca.size as 'delta'
 from productasset pa
 inner join customization c on c.productasset_idproductasset = pa.idproductasset
 inner join productrelease pr on pr.idrelease = pa.productrelease_idrelease
