@@ -295,7 +295,7 @@ USE `SPLCustombd` ;
 CREATE TABLE IF NOT EXISTS `SPLCustombd`.`Customizationgbproductfeature` (`'id'` INT, `'idbaseline'` INT, `'featuremodified'` INT, `'idproduct'` INT, `'name'` INT, `'idrelease'` INT, `churn` INT);
 
 -- -----------------------------------------------------
--- Placeholder table for view `SPLCustombd`.`customizationbgfile`
+-- Placeholder table for view `SPLCustombd`.`customizationbg`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `SPLCustombd`.`customizationbgfile` (`'id'` INT, `'idcoreasset'` INT, `'path'` INT, `'cafilename'` INT, `'idbaseline'` INT, `'featuremodified'` INT, `'churn'` INT, `'numberofproductscustomizing'` INT);
 
@@ -398,13 +398,12 @@ group by f.name, pr.idrelease, pa.idproductasset, vp.idvariationpoint;
 
 
 -- -----------------------------------------------------
--- View `SPLCustombd`.`customizationsByVPandPR`
+-- View `SPLCustombd`.`customizationsByFeature`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `SPLCustombd`.`customizationsByFeature`;
 USE `SPLCustombd`;
 Create  OR REPLACE view  `customizationsByFeature` AS
-
-select UUID() as 'id', ca.idcoreasset as coreasset_id, ca.name as ca_name, f.idfeature as feature_id, pr.idrelease as product_release, count(*) as amount
+select UUID() as 'id', ca.idcoreasset as 'coreassetid', ca.name as 'caname',ca.path as 'capath', f.idfeature as 'featureid', pr.idrelease as 'pr', count(*) as 'amount'
 
 from coreasset ca inner join customization c on ca.idcoreasset=c.coreasset_idcoreasset
 inner join variationpoint vp on vp.idvariationpoint = c.idvariationpoint
@@ -413,6 +412,118 @@ inner join feature f on f.idfeature = fvp.idfeature
 inner join productasset pa on pa.idproductasset=c.productasset_idproductasset
 inner join productrelease pr on pr.idrelease=pa.productrelease_idrelease
 group by ca.idcoreasset, f.idfeature, pr.idrelease;
+
+
+-- -----------------------------------------------------
+-- View `SPLCustombd`.`customs_added_by_products_to_coreassets`
+-- -----------------------------------------------------
+CREATE VIEW `customs_added_by_products_to_coreassets` AS
+
+select UUID() as 'id', ca.idcoreasset as 'idcoreasset', pa.idproductasset as 'idproductasset', pr.idrelease as 'pr', count(c.idcustomization) as 'addedlines'
+from customization c inner join coreasset ca 
+on c.coreasset_idcoreasset = ca.idcoreasset
+inner join productasset pa on pa.idproductasset = c.productasset_idproductasset
+inner join productrelease pr on pr.idrelease = pa.productrelease_idrelease
+where operation='added'
+group by ca.idcoreasset, pa.idproductasset, pr.idrelease;
+
+-- -----------------------------------------------------
+-- View `SPLCustombd`.`customs_removed_by_products_to_coreassets`
+-- -----------------------------------------------------
+CREATE VIEW `customs_removed_by_products_to_coreassets` AS
+
+select UUID() as 'id', ca.idcoreasset as 'idcoreasset', pa.idproductasset as 'idproductasset', pr.idrelease as 'pr', count(c.idcustomization) as 'deletedlines'
+from customization c inner join coreasset ca 
+on c.coreasset_idcoreasset = ca.idcoreasset
+inner join productasset pa on pa.idproductasset = c.productasset_idproductasset
+inner join productrelease pr on pr.idrelease = pa.productrelease_idrelease
+where operation='removed'
+group by ca.idcoreasset, pa.idproductasset, pr.idrelease
+
+
+
+-- -----------------------------------------------------
+-- View `SPLCustombd`.`customizationsgbprandfile`
+-- -----------------------------------------------------
+CREATE VIEW `customizationsgbprandfile` AS
+
+select UUID() as 'id', pa.name as 'pa_name', p.idproduct as 'idproduct', pa.idproductasset as 'idproductasset', ca.idcoreasset as 'idcoreasset',
+ p.name as 'product_name', pa.path, pr.idrelease as 'idrelease', count(c.idcustomization) as 'churn' 
+from productasset pa
+inner join customization c on c.productasset_idproductasset = pa.idproductasset
+inner join productrelease pr on pr.idrelease = pa.productrelease_idrelease
+inner join product p on p.idproduct = pr.product_idproduct
+inner join coreasset ca on ca.idcoreasset = c.coreasset_idcoreasset
+group by pa.idproductasset, pr.idrelease , ca.idcoreasset;
+
+
+
+-- -----------------------------------------------------
+-- View `SPLCustombd`.`coreassetsandfeatures`
+-- -----------------------------------------------------
+CREATE VIEW `coreassetsandfeatures` AS
+
+select UUID() as 'id', b.idbaseline as 'baseline', ca.idcoreasset as 'idcoreasset', ca.name as 'caname', ca.path as 'capath', f.idfeature as 'featureid', ca.size as 'size'
+
+from coreasset ca inner join coreasset_has_feature caf on caf.coreasset_idcoreasset = ca.idcoreasset
+inner join feature f on f.idfeature = caf.feature_idfeature
+inner join coreassetbaseline b on b.idbaseline=ca.coreassetbaseline_idbaseline;
+
+Create view  customizationsByVPandPRandOperation as
+
+select UUID() as 'id', pr.idRelease as 'inproduct', pa.idproductasset as 'filechanged', pa.name as 'name',
+ f.name as 'featureimpacted', c.operation as 'operation', count(c.idCustomization) as 'locs', vp.idvariationPoint, vp.expression, pa.content, (vp.line_end - vp.line_init) as 'vpsize'
+
+from  customization c inner join variationpoint vp on vp.idvariationpoint = c.idvariationpoint
+inner join feature_in_variationpoint fvp on  fvp.idvariationpoint=vp.idvariationpoint
+inner join feature f on fvp.idfeature = f.idfeature
+inner join productasset pa on pa.idProductasset=c.productasset_idproductasset
+inner join productrelease pr on pr.idrelease=pa.productrelease_idRelease
+inner join product p on p.idProduct=pr.product_idproduct
+group by f.name, pr.idrelease, pa.idproductasset, vp.idvariationpoint, operation;
+
+
+
+
+
+CREATE VIEW `customizationsgbprandfile` AS
+
+select UUID() as 'id', pa.name as 'pa_name', p.idproduct as 'idproduct', pa.idproductasset as 'idproductasset', ca.idcoreasset as 'idcoreasset',
+ p.name as 'product_name', pa.path, pr.idrelease as 'idrelease', count(c.idcustomization) as 'churn' 
+from productasset pa
+inner join customization c on c.productasset_idproductasset = pa.idproductasset
+inner join productrelease pr on pr.idrelease = pa.productrelease_idrelease
+inner join product p on p.idproduct = pr.product_idproduct
+inner join coreasset ca on ca.idcoreasset = c.coreasset_idcoreasset
+group by pa.idproductasset, pr.idrelease , ca.idcoreasset;
+
+
+CREATE VIEW `customs_removed_by_products_to_features` AS
+
+select UUID() as 'id', ca.idcoreasset as 'idcoreasset', ca.name as 'assetname', ca.path as 'assetpath', pa.idproductasset as 'idproductasset', pr.idrelease as 'pr', f.idfeature as 'idfeature', count(c.idcustomization) as 'deletedlines'
+from customization c inner join coreasset ca 
+on c.coreasset_idcoreasset = ca.idcoreasset
+inner join productasset pa on pa.idproductasset = c.productasset_idproductasset
+inner join productrelease pr on pr.idrelease = pa.productrelease_idrelease
+inner join variationpoint vp on vp.idvariationpoint = c.idvariationpoint
+inner join feature_in_variationpoint fvp on fvp.idvariationpoint = vp.idvariationpoint
+inner join feature f on f.idfeature = fvp.idfeature
+where operation='removed'
+group by ca.idcoreasset, pa.idproductasset, pr.idrelease, f.idfeature;
+
+
+CREATE VIEW `customs_added_by_products_to_features` AS
+
+select UUID() as 'id', ca.idcoreasset as 'idcoreasset',  ca.name as 'assetname', ca.path as 'assetpath', pa.idproductasset as 'idproductasset', pr.idrelease as 'pr', f.idfeature as 'idfeature', count(c.idcustomization) as 'addedlines'
+from customization c inner join coreasset ca 
+on c.coreasset_idcoreasset = ca.idcoreasset
+inner join productasset pa on pa.idproductasset = c.productasset_idproductasset
+inner join productrelease pr on pr.idrelease = pa.productrelease_idrelease
+inner join variationpoint vp on vp.idvariationpoint = c.idvariationpoint
+inner join feature_in_variationpoint fvp on fvp.idvariationpoint = vp.idvariationpoint
+inner join feature f on f.idfeature = fvp.idfeature
+where operation='added'
+group by ca.idcoreasset, pa.idproductasset, pr.idrelease, f.idfeature;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
