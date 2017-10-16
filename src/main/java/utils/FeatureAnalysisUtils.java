@@ -33,7 +33,7 @@ public class FeatureAnalysisUtils {
 		if(map==null) return null;
 		 
 		Iterator<DiffLine> diffLineIterator = lines.iterator(); //iteratate diffs 
-		
+		ProductAssetFileAnnotated paModified = utils.FileUtils.getProductAssetByFilePath(path, pr);
 		int lineNumber=0;
 		String modType=null;
 		DiffLine aux=null;
@@ -47,7 +47,7 @@ public class FeatureAnalysisUtils {
 			featureNames= map.get(lineNumber);
 			
 		   	if(modType!="KEPT"){//a line that serves as diff context 
-		   		ProductAssetFileAnnotated paModified = utils.FileUtils.getProductAssetByFilePath(path, pr);
+		   		
 		   		SourceCodeFile ca = utils.FileUtils.getCoreAssetByProductAssetPath(paModified.getRelativePath(), pr);
 		   		VariationPoint vp = getVariationPointOfChangedAssetLine(paModified.getRelativePath(), pr, lineNumber);
 		   		
@@ -163,9 +163,10 @@ public static HashMap <Integer,ArrayList <String>>  extractFeatureMapFromFile (S
 						
 				}else{
 					if (lines[i].contains(Main.annotationPatternEnd)){
+						
 						nestingLevel--;
 					}
-					else{//no pattern has been found; we might be inside VPs (nested or not)
+					//else{//no pattern has been found; we might be inside VPs (nested or not)
 						if(nestingLevel==-1){
 							listFeatures = new ArrayList<String>();
 						}
@@ -179,7 +180,7 @@ public static HashMap <Integer,ArrayList <String>>  extractFeatureMapFromFile (S
 								listFeatures.addAll(extractAllFeaturesFromTheExpression(currentExpressionsInNestedLevels.get(k)));
 						}
 											
-					}
+				//	}
 				}
 				
 				featureToCodeMapping.put(counter,listFeatures);
@@ -296,7 +297,7 @@ Iterator<String> itNames = listFeatures.iterator();
 					if (nestingLevel==0)
 					  vp = new VariationPoint(Utils.getVPId(), lines[i],i+1,null);//newVariation point
 					else vp = new VariationPoint(Utils.getVPId(), lines[i],i+1,currentVPsInNestingLevels.get(nestingLevel-1));
-					vp.setFeatures(findFeaturesByNames( extractAllFeaturesFromTheExpression (lines[i]),baseline) );
+					vp.setFeatures(findFeaturesByNames(extractAllFeaturesFromTheExpression (lines[i]),baseline) );
 					vp.setNewFeatures(findNewFeaturesByNames(extractAllFeaturesFromTheExpression (lines[i]),baseline) );
 					variationPoints.add(vp);
 					currentVPsInNestingLevels.put(nestingLevel, vp);				
@@ -331,12 +332,14 @@ Iterator<String> itNames = listFeatures.iterator();
 			System.out.println("------ Variation Points ---------");
 			while (it.hasNext()) {
 				var = it.next();
+				
 				System.out.println("Var "+var.getIdVP()+ 
 				" Expression:"+var.getExpression() +
 				" LineInit:"+ var.getLineInit() +
 				" LineEnd:"+ var.getLineEnd() +
 				" Parent?:"+ var.getParentVP()+ 
-				" Body:"+ var.getBody() );
+				" Body:"+ var.getBody() +
+				" \nfeatures:"+ var.getFeatures().toString());
 			}		
 		} catch (Exception e) {
 			e.printStackTrace();

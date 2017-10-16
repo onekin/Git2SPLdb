@@ -26,7 +26,6 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		this.pathToDataFile = path;
 	}
 	
-	
 	public void export(){
 		
 		try{
@@ -39,13 +38,6 @@ public class ExportToMySQLDatabase implements ExportTarget {
 
 	}
 	
-
-
-	
-
-
-
-
 	private void generateInserts() {
 		String inserts0 ="";
 		ArrayList<String> allInserts = new ArrayList<String>();
@@ -126,6 +118,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
 			products = pp.getProducts();
+			if (products==null) continue;
 			for (int i=0; i < products.size(); i++){
 				 releases = products.get(i).getReleases();
 				for (int j=0; j< releases.size(); j++){
@@ -150,7 +143,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 
 	private String generateInsertsFor_VariationPoint_table() {
 		String insert="";
-		String header="INSERT INTO Variationpoint (idvariationpoint, expression, body, line_init, line_end, idproductasset, idcoreasset, greatest_parent_id) VALUES\n";
+		String header="INSERT INTO Variationpoint (idvariationpoint, expression, body, line_init, line_end, idproductasset, idcoreasset, parent) VALUES\n";
 		//for each core asset in  baselines
 		//generate!!!
 		
@@ -186,6 +179,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
 			products = pp.getProducts();
+			if(products==null) continue;
 			for (int i=0; i < products.size(); i++){
 				 releases = products.get(i).getReleases();
 				for (int j=0; j< releases.size(); j++){
@@ -211,20 +205,21 @@ public class ExportToMySQLDatabase implements ExportTarget {
 
 
 	private String generateInsertsFor_ProductPortfolio_Table() {
-		String insert="INSERT INTO ProductPortfolio (idPortfolio,SPL_idSPL, CoreAssetBAseline_idBaseline) VALUES\n";
+		String insert="";
+		String header = "INSERT INTO ProductPortfolio (idPortfolio,SPL_idSPL, CoreAssetBAseline_idBaseline) VALUES\n";
 		ArrayList<ProductPortfolio> list = Main.spl.getProductPortfolios();
 		
 		for (int i=0; i < list.size(); i++){
-			insert=insert.concat("('"+list.get(i).getPortfolioID()+"','"+Main.spl.getId()+"','"+list.get(i).getDerivedFrom().getId()+"')");
-			if(i+1 < list.size()) 	insert=insert.concat(",\n");
+			insert=insert.concat(header).concat("('"+list.get(i).getPortfolioID()+"','"+Main.spl.getId()+"','"+list.get(i).getDerivedFrom().getId()+"');\n");
+			
 		}		
-		insert=insert.concat(";\n");
 		return insert;
 	}
 
 
 	private String generateInsertsFor_Product_Table() {
-		String insert="INSERT INTO Product (idProduct, name, ProductPortfolio_idPortfolio) VALUES\n";
+		String insert="";
+		String header="INSERT INTO Product (idProduct, name, ProductPortfolio_idPortfolio) VALUES\n";
 		ProductPortfolio pp;
 
 		ArrayList<Product> products;
@@ -233,21 +228,19 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
 			products = pp.getProducts();
-			if(products!=null) {
-				for (int i=0; i < products.size(); i++){
-					insert=insert.concat("("+products.get(i).getId()+",'"+products.get(i).getBranchName()+"','"+products.get(i).getInPortfolio().getPortfolioID()+"')");
-					if (i +1 < products.size()) insert=insert.concat(",\n");
-				}
-				if (x +1 < portfolios.size()) insert=insert.concat(",\n");
+			if (products== null) continue;
+			for (int i=0; i < products.size(); i++){
+				insert=insert.concat(header).concat("("+products.get(i).getId()+",'"+products.get(i).getBranchName()+"','"+products.get(i).getInPortfolio().getPortfolioID()+"');\n");
 			}
 		}
-		insert=insert.concat(";\n");
+		
 		return insert;	
 	}
 
 
 	private String generateInsertsFor_Product_Release_Table() {
-		String insert="INSERT INTO ProductRelease (idRelease, releaseDate, Product_idProduct) VALUES\n";
+		String header="INSERT INTO ProductRelease (idRelease, releaseDate, Product_idProduct) VALUES\n";
+		String insert ="";
 		ProductPortfolio pp;
 		ArrayList<ProductRelease> releases;
 		ArrayList<Product> products;
@@ -256,26 +249,20 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
 			products = pp.getProducts();
-			if(products!=null) {
-				for (int i=0; i < products.size(); i++){
-					 releases = products.get(i).getReleases();
-					for (int j=0; j< releases.size(); j++){
-						insert=insert.concat("('"+releases.get(j).getIdRelease()+"','"+ convertDateToMysqlForm(releases.get(j).getReleaseDate())+"',"+releases.get(j).getFromProduct().getId()+")");
-						if (j +1 < releases.size()) insert=insert.concat(",\n");
-					}
-					if (i +1 < products.size()) insert=insert.concat(",\n");
-				}
-				if (x +1 < portfolios.size()) insert=insert.concat(",\n");
+			if(products==null) continue;
+			for (int i=0; i < products.size(); i++){
+				 releases = products.get(i).getReleases();
+				for (int j=0; j< releases.size(); j++)
+					insert=insert.concat(header).concat("('"+releases.get(j).getIdRelease()+"','"+ convertDateToMysqlForm(releases.get(j).getReleaseDate())+"',"+releases.get(j).getFromProduct().getId()+");\n");
 			}
 		}
-		insert=insert.concat(";\n");
 		return insert;	
 	}
 
 
 	private String generateInsertsFor_Product_Asset_table() {
-		String insert="INSERT INTO ProductAsset (idProductAsset, name, path, content, size, ProductRelease_idRelease) VALUES\n";
-		
+		String insert="";
+		String header = "INSERT INTO ProductAsset (idProductAsset, name, path, content, size, ProductRelease_idRelease, absolute_diff, relative_diff) VALUES\n";
 		
 		ProductPortfolio pp;
 		ArrayList<ProductRelease> releases ;
@@ -288,23 +275,16 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
 			products = pp.getProducts();
-
-			
+			if(products==null) continue;
 			for (int i=0; i < products.size(); i++){
 				 releases = products.get(i).getReleases();
 				for (int j=0; j< releases.size(); j++){
 					assets = releases.get(j).getProductAssets();
-					for (int z=0; z < assets.size(); z++){		
-						insert=insert.concat("("+assets.get(z).getId() +",'"+assets.get(z).getFileName()+"','"+assets.get(z).getPath()+"','"+encodeToBase64 (assets.get(z).getContent())+"',"+assets.get(z).getTotalLines()+",'"+releases.get(j).getIdRelease()+"')");
-						if (z+1 < assets.size()) insert=insert.concat(",\n");
-					}
-					if (i+1  < products.size() ) insert=insert.concat(",\n");
+					for (int z=0; z < assets.size(); z++)
+						insert=insert.concat(header).concat("("+assets.get(z).getId() +",'"+assets.get(z).getFileName()+"','"+assets.get(z).getPath()+"','"+encodeToBase64 (assets.get(z).getContent())+"',"+assets.get(z).getTotalLines()+",'"+releases.get(j).getIdRelease()+"','"+encodeToBase64(assets.get(z).getAbsolute_diff())+"','"+encodeToBase64(assets.get(z).getRelative_diff())+"');\n");
 				}
-				if (x+1 <  portfolios.size())  insert=insert.concat(",\n");
 			}
 		}
-
-		insert=insert.concat(";\n");
 		return insert;	
 	}
 
@@ -324,7 +304,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
 			products = pp.getProducts();
-			
+			if(products==null) continue;
 			for (int i=0; i < products.size(); i++){
 				 releases = products.get(i).getReleases();
 				for (int j=0; j< releases.size(); j++){
@@ -368,8 +348,8 @@ public class ExportToMySQLDatabase implements ExportTarget {
 
 
 	private String generateInsertsFor_CoreAsset_has_Feature_Table() {
-		String insert="INSERT INTO CoreAsset_has_Feature (Feature_idFeature,CoreAsset_idCoreAsset) VALUES\n";
-		
+		String insert="";
+		String header = "INSERT INTO CoreAsset_has_Feature (Feature_idFeature,CoreAsset_idCoreAsset) VALUES\n";
 		ArrayList<CoreAssetBaseline> baselines = Main.spl.getCoreAssetBaselines();
 		ArrayList<SourceCodeFile> caList = null;
 		
@@ -379,41 +359,39 @@ public class ExportToMySQLDatabase implements ExportTarget {
 				ArrayList<Feature> features = caList.get(j).getFeatureList();
 				
 				for (int z=0; z < features.size(); z++){
-					insert=insert.concat("('"+features.get(z).getIdFeature()+"',"+caList.get(j).getId() +")");
-					if (z+1 < features.size()) insert=insert.concat(",\n");
+					insert=insert.concat(header).concat("('"+features.get(z).getIdFeature()+"',"+caList.get(j).getId() +");\n");
+			
 				}
-				if (j+1 < caList.size() && (features.size()!=0)) insert=insert.concat(",\n");
+			
 			}
-			if (i+1 < baselines.size()) insert=insert.concat(",\n");
+			
 		}
-		insert=insert.concat(";\n");
+		
 		return insert;	
 	}
 
 
 	private String generateInsertsFor_CoreAssets_Table() {
 		
-		String insert="INSERT INTO CoreAsset (idCoreAsset, name, path, content, size, CoreAssetBaseline_idBaseline) VALUES\n";
-		
+		String insert="";
+		String header="INSERT INTO CoreAsset (idCoreAsset, name, path, content, size, CoreAssetBaseline_idBaseline) VALUES\n";
 		ArrayList<CoreAssetBaseline> baselines = Main.spl.getCoreAssetBaselines();
 		ArrayList<SourceCodeFile> list = null;
 		
 		for ( int i=0; i < baselines.size(); i++){
 			list = baselines.get(i).getCoreAssetFiles();
 			for(int j=0; j< list.size();j++){
-				insert=insert.concat("("+list.get(j).getId() +",'"+list.get(j).getFileName()+"','"+list.get(j).getPath()+"','"+encodeToBase64 (list.get(j).getContent())+"',"+list.get(j).getTotalLines()+",'"+baselines.get(i).getId()+"')");
-				if (j+1 < list.size()) insert=insert.concat(",\n");
+				insert=insert.concat(header).concat("("+list.get(j).getId() +",'"+list.get(j).getFileName()+"','"+list.get(j).getPath()+"','"+encodeToBase64 (list.get(j).getContent())+"',"+list.get(j).getTotalLines()+",'"+baselines.get(i).getId()+"');\n");
 			}
-			if (i+1 < baselines.size()) insert=insert.concat(",\n");
 		}
-		insert=insert.concat(";\n");
+		
 		return insert;
 	}
 
 
 	private String  generateInsertsFor_CoreAsset_Baseline_has_Feature() {
-		String insert="INSERT INTO CoreAssetBaseline_has_Feature (CoreAssetBaseline_idBaseline, Feature_idFeature) VALUES\n";
-		
+		String insert="";
+		String header="INSERT INTO CoreAssetBaseline_has_Feature (CoreAssetBaseline_idBaseline, Feature_idFeature) VALUES\n";
 		ArrayList<CoreAssetBaseline> baselines = Main.spl.getCoreAssetBaselines();
 		ArrayList<Feature> featuresInBaseline;
 		
@@ -421,52 +399,41 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		for(int i=0; i< baselines.size();i++){
 			featuresInBaseline = baselines.get(i).getFeatures();
 			for(int j=0; j < featuresInBaseline.size();j++){
-				insert=insert.concat("('"+baselines.get(i).getId()+"','"+featuresInBaseline.get(j).getIdFeature()+"')");
-				if (j+1 < featuresInBaseline.size()) insert=insert.concat(",\n");
+				insert=insert.concat(header).concat("('"+baselines.get(i).getId()+"','"+featuresInBaseline.get(j).getIdFeature()+"');\n");
 			}
-			if (i+1 < baselines.size()) insert=insert.concat(",\n");
 		}
-		insert=insert.concat(";\n");
 		return insert;
 	}
 
 
 	private String generateInsertsFor_Feature_Table() {
-		String insert="INSERT INTO Feature (idFeature, name) VALUES\n";
+		String insert="";
+		String header = "INSERT INTO Feature (idFeature, name) VALUES\n";
 		ArrayList<Feature> list = Main.features;
 		if (list==null) return "";
 		
 		Iterator<Feature> it = list.iterator();
 		Feature f = null;
-		if (it.hasNext())  f=it.next();
-		if (f!=null)
-			while (true){
-				insert=insert.concat("('" +f.getIdFeature()+"'"+",'"+f.getName()  +"')");
-				if(it.hasNext()) insert=insert.concat(",\n");
-				else break;
-				f = it.next();
-			}
-		insert=insert.concat(";\n");
+		while(it.hasNext())  {
+			f=it.next();
+			insert=insert.concat(header).concat("('" +f.getIdFeature()+"'"+",'"+f.getName()  +"');\n");
+		}
 		return insert;
 	}
 
 
 	private String generateInsertsFor_CoreAssetBaseline_Table() {
-		String insert="INSERT INTO CoreAssetBaseline (idBaseline,releaseDate,SPL_idSPL) VALUES\n";
-		
+		String insert="";
+		String header = "INSERT INTO CoreAssetBaseline (idBaseline,releaseDate,SPL_idSPL) VALUES\n";
 		ArrayList<CoreAssetBaseline> list = Main.spl.getCoreAssetBaselines();
 		if (list==null) return "";
 		
 		Iterator<CoreAssetBaseline> it = list.iterator();
-		CoreAssetBaseline b=it.next();
-		if (b!=null)
-			while (true){
-				insert=	insert.concat("(" +"'"+b.getId()+"'"+","+"'"+convertDateToMysqlForm (b.getReleaseDate())+"'"+","+"'"+Main.spl.getId() +"'"  +")");
-				if(it.hasNext()) insert=insert.concat(",\n");
-				else break;
-				b = it.next();
-			}
-		insert=insert.concat(";\n");
+		CoreAssetBaseline b;
+		while (it.hasNext()){
+			b = it.next();
+			insert=	insert.concat(header).concat("(" +"'"+b.getId()+"'"+","+"'"+convertDateToMysqlForm (b.getReleaseDate())+"'"+","+"'"+Main.spl.getId() +"'"  +");\n");
+		}
 		return insert;
 	}
 	
@@ -492,6 +459,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 	private String encodeToBase64(String str){
 		// encode data on your side using BASE64
 		//https://stackoverflow.com/questions/19743851/base64-java-encode-and-decode-a-string
+		if (str ==null) return null;
 		String   bytesEncoded = Base64.encode(str.getBytes());
 	//	System.out.println("ecncoded value is " + new String(bytesEncoded ));
 		// Decode data on other side, by processing encoded data

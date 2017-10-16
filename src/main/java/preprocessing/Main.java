@@ -81,12 +81,12 @@ public class Main implements Study {
 	
 		//3. Mine product customizations for each product found
 		for(int i=0; i< Main.spl.getProductPortfoliosSize(); i++){
-			if (spl.getProductPortfolio(i).getProducts() != null)
-				for (int j=0; j < spl.getProductPortfolio(i).getNumberOfProductsInPortfolio();j++){//for each product in porfolio, execute mineCustomizations
-					for (int z=0; z < spl.getProductPortfolio(i).getProductFromPortfolio(j).getReleases().size(); z++)
-						mineCustomizationEffort(spl.getProductPortfolio(i).getProductFromPortfolio(j).getReleases().get(z),"Release-"+spl.getProductPortfolio(i).getProductFromPortfolio(j).getReleases().get(z).getIdRelease()+z);
-						
-				}
+			if(spl.getProductPortfolio(i).getProducts()==null) continue;
+			for (int j=0; j < spl.getProductPortfolio(i).getNumberOfProductsInPortfolio();j++){//for each product in porfolio, execute mineCustomizations
+				
+				for (int z=0; z < spl.getProductPortfolio(i).getProductFromPortfolio(j).getReleases().size(); z++)
+					mineCustomizationEffort(spl.getProductPortfolio(i).getProductFromPortfolio(j).getReleases().get(z),"Release-"+spl.getProductPortfolio(i).getProductFromPortfolio(j).getReleases().get(z).getIdRelease()+z);			
+			}
 		}
 		
 		//4.Print info
@@ -101,6 +101,9 @@ public class Main implements Study {
 	private void printing() {
 	
 	 	printCustomizations();
+		//3. print info
+	 	//printCustomizations();
+
 		//printPP(); printFilesInRelease(); printlnFeatures(); 
 		//printCoreAssetsAndVariationPoints();
 		
@@ -236,7 +239,7 @@ public class Main implements Study {
 								//"ID:"+cust.get()+"\n"+
 								"In release: " +cust.getInRelease().getIdRelease()+"\n"+
 								"Product file: "+cust.getProductFile().getFileName()+"\n"+
-								"Core Asset file: "+cust.getCoreAssetFile().getFileName()+"\n"+
+							//	"Core Asset file: "+cust.getCoreAssetFile().getFileName()+"\n"+
 								"Operation: "+cust.getOperation()+"\n"+
 								"VP expression involved:" +expression+"\n"+
 								"LineChanged: "+cust.getLineOfCodeModified()+"\n-------------------");		

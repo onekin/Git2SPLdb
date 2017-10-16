@@ -9,14 +9,24 @@ import java.util.List;
 
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.diff.DiffFormatter;
+import org.eclipse.jgit.errors.IncorrectObjectTypeException;
+import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.treewalk.CanonicalTreeParser;
+import org.eclipse.jgit.treewalk.TreeWalk;
+import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import org.repodriller.domain.ChangeSet;
 import org.repodriller.domain.Commit;
 import org.repodriller.scm.SCMRepository;
+
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 
 import preprocessing.Main;
 
@@ -98,6 +108,55 @@ public class Utils {
 		
 	}
 		  
+	static public String computeTheDiffAFileBetweenCommits(String hash_old, String hash_new, String filePath) {
+		try {
+			//git diff hash_old hash_new filename
+			Repository repository = new FileRepository(preprocessing.Main.productRepo+"/.git");
+			Git git = new Git(repository);		//compute the diff w.r.t the baseline it was derived from
+			
+
+			ObjectId oldCommitObj, newCommitObj;
+			oldCommitObj = repository.resolve(hash_old);
+			newCommitObj = repository.resolve(hash_new);
+			
+			RevWalk revWalk = new RevWalk( repository );
+			RevCommit oldCommit = revWalk.parseCommit( oldCommitObj );
+			RevCommit  newCommit  = revWalk.parseCommit( newCommitObj );
+		
+			ObjectReader reader = git.getRepository().newObjectReader();
+			CanonicalTreeParser oldTreeIter = new CanonicalTreeParser();
+	
+			
+			oldTreeIter.reset( reader,oldCommit.getTree() );
+			CanonicalTreeParser newTreeIter = new CanonicalTreeParser();
+			newTreeIter.reset( reader, newCommit.getTree() );
+			
+			DiffFormatter diffFormatter = new DiffFormatter( System.out );
+			diffFormatter.setRepository( git.getRepository() );
+			
+			List<org.eclipse.jgit.diff.DiffEntry> entries = diffFormatter.scan( newTreeIter, oldTreeIter );
+			Iterator<org.eclipse.jgit.diff.DiffEntry> it = entries.iterator();
+			while (it.hasNext()) {
+				org.eclipse.jgit.diff.DiffEntry entry = it.next();
+				System.out.println("entry.getNewPath()=" +entry.getNewPath());
+				System.out.println("filePath:"+filePath);
+				
+				if (entry.getNewPath().equals(filePath)){
+					System.out.println("ABSOLUTE DIFF");
+					System.out.println(entry.toString());
+					diffFormatter.format( entry );
+					System.out.println("Diff formater DIFF");
+					System.out.println(diffFormatter.toString());
+					return entry.toString();
+				}
+						
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return " ";
+	}
 	
 
 		public static Iterable<RevCommit> getCommitsInBranch(String branchName) {

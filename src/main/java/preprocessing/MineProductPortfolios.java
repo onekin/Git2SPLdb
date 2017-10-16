@@ -164,9 +164,6 @@ public class MineProductPortfolios implements CommitVisitor {
 					PAFile.setVariationPoints(vps);	
 				} 
 				
-				
-				
-	
 		}
 		} finally {
 				repo.getScm().reset();
