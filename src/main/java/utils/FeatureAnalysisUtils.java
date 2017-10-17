@@ -7,10 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.repodriller.domain.Commit;
 import org.repodriller.domain.DiffLine;
-
-import preprocessing.Main;
 import SPLconcepts.CoreAssetBaseline;
-import SPLconcepts.CoreAssetFileAnnotated;
 import SPLconcepts.Customization;
 import SPLconcepts.Feature;
 import SPLconcepts.ProductAssetFileAnnotated;
@@ -24,9 +21,7 @@ public class FeatureAnalysisUtils {
 	
 	public static ArrayList <Customization> computeCustomizationDetails(String fileName, String path, String content , List<DiffLine> lines, ProductRelease pr, Commit commit) {	
 		//Lista de modificaciones de un archivo. Para una modificacion, que feature cambia y que operacion: borrar o a�adir
-	
-		
-		
+
 		ArrayList <Customization>	featureModificationDetailList  = new  ArrayList <Customization> (); 
     
 		HashMap <Integer,ArrayList<String>> map = utils.FileUtils.getProductAssetByFilePath(path, pr).getFeatureToCodeMapping();// extractFeatureMapFromFile(content);
@@ -47,7 +42,6 @@ public class FeatureAnalysisUtils {
 			featureNames= map.get(lineNumber);
 			
 		   	if(modType!="KEPT"){//a line that serves as diff context 
-		   		
 		   		SourceCodeFile ca = utils.FileUtils.getCoreAssetByProductAssetPath(paModified.getRelativePath(), pr);
 		   		VariationPoint vp = getVariationPointOfChangedAssetLine(paModified.getRelativePath(), pr, lineNumber);
 		   		
@@ -135,69 +129,6 @@ public class FeatureAnalysisUtils {
 
 
 
-public static HashMap <Integer,ArrayList <String>>  extractFeatureMapFromFile (SourceCodeFile file, CoreAssetBaseline baseline) {//Read the file lineByLine
-		
-		HashMap <Integer,ArrayList <String>> featureToCodeMapping = new HashMap<Integer, ArrayList <String>>();
-		
-		String content = file.getContent();
-		int nestingLevel=-1;
-		if (!content.contains(Main.annotationPatternBeginning)) return null; //the file does not contain variability in it
-		
-		try {
-		
-			String[] lines = content.split("\n");
-			int counter=1;
-			ArrayList<String> listFeatures = new ArrayList<String>();
-			HashMap <Integer,String> currentExpressionsInNestedLevels = new HashMap<Integer,String>();//pair of nesting level, and expression	
-			
-			for(int i=0;i<lines.length;i++){
-				if (lines[i].contains(Main.annotationPatternBeginning)){
-					nestingLevel++;//level 0 is when we are inside a VP
-					currentExpressionsInNestedLevels.put(nestingLevel,lines[i]);
-						if (nestingLevel> 0){//we need to add all the features for all the nesting levels.
-							listFeatures = new ArrayList<String>();
-							for(int k=0; k<=nestingLevel;k++)
-								listFeatures.addAll(extractAllFeaturesFromTheExpression(currentExpressionsInNestedLevels.get(k)));
-						}else
-							listFeatures = extractAllFeaturesFromTheExpression(currentExpressionsInNestedLevels.get(nestingLevel));
-						
-				}else{
-					if (lines[i].contains(Main.annotationPatternEnd)){
-						
-						nestingLevel--;
-					}
-					//else{//no pattern has been found; we might be inside VPs (nested or not)
-						if(nestingLevel==-1){
-							listFeatures = new ArrayList<String>();
-						}
-						if (nestingLevel ==0){
-							listFeatures = extractAllFeaturesFromTheExpression (currentExpressionsInNestedLevels.get(nestingLevel)); 
-							
-						}
-						if (nestingLevel > 0) {
-							listFeatures = new ArrayList<String>();
-							for(int k=0; k<=nestingLevel;k++)
-								listFeatures.addAll(extractAllFeaturesFromTheExpression(currentExpressionsInNestedLevels.get(k)));
-						}
-											
-				//	}
-				}
-				
-				featureToCodeMapping.put(counter,listFeatures);
-				System.out.println(file.getFileName()+"; Line: "+counter+" belongs to: "+listFeatures.toString());
-				
-				counter ++;
-			}
-			file.setFeatureToCodeMapping(featureToCodeMapping);
-			
-			
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	 
-		return featureToCodeMapping;
-	}
 
 private static ArrayList<Feature> findFeaturesByNames(ArrayList<String> listFeatures, CoreAssetBaseline baseline) {
 	Iterator<String> itNames = listFeatures.iterator();
@@ -237,11 +168,10 @@ Iterator<String> itNames = listFeatures.iterator();
 				match=true; //newFeatureNames.add(f.getName());
 				continue;
 			}
-				
 		}
 		if (match==false) {
 			newFeatureNames.add(name);
-			System.out.println( " New feature encountered: " +name );
+		//	System.out.println( " New feature encountered: " +name );
 		}
 	}
 	return newFeatureNames;
@@ -250,6 +180,21 @@ Iterator<String> itNames = listFeatures.iterator();
 
 
 
+
+
+	public static boolean isFeatureInFeaturesList(ArrayList<Feature> featureList, String name){
+		Iterator<Feature>  it= featureList.iterator();
+		Feature f;
+		
+		while (it.hasNext()){
+			f = it.next();
+			if (f.getIdFeature().equals(name))
+				return true;
+			//else System.out.println(f.getIdFeature()+" NOT SAME "+name);
+		}
+		
+		return false;
+	}
 
 
 
@@ -264,24 +209,12 @@ Iterator<String> itNames = listFeatures.iterator();
 	return listfeatures;
 }
 
-	public static boolean isFeatureInFeaturesList(ArrayList<Feature> featureList, String name){
-		Iterator<Feature>  it= featureList.iterator();
-		Feature f;
-		while (it.hasNext()){
-			f = it.next();
-			if (f.getIdFeature().equals(name))
-				return true;
-		}
-		return false;
-	}
-
-
 
 	public static ArrayList<VariationPoint> extractVPsFromFile(SourceCodeFile file, CoreAssetBaseline baseline) {
 		// TODO Auto-generated method stub
 	
 		String content = file.getContent();
-		if (!content.contains(Main.annotationPatternBeginning)) return null; //the file does not contain variability in it
+		if (!content.contains(customDiff.CustomDiff.annotationPatternBeginning)) return null; //the file does not contain variability in it
 		
 		ArrayList<VariationPoint> variationPoints = new ArrayList<VariationPoint>();
 		
@@ -292,7 +225,7 @@ Iterator<String> itNames = listFeatures.iterator();
 			int nestingLevel=-1;
 			for(int i=0;i<lines.length;i++){
 				VariationPoint vp = null;
-				if (lines[i].contains(Main.annotationPatternBeginning)){
+				if (lines[i].contains(customDiff.CustomDiff.annotationPatternBeginning)){
 					nestingLevel++; //level 0 is when we are inside a VP
 					if (nestingLevel==0)
 					  vp = new VariationPoint(Utils.getVPId(), lines[i],i+1,null);//newVariation point
@@ -308,7 +241,7 @@ Iterator<String> itNames = listFeatures.iterator();
 								currentVPsInNestingLevels.get(k).setBody(currentVPsInNestingLevels.get(k).getBody().concat("\n"+lines[i]));
 						}
 				}else{
-					if (lines[i].contains(Main.annotationPatternEnd)){
+					if (lines[i].contains(customDiff.CustomDiff.annotationPatternEnd)){
 						//add the line to all parents of this VP
 						for(int k=0; k <= nestingLevel;k++)//the line needs to go to parent VPs as well.
 							currentVPsInNestingLevels.get(k).setBody(currentVPsInNestingLevels.get(k).getBody().concat("\n"+lines[i]));
@@ -326,7 +259,7 @@ Iterator<String> itNames = listFeatures.iterator();
 			file.setVariationPoints(variationPoints);
 			
 			//printing VPS			
-			Iterator<VariationPoint> it = variationPoints.iterator();
+			/*Iterator<VariationPoint> it = variationPoints.iterator();
 			VariationPoint var;
 			System.out.println("---------------------------------");
 			System.out.println("------ Variation Points ---------");
@@ -340,7 +273,7 @@ Iterator<String> itNames = listFeatures.iterator();
 				" Parent?:"+ var.getParentVP()+ 
 				" Body:"+ var.getBody() +
 				" \nfeatures:"+ var.getFeatures().toString());
-			}		
+			}		*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

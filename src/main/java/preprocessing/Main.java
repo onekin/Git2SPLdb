@@ -25,10 +25,10 @@ import SPLconcepts.SourceCodeFile;
 public class Main implements Study {
 	
 	String variabilityImplementation= "annotation";//composition
-	public static String coreAssetsRepo; // Users/Onekin/Documents/workspace/WeatherStationSPL
+	public static String coreAssetsRepo; // Users/Onekin/Documents/workspace/WeatherStationSPL-REVE
 	public static String productRepo;
+	public static String baselineToMine;
 	public static String pathToResources; //Users/Onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resource/alluvial/sankey.csv
-	
 	public static String pathToWhereCustomizationsAreComputed;//"input", or, src/onekin
 		
 		/**Settings for Git repos and annotation based SPLs*/
@@ -50,9 +50,11 @@ public class Main implements Study {
 		System.out.println ("Parameter lengh: "+args.length);
 		System.out.println ("Parameter to string: "+args.toString());
 		/**
-		 * /Users/onekin/Documents/workspace/WeatherStationSPL
+		 * 	/Users/onekin/git/WeatherStationSPL
 			/Users/onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resources
-			"input"
+			input
+			Baseline-v1.0
+			
 		 * 
 		 * */
 		
@@ -62,7 +64,8 @@ public class Main implements Study {
 			productRepo=args[0];
 			pathToResources=args[1];
 	//		pathToAuxWorkSpace = args[2];
-			pathToWhereCustomizationsAreComputed=args[3];
+			pathToWhereCustomizationsAreComputed=args[2];
+			baselineToMine=args[3];
 			new RepoDriller().start(new Main());
 		}
 		else System.out.println ("You need to provide me with the setting parameters");
@@ -162,27 +165,17 @@ public class Main implements Study {
 	}
 
 	private void mineProductPorfolios() {
-
+		System.out.println("Starting processing product portfolios");
 		new RepositoryMining()
 		.in(GitRepository.singleProject(productRepo))
 		.through( Commits.list( spl.getCoreAssetBaselinesAsCommitsHashes()))
 		.filters()
 		.process(new MineProductPortfolios(), new CSVFile (pathToResources+"/spl-data/portfolios.csv"))
 		.mine();
+		System.out.println("Finished processing product portfolios");
 		
 	}
 		
-	/****public List<ChangeSet> getCommitIDsToCommits(SCM scm, List<String> commits) {
-		List<ChangeSet> all = scm.getChangeSets();
-	
-		List<ChangeSet> filtered = new ArrayList<ChangeSet>();
-		for(ChangeSet cs : all) {
-			if(commits.contains(cs.getId())) {
-				filtered.add(cs);
-			}
-		}		
-		return filtered;
-	}****/
 		
 	private void mineCustomizationEffort(ProductRelease productRelease, String name) {
 		System.out.println("Mining customizations for "+productRelease.getIdRelease());

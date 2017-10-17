@@ -38,17 +38,23 @@ public class FileUtils {
 		
 	}
 	
-	public static String readAFileFromRepositoryCommit(Commit co, String fileName, String fullPath){
+
+	
+	public static String readFileContentFromRepository(String fullPath){
 		try{
-			BufferedReader br = new BufferedReader(new FileReader(fullPath));
+			  System.out.println("In File Utils - readFileContent for file: "+ fullPath);
+				BufferedReader br = new BufferedReader(new FileReader(fullPath));
 				StringBuilder sb = new StringBuilder();
 			    String line = br.readLine();
 
 			    while (line != null) {
-			        sb.append(line);
+			        sb.append(line);//+"\n");
 			        sb.append(System.lineSeparator());
 			        line = br.readLine();
 			    }
+		//	  System.out.println("In File Utils - readFileContent: \n"+ sb.toString());
+			  br.close();
+			  
 			  return   sb.toString();
 		}
 		  catch(Exception e){

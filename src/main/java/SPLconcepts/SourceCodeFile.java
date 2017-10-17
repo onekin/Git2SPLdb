@@ -1,10 +1,8 @@
 package SPLconcepts;
 
-import java.io.File;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import org.repodriller.scm.RepositoryFile;
 
 public interface SourceCodeFile {
 

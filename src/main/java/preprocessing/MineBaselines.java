@@ -43,6 +43,10 @@ public class MineBaselines implements CommitVisitor {
 				
 				repo.getScm().checkout(commit.getHash());
 				String baselineTag = Utils.getTagForACommitHash(commit.getHash());
+				if (baselineTag==null) return;
+				if (!baselineTag.toLowerCase().contains(Main.coreAssetsReleaseName))//.equals(Baseline-v1.0)
+					return;
+					
 				CoreAssetBaseline CABaseline = new CoreAssetBaseline(commit, new Date (commit.getDate().getTimeInMillis()), baselineTag);
 				ArrayList<SourceCodeFile> cas = new  ArrayList<SourceCodeFile>();	//files for the coreasset baseline
 				
@@ -74,17 +78,15 @@ public class MineBaselines implements CommitVisitor {
 							Feature feature;
 							while (iterator.hasNext()){
 								feature = iterator.next();
-								if(!utils.FeatureAnalysisUtils.isFeatureInFeaturesList(CABaseline.getFeatures(), feature.getName()));
-								CABaseline.addFeature(feature);
+								if(!utils.FeatureAnalysisUtils.isFeatureInFeaturesList(CABaseline.getFeatures(), feature.getName()))
+									CABaseline.addFeature(feature);
 							}
 						}
 						
 					
 					}//endfor
-					
 					CABaseline.setCoreAssetFiles(cas);
 					Main.spl.addBaseline(CABaseline);
-					
 					System.out.println("Features in baseline: "+CABaseline.getId()+" are:"+CABaseline.getFeatures().toString());
 			} finally {
 			

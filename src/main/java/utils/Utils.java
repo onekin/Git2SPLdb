@@ -10,8 +10,6 @@ import java.util.List;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.diff.DiffFormatter;
-import org.eclipse.jgit.errors.IncorrectObjectTypeException;
-import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
@@ -20,15 +18,11 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
-import org.eclipse.jgit.treewalk.TreeWalk;
-import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import org.repodriller.domain.ChangeSet;
 import org.repodriller.domain.Commit;
 import org.repodriller.scm.SCMRepository;
 
-import com.sun.org.apache.bcel.internal.generic.RETURN;
 
-import preprocessing.Main;
 
 
 public class Utils {
@@ -42,7 +36,7 @@ public class Utils {
 
 	
 	static public ArrayList<String> getCommitHashesBetweenTwoTags(String baselineTag, String productReleaseTag) {
-		//this snipped sworks fine
+		//this snipped works fine
 		try{
 		  Repository repo = new FileRepository(preprocessing.Main.productRepo+"/.git");
 		  Git git = new Git(repo);
@@ -101,14 +95,16 @@ public class Utils {
 	static public  String extractRefName(String refname, int extractIndex){
 		//refname e.g.= refs/tags/Baseline-v1.0
 		System.out.println ("In extractRefName: "+refname ) ;
+		
 		String[] parsed = refname.split("/");
+		
 		if (parsed[extractIndex]!=null)
 		  return parsed[extractIndex];
 		else return refname;
 		
 	}
 		  
-	static public String computeTheDiffAFileBetweenCommits(String hash_old, String hash_new, String filePath) {
+	static public String computeTheDiffFileBetweenCommits(String hash_old, String hash_new, String filePath) {
 		try {
 			//git diff hash_old hash_new filename
 			Repository repository = new FileRepository(preprocessing.Main.productRepo+"/.git");

@@ -67,7 +67,7 @@ public class MineProductPortfolios implements CommitVisitor {
 				while(it.hasNext()){
 				  
 				  brName =it.next();
-				  System.out.println("Al LORO: branch:"+brName+"   commit:" +commit.getHash() + "nuevo:" +searchForNewerBaselineCommit(brName,commit).getHash());
+				  System.out.println("Al LORO: branch:"+brName+"   commit:" +commit.getHash() + "  nuevo:" +searchForNewerBaselineCommit(brName,commit).getHash());
 				  if(searchForNewerBaselineCommit(brName,commit).getHash().equals(commit.getHash()) //if the product branch is really  derived from this exact baseline commit
 						  &&
 						 (!brName.equals(Main.coreAssetsBranchPatternName)))

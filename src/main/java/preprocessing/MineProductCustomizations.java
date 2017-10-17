@@ -81,11 +81,10 @@ public class MineProductCustomizations{
 			sourceCode= m.getSourceCode();//source 	code in product asset		
 			ProductAssetFileAnnotated paModified = utils.FileUtils.getProductAssetByFilePath(m.getNewPath(), pr);
 
-			//this is the diff w.r.t. the previous commit//this is the diff w.r.t. the previous commit
-			paModified.setRelative_diff(m.getDiff());
+	
 
 			//compute the diff w.r.t baseline
-			paModified.setAbsolute_diff(utils.Utils.computeTheDiffAFileBetweenCommits(pr.getFromProduct().getInPortfolio().getDerivedFrom().getCommit().getHash(), commit.getHash(), m.getNewPath()));
+			paModified.setAbsolute_diff(utils.Utils.computeTheDiffFileBetweenCommits(pr.getFromProduct().getInPortfolio().getDerivedFrom().getCommit().getHash(), commit.getHash(), m.getNewPath()));
 			
 			
 			ArrayList<Customization> listilla = FeatureAnalysisUtils.computeCustomizationDetails(m.getFileName(), m.getNewPath(), sourceCode, lines, pr, commit) ;
@@ -94,7 +93,7 @@ public class MineProductCustomizations{
 			counter++;
 		}
 		
-		/** JUST FOR PRINTING DETAILS; WE CAN REMOVE THIS **/
+		/** JUST FOR PRINTING DETAILS; WE CAN REMOVE THIS 
 		if (list!=null){ 
 			Iterator<Customization> it= list.iterator();
 			while (it.hasNext()){
@@ -105,7 +104,7 @@ public class MineProductCustomizations{
 						" "+aux.getOperation());
 			//	writer.write(commit.getBranches(),aux.getVp(),aux.getCoreAssetFile().getFileName(), aux.getOperation());
 			}
-		}
+		}**/
 		return list;
 	}
 }
