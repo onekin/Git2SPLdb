@@ -10,3 +10,4 @@ target/*
 /*.sql
 /*.bak
 /*.png
+src/main/resources/spl-data/baselines.csv
