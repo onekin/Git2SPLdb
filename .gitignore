@@ -6,7 +6,7 @@ target/*
 *.sql
 *.bak
 *.png
-/*.csv
+/src/main/resources/spl-data/*.csv
 /*.sql
 /*.bak
 /*.png
