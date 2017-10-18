@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -16,23 +17,35 @@ import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.TreeWalk;
 
-import SPLconcepts.CoreAssetBaseline;
-import SPLconcepts.CoreAssetFileAnnotated;
-import SPLconcepts.Feature;
-import SPLconcepts.SourceCodeFile;
+import customDiff.SPLdomain.CoreAssetBaseline;
+import customDiff.SPLdomain.CoreAssetFileAnnotated;
+import customDiff.SPLdomain.Feature;
+import customDiff.SPLdomain.SourceCodeFile;
+
 
 public class RefUtils {
 
-	public static RevCommit getCommitFromTagName(String baselineToMine) {
+	public static RevCommit getCommitFromRefName(String tag) {
 		RevCommit commit = null;
 		try{
-			Repository repo = new FileRepository(customDiff.CustomDiff.productRepo+"/.git");
-			System.out.println(repo);
-			
-			
-			Ref ref = repo.getRef(baselineToMine);
-			//System.out.println("REF Name: "+ref.getName());
-			//System.out.println("REF: "+ref);
+			Repository repo = new FileRepository(customDiff.CustomDiff.repositoryPath+"/.git");			
+			Ref ref = repo.getRef(tag);
+			RevWalk walk = new RevWalk( repo );
+			commit = walk.parseCommit( ref.getObjectId() );//find the commit for a 
+
+			repo.close();
+			}catch(Exception e){
+				e.printStackTrace();
+				return null;
+			}		
+		return commit;
+	}
+	
+	
+	public static RevCommit getCommitFromRef(Ref ref) {
+		RevCommit commit = null;
+		try{
+			Repository repo = new FileRepository(customDiff.CustomDiff.repositoryPath+"/.git");			
 			
 			RevWalk walk = new RevWalk( repo );
 			commit = walk.parseCommit( ref.getObjectId() );//find the commit for a 
@@ -44,15 +57,47 @@ public class RefUtils {
 			}		
 		return commit;
 	}
+	
 
-	public static ArrayList<String> listAllTagsFromRepo(){
-		ArrayList<String> refNames = new ArrayList<String>();
+	public static ArrayList<Ref> listAllTagsFromRepo(){
+		ArrayList<Ref> refNames = new ArrayList<Ref>();
 		try{
-			Repository repo = new FileRepository(customDiff.CustomDiff.productRepo+"/.git");
+			Repository repo = new FileRepository(customDiff.CustomDiff.repositoryPath+"/.git");
 			List<Ref> references = new Git(repo).tagList().call();
 			for (Ref ref : references) {
-			    //System.out.println("Tag: " + ref + " " + ref.getName() + " " + ref.getObjectId().getName());
-			    refNames.add(ref.getName());
+			    refNames.add(ref);
+			}
+			repo.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return refNames;
+	}
+	
+	public static ArrayList<Ref> listTagsFromRepoByPrefix(String prefix){
+		ArrayList<Ref> refNames = new ArrayList<Ref>();
+		try{
+			Repository repo = new FileRepository(customDiff.CustomDiff.repositoryPath+"/.git");
+			List<Ref> references = new Git(repo).tagList().call();
+			for (Ref ref : references) {
+			    if(ref.getName().toLowerCase().startsWith(prefix.toLowerCase()))//System.out.println("Tag: " + ref + " " + ref.getName() + " " + ref.getObjectId().getName());
+			    	refNames.add(ref);
+			}
+			repo.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return refNames;
+	}
+	
+	public static ArrayList<Ref> listTagsFromRepoByContains(String substring){
+		ArrayList<Ref> refNames = new ArrayList<Ref>();
+		try{
+			Repository repo = new FileRepository(customDiff.CustomDiff.repositoryPath+"/.git");
+			List<Ref> references = new Git(repo).tagList().call();
+			for (Ref ref : references) {
+			    if(ref.getName().toLowerCase().contains(substring.toLowerCase()))//System.out.println("Tag: " + ref + " " + ref.getName() + " " + ref.getObjectId().getName());
+			    	refNames.add(ref);
 			}
 			repo.close();
 		}catch(Exception e){
@@ -64,7 +109,7 @@ public class RefUtils {
 	public static Map<String, Ref> getAllTagsFromRepo(){
 		Map<String, Ref> refMap = null;
 		try{
-			Repository repo = new FileRepository(customDiff.CustomDiff.productRepo+"/.git");
+			Repository repo = new FileRepository(customDiff.CustomDiff.repositoryPath+"/.git");
 			refMap = repo.getTags();
 			repo.close();
 		}
@@ -76,6 +121,55 @@ public class RefUtils {
 	}
 	
 	
+	public static boolean isRefFirstDerivedFromBaseline(RevCommit baselineCommit, Ref productRelease) {
+		//if there is a commit in between baselineCommit&productRelease, which has a baseline tag, or it is in the baseline release branch
+		//then the product release has a newer origin baseline
+		try{
+			Repository repo = new FileRepository(customDiff.CustomDiff.repositoryPath+"/.git");
+			RevWalk walk = new RevWalk( repo );
+			Git git = new Git(repo);
+			RevCommit startCommit = walk.parseCommit( repo.resolve( baselineCommit.getName() ) );
+			RevCommit endCommit  = walk.parseCommit( repo.resolve( productRelease.getName() ) );
+			
+			Iterable<RevCommit> commitsInBetween = git.log().addRange(startCommit, endCommit).call();//get the commits between both tags			
+			Iterator<RevCommit> it = commitsInBetween.iterator();
+			RevCommit commit;
+			while(it.hasNext()){
+				commit = it.next();
+				if(isCommitInBranch(commit, CustomDiff.coreAssetsBranchPatternName) ||isCommitBaselineRelease(commit) || commit.getCommitTime() < baselineCommit.getCommitTime()){
+					//System.out.println(productRelease.getName()+" NOT derived from "+baselineCommit.getName());
+					return false;
+				}
+			}
+			//System.out.println(productRelease.getName()+" derived from "+baselineCommit.getName());
+			return true;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return false;
+	}	
 	
+	private static boolean isCommitBaselineRelease(RevCommit commit) {
+		ArrayList<Ref> baselineTags = listTagsFromRepoByPrefix("refs/tags/"+CustomDiff.coreAssetsReleaseName);	//get all baseline tags
+		Iterator<Ref> it = baselineTags.iterator();
+		Ref ref;
+		while(it.hasNext()){
+			ref = it.next();
+			if (getCommitFromRef(ref).getName().equals(commit.getName()))
+				return true;
+		}
+		return false;
+	}
+
+	public static boolean isCommitInBranch(RevCommit commit, String branchName){
+		// git branch --contains <commit>
+		try{
+			//Repository repo = new FileRepository(customDiff.CustomDiff.productRepo+"/.git");
+			//new Git(repo).branchList().
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	
+		return false;
+	}
 }

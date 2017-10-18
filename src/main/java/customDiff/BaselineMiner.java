@@ -2,7 +2,6 @@ package customDiff;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.Repository;
@@ -11,31 +10,44 @@ import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.TreeWalk;
 
-import SPLconcepts.CoreAssetBaseline;
-import SPLconcepts.CoreAssetFileAnnotated;
-import SPLconcepts.Feature;
-import SPLconcepts.SourceCodeFile;
+import customDiff.SPLdomain.CoreAssetBaseline;
+import customDiff.SPLdomain.CoreAssetFileAnnotated;
+import customDiff.SPLdomain.Feature;
+import customDiff.SPLdomain.SourceCodeFile;
 
 public class BaselineMiner {
-	
-	
 
-	public ArrayList<SourceCodeFile> mine(CoreAssetBaseline baseline, String pathToWhereCustomizationsAreComputed) {
+	
+	public void mine(String baselineToMine) {//CoreAssetBaseline baseline, String pathToWhereCustomizationsAreComputed
+				
+		RevCommit baselineCommit = customDiff.RefUtils.getCommitFromRefName(baselineToMine);	
+		CoreAssetBaseline baseline = new CoreAssetBaseline(baselineCommit, baselineCommit.getCommitTime(), baselineToMine);
+		CustomDiff.spl.addBaseline(baseline);
+	
+		//This is JUST FOR ONE BASELINE
+		ArrayList<SourceCodeFile> files = extractCoreAssetsAndFeaturesFromBaseline(baseline, CustomDiff.pathToWhereCustomizationsAreComputed);
 		
-		 ArrayList<SourceCodeFile> files = extractCoreAssetsAndFeaturesFromBaseline(baseline, pathToWhereCustomizationsAreComputed);
-		 
-		 return files;
+		System.out.println("Number of files in Baseline: "+files.size());
+		baseline.setCoreAssetFiles(files);
+		
+		/** Printing baseline contents **/
+		System.out.println("Features in baseline: "+baseline.getId()+" are:"+ baseline.getFeatures().toString());
+		Iterator<Feature> it = baseline.getFeatures().iterator();
+		Feature f;
+		while(it.hasNext()){
+			f = it.next();
+			System.out.println(f.getName());
+		}
 	}
 	
 	
-	
-	public ArrayList<SourceCodeFile> extractCoreAssetsAndFeaturesFromBaseline( CoreAssetBaseline baseline,  String inPath){	
+	public ArrayList<SourceCodeFile> extractCoreAssetsAndFeaturesFromBaseline(CoreAssetBaseline baseline,  String inPath){	
 			
 		ArrayList<SourceCodeFile> files = new ArrayList<SourceCodeFile>();
 			
 			try{
 				RevCommit revCommit = baseline.getRevCommit();
-				Repository repo = new FileRepository(customDiff.CustomDiff.productRepo+"/.git");
+				Repository repo = new FileRepository(customDiff.CustomDiff.repositoryPath+"/.git");
 				System.out.println("Commit: "+revCommit.getId().getName());
 				Git git = new Git(repo);
 				git.checkout().setName(revCommit.getId().getName()).call();
@@ -53,10 +65,10 @@ public class BaselineMiner {
 					
 		        while (treeWalk.next()) {
 		            if(treeWalk.getPathString().contains(inPath)){
-		              fileContent = utils.FileUtils.readFileContentFromRepository(customDiff.CustomDiff.productRepo+"/"+treeWalk.getPathString());
+		              fileContent = customDiff.utils.FileUtils.readFileContentFromRepository(customDiff.CustomDiff.repositoryPath+"/"+treeWalk.getPathString());
 		              
 		              //1: create new core asset file
-		              CAfile= new CoreAssetFileAnnotated(utils.Utils.getNewCoreAssetId(), treeWalk.getNameString(), treeWalk.getPathString(), fileContent, 
+		              CAfile= new CoreAssetFileAnnotated(customDiff.utils.Utils.getNewCoreAssetId(), treeWalk.getNameString(), treeWalk.getPathString(), fileContent, 
 			    				  fileContent.split("\n").length, baseline, 
 			    				  customDiff.CustomDiff.pathToWhereCustomizationsAreComputed.concat(treeWalk.getPathString().split(customDiff.CustomDiff.pathToWhereCustomizationsAreComputed)[1]));
 		              
@@ -74,7 +86,7 @@ public class BaselineMiner {
 		              Feature feature;
 		              while (iterator.hasNext()){
 		            	feature = iterator.next();
-			    		if(!utils.FeatureAnalysisUtils.isFeatureInFeaturesList(baseline.getFeatures(), feature.getName()))
+			    		if(!customDiff.utils.FeatureAnalysisUtils.isFeatureInFeaturesList(baseline.getFeatures(), feature.getName()))
 			    			baseline.addFeature(feature);
 			    		}
 			         }	            	

@@ -4,6 +4,8 @@
   <artifactId>testingRepoDriller</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <dependencies>
+  
+
 	<dependency>
 		<groupId>org.repodriller</groupId>
 		<artifactId>repodriller</artifactId>
@@ -11,12 +13,13 @@
 	</dependency> 
 	<!-- https://mvnrepository.com/artifact/org.eclipse.emf/org.eclipse.emf.common -->
 
-<!-- 
+
+
 	<dependency>
-	    <groupId>org.eclipse.jgit</groupId>
-	    <artifactId>org.eclipse.jgit</artifactId>
-	    <version>3.5.0.201409260305-r</version>
-	</dependency>-->
+    <groupId>net.sourceforge.streamsupport</groupId>
+    <artifactId>streamsupport</artifactId>
+    <version>1.1.2</version>
+</dependency>
 
   </dependencies>
   

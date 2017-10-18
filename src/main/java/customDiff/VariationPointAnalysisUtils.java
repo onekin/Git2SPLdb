@@ -5,12 +5,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import utils.FeatureAnalysisUtils;
-import utils.Utils;
-import SPLconcepts.CoreAssetBaseline;
-import SPLconcepts.Feature;
-import SPLconcepts.SourceCodeFile;
-import SPLconcepts.VariationPoint;
+import customDiff.SPLdomain.CoreAssetBaseline;
+import customDiff.SPLdomain.Feature;
+import customDiff.SPLdomain.SourceCodeFile;
+import customDiff.SPLdomain.VariationPoint;
+import customDiff.utils.FeatureAnalysisUtils;
+import customDiff.utils.Utils;
+
 
 public class VariationPointAnalysisUtils {
 	
@@ -24,10 +25,11 @@ public class VariationPointAnalysisUtils {
 		
 		
 		//1: extract Feature Map for a file
-		HashMap<Integer, ArrayList <String>> map = extractFeatureMapFromFile(ca,baseline); //line-feature map
+		HashMap<Integer, ArrayList <String>> map = extractFeatureMapFromFile(ca); //line-feature map
 		
 		//2: extract variation points for a file
-		ArrayList<VariationPoint> vps = extractVPsFromFile(ca, baseline);
+		ArrayList<VariationPoint> vps = extractVPsFromFile(ca, baseline, false);
+		//luego a–adir a la bseline
 
 		if (map == null) return null;
 		
@@ -45,10 +47,10 @@ public class VariationPointAnalysisUtils {
 			while(i.hasNext()){
 				variable = i.next();
 				Feature f = new Feature(variable, variable);
-				if (!utils.FeatureAnalysisUtils.isFeatureInFeaturesList(customDiff.CustomDiff.features, variable)){
+				if (!customDiff.utils.FeatureAnalysisUtils.isFeatureInFeaturesList(customDiff.CustomDiff.features, variable)){
 					customDiff.CustomDiff.features.add(f);
 				}
-				if (!utils.FeatureAnalysisUtils.isFeatureInFeaturesList( ca.getFeatureList(), variable) ){
+				if (!customDiff.utils.FeatureAnalysisUtils.isFeatureInFeaturesList( ca.getFeatureList(), variable) ){
 					ca.getFeatureList().add(f);
 				}
 			}
@@ -58,7 +60,7 @@ public class VariationPointAnalysisUtils {
 	
 	
 
-public static HashMap <Integer,ArrayList <String>>  extractFeatureMapFromFile (SourceCodeFile file, CoreAssetBaseline baseline) {//Read the file lineByLine
+public static HashMap <Integer,ArrayList <String>>  extractFeatureMapFromFile (SourceCodeFile file) {//Read the file lineByLine
 		//works fine: tested with properties.js
 	
 		HashMap <Integer,ArrayList <String>> featureToCodeMapping = new HashMap<Integer, ArrayList <String>>();//line - list of features for the line
@@ -109,7 +111,7 @@ public static HashMap <Integer,ArrayList <String>>  extractFeatureMapFromFile (S
 		return featureToCodeMapping;
 	}
 	
-public static ArrayList<VariationPoint> extractVPsFromFile(SourceCodeFile file, CoreAssetBaseline baseline) {
+public static ArrayList<VariationPoint> extractVPsFromFile(SourceCodeFile file, CoreAssetBaseline baseline, boolean product) {
 
 	String content = file.getContent();
 	if (!content.contains(customDiff.CustomDiff.annotationPatternBeginning)) return null; //the file does not contain variability in it
@@ -128,12 +130,15 @@ public static ArrayList<VariationPoint> extractVPsFromFile(SourceCodeFile file, 
 				if (nestingLevel==0)
 				  vp = new VariationPoint(Utils.getVPId(), lines[i],i+1,null);//newVariation point
 				else vp = new VariationPoint(Utils.getVPId(), lines[i],i+1,currentVPsInNestingLevels.get(nestingLevel-1));
-				vp.setFeatures(findFeaturesByNames(extractAllFeaturesFromTheExpression (lines[i]),baseline) );
-				vp.setNewFeatures(findNewFeaturesByNames(extractAllFeaturesFromTheExpression (lines[i]),baseline) );
+				vp.setFeatures(findFeaturesByNames(extractAllFeaturesFromTheExpression (lines[i]), baseline) );//provide the list of featu
+				if (product) {
+					vp.setNewFeatures(findNewFeatures(extractAllFeaturesFromTheExpression (lines[i]), baseline) );
+				}
+					
 				variationPoints.add(vp);
 				currentVPsInNestingLevels.put(nestingLevel, vp);				
 				
-				System.out.println("New variation Point Created "+vp.toString());
+				//System.out.println("New variation Point Created "+vp.toString());
 					if (nestingLevel>= 0){ //we need to add the body to all nested VPs
 						for(int k=0; k <= nestingLevel;k++)//the line needs to go to parent VPs as well.
 							currentVPsInNestingLevels.get(k).setBody(currentVPsInNestingLevels.get(k).getBody().concat("\n"+lines[i]));
@@ -211,31 +216,32 @@ public static ArrayList<VariationPoint> extractVPsFromFile(SourceCodeFile file, 
 	}
 	
 
-private static ArrayList<String> findNewFeaturesByNames(ArrayList<String> listFeatures, CoreAssetBaseline baseline) {
-	Iterator<String> itNames = listFeatures.iterator();
-	
-	String name; Feature f;
-	ArrayList<String> newFeatureNames = new ArrayList<String>();
-	
-	boolean match=false;
-	
-	while(itNames.hasNext()){
-		name =itNames.next();
-		Iterator<Feature> itFeatures = baseline.getFeatures().iterator();
-		match = false;
-		while(itFeatures.hasNext()){
-			f = itFeatures.next();
-			if (f.getName().equals(name)) {
-				match=true; //newFeatureNames.add(f.getName());
-				continue;
+	private static ArrayList<Feature> findNewFeatures(ArrayList<String> listFeatures, CoreAssetBaseline baseline) {
+		Iterator<String> itNames = listFeatures.iterator();
+		
+		String name; Feature f;
+		ArrayList<Feature> newFeatures = new ArrayList<Feature>();
+		
+		boolean match=false;
+		
+		while(itNames.hasNext()){
+			name =itNames.next();
+			Iterator<Feature> itFeatures = baseline.getFeatures().iterator();
+			match = false;
+			while(itFeatures.hasNext()){
+				f = itFeatures.next();
+				if (f.getName().equals(name)) {
+					match=true; //newFeatureNames.add(f.getName());
+					continue;
+				}
+			}
+			if (match==false) {
+				Feature newFeature = new Feature(name,name,true);
+				newFeatures.add(newFeature);
+				System.out.println( " NEW FEATURE FOUND: " +name );
 			}
 		}
-		if (match==false) {
-			newFeatureNames.add(name);
-			System.out.println( " New feature encountered: " +name );
-		}
-	}
-	return newFeatureNames;
-}
-	
+		return newFeatures;
+	}	
+
 }
