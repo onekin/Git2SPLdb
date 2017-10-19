@@ -16,7 +16,9 @@ public class ProductRelease {
 	private	ArrayList<SourceCodeFile> productAssets = new ArrayList<SourceCodeFile>();
 	private RevCommit releasedCommit;
 	
-	ArrayList<CustomizationLine> customList=new ArrayList<CustomizationLine>();
+	ArrayList<CustomizationFact> customsList=new ArrayList<CustomizationFact>();
+	
+	
 	
 	public ProductRelease(String idRelease, Product fromProduct, Date l, RevCommit releasedCommit){
 		
@@ -27,12 +29,12 @@ public class ProductRelease {
 	}
 	
 	
-	public void addCustomization(CustomizationLine cust){
-		this.customList.add(cust);
+	public void setCustomizations(ArrayList<CustomizationFact> customs){
+		this.customsList = customs;
 	}
 	
-	public ArrayList<CustomizationLine>  getCustomizations(){
-		return this.customList;
+	public ArrayList<CustomizationFact>  getCustomizations(){
+		return this.customsList;
 	}
 	
 	public String getIdRelease() {

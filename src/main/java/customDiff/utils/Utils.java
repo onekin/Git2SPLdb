@@ -22,6 +22,8 @@ import org.repodriller.domain.ChangeSet;
 import org.repodriller.domain.Commit;
 import org.repodriller.scm.SCMRepository;
 
+import customDiff.CustomDiff;
+
 
 
 
@@ -38,7 +40,7 @@ public class Utils {
 	static public ArrayList<String> getCommitHashesBetweenTwoTags(String baselineTag, String productReleaseTag) {
 		//this snipped works fine
 		try{
-		  Repository repo = new FileRepository(preprocessing.deprecated.Main.productRepo+"/.git");
+		  Repository repo = new FileRepository(CustomDiff.repositoryPath+"/.git");
 		  Git git = new Git(repo);
 		  Ref refFrom = repo.getRef(baselineTag);
 		  Ref refTo = repo.getRef(productReleaseTag);
@@ -75,7 +77,7 @@ public class Utils {
 	static public String getTagForACommitHash(String hash){
 		Repository repository;
 		try {
-			repository = new FileRepository(preprocessing.deprecated.Main.productRepo+"/.git");
+			repository = new FileRepository(CustomDiff.repositoryPath+"/.git");
 			Git git = new Git(repository);
 		
 			java.util.List<Ref> list = git.tagList().call();	//all the tags in the repository
@@ -105,7 +107,7 @@ public class Utils {
 	static public String computeTheDiffFileBetweenCommits(String hash_old, String hash_new, String filePath) {
 		try {
 			//git diff hash_old hash_new filename
-			Repository repository = new FileRepository(preprocessing.deprecated.Main.productRepo+"/.git");
+			Repository repository = new FileRepository(CustomDiff.repositoryPath+"/.git");
 			Git git = new Git(repository);		//compute the diff w.r.t the baseline it was derived from
 			
 
@@ -156,7 +158,7 @@ public class Utils {
 		public static Iterable<RevCommit> getCommitsInBranch(String branchName) {
 			
 			try {
-				Repository repository = new FileRepository(preprocessing.deprecated.Main.productRepo+"/.git");
+				Repository repository = new FileRepository(CustomDiff.repositoryPath+"/.git");
 				Git git = new Git(repository);
 				 Iterable<RevCommit> revCommits = git.log()
 			                .add(repository.resolve(branchName))

@@ -1,13 +1,8 @@
 package customDiff;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.Ref;
@@ -16,19 +11,13 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.TreeWalk;
-
-import customDiff.SPLdomain.CoreAssetBaseline;
-import customDiff.SPLdomain.CoreAssetFileAnnotated;
-import customDiff.SPLdomain.Feature;
 import customDiff.SPLdomain.Product;
 import customDiff.SPLdomain.ProductAssetFileAnnotated;
 import customDiff.SPLdomain.ProductPortfolio;
 import customDiff.SPLdomain.ProductRelease;
 import customDiff.SPLdomain.SourceCodeFile;
 import customDiff.SPLdomain.VariationPoint;
-
-
-import preprocessing.deprecated.Main;
+import customDiff.utils.RefUtils;
 
 public class ProductPortfolioMiner{
 
@@ -149,9 +138,9 @@ public class ProductPortfolioMiner{
 	              
 	              //2: extract features and variation points for the product asset
 	             
-		      	  ArrayList<VariationPoint> variationPoints = customDiff.VariationPointAnalysisUtils.extractVPsFromFile(file, pr.getFromProduct().getInPortfolio().getDerivedFrom(), true);
+		      	  ArrayList<VariationPoint> variationPoints = customDiff.utils.VariationPointAnalysisUtils.extractVPsFromFile(file, pr.getFromProduct().getInPortfolio().getDerivedFrom(), true);
 		      	  file.setVariationPoints(variationPoints);
-		      	  file.setFeatureToCodeMapping(customDiff.VariationPointAnalysisUtils.extractFeatureMapFromFile(file));
+		      	  file.setFeatureToCodeMapping(customDiff.utils.VariationPointAnalysisUtils.extractFeatureMapFromFile(file));
 	              files.add(file);
 	            
 	            }	            	

@@ -7,6 +7,12 @@
   
 
 	<dependency>
+    <groupId>net.sourceforge.streamsupport</groupId>
+    <artifactId>streamsupport</artifactId>
+    <version>1.1.2</version>
+</dependency>
+
+	<dependency>
 		<groupId>org.repodriller</groupId>
 		<artifactId>repodriller</artifactId>
 		<version>1.2.1</version>
@@ -15,11 +21,6 @@
 
 
 
-	<dependency>
-    <groupId>net.sourceforge.streamsupport</groupId>
-    <artifactId>streamsupport</artifactId>
-    <version>1.1.2</version>
-</dependency>
 
   </dependencies>
   

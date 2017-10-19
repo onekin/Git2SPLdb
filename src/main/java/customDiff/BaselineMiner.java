@@ -20,7 +20,7 @@ public class BaselineMiner {
 	
 	public void mine(String baselineToMine) {//CoreAssetBaseline baseline, String pathToWhereCustomizationsAreComputed
 				
-		RevCommit baselineCommit = customDiff.RefUtils.getCommitFromRefName(baselineToMine);	
+		RevCommit baselineCommit = customDiff.utils.RefUtils.getCommitFromRefName(baselineToMine);	
 		CoreAssetBaseline baseline = new CoreAssetBaseline(baselineCommit, baselineCommit.getCommitTime(), baselineToMine);
 		CustomDiff.spl.addBaseline(baseline);
 	
@@ -73,7 +73,7 @@ public class BaselineMiner {
 			    				  customDiff.CustomDiff.pathToWhereCustomizationsAreComputed.concat(treeWalk.getPathString().split(customDiff.CustomDiff.pathToWhereCustomizationsAreComputed)[1]));
 		              
 		              //2: extract features and variation points for the core asset
-		              CAfile.setFeatureToCodeMapping(customDiff.VariationPointAnalysisUtils.extractFeaturesAndVPsForCoreAsset(CAfile, baseline));
+		              CAfile.setFeatureToCodeMapping(customDiff.utils.VariationPointAnalysisUtils.extractFeaturesAndVPsForCoreAsset(CAfile, baseline));
 			    	
 		              files.add(CAfile);
 		              System.out.println(CAfile.toString());

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package repodriller.domain;
+package repodriller.diffparser;
 
 
 public enum ModificationType {

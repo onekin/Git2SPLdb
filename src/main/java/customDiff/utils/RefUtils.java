@@ -1,4 +1,4 @@
-package customDiff;
+package customDiff.utils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,6 +17,7 @@ import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.TreeWalk;
 
+import customDiff.CustomDiff;
 import customDiff.SPLdomain.CoreAssetBaseline;
 import customDiff.SPLdomain.CoreAssetFileAnnotated;
 import customDiff.SPLdomain.Feature;

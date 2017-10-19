@@ -6,16 +6,11 @@ import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import org.repodriller.domain.Commit;
-
 import customDiff.SPLdomain.CoreAssetBaseline;
-import customDiff.SPLdomain.ProductAssetFileAnnotated;
 import customDiff.SPLdomain.ProductRelease;
 import customDiff.SPLdomain.SourceCodeFile;
-import customDiff.SPLdomain.VariationPoint;
 
-import preprocessing.deprecated.Main;
+
 
 
 public class FileUtils {
@@ -50,7 +45,7 @@ public class FileUtils {
 
 			    while (line != null) {
 			        sb.append(line);//+"\n");
-			        sb.append(System.lineSeparator());
+			        sb.append("\n");
 			        line = br.readLine();
 			    }
 		//	  System.out.println("In File Utils - readFileContent: \n"+ sb.toString());
@@ -129,18 +124,18 @@ public class FileUtils {
 	public static SourceCodeFile getCoreAssetByProductAssetPath(String path, ProductRelease pr ) {
 		CoreAssetBaseline baseline = pr.getFromProduct().getInPortfolio().getDerivedFrom();
 		ArrayList<SourceCodeFile> caList = baseline.getCoreAssetFiles();
-		System.out.println("Finding path:"+path);
+		//System.out.println("Finding path:"+path);
 		if (caList!= null){
 			Iterator<SourceCodeFile> it = caList.iterator();
 			while(it.hasNext()){
 				SourceCodeFile ca = it.next();
-				System.out.println(ca.getRelativePath());
+				//System.out.println(ca.getRelativePath());
 				if(path.equals(ca.getRelativePath()))
 					return ca;
 			}
 		
 		}
-
+		System.out.println("NOT FOUND path:"+path);
 		return null;
 	}
 

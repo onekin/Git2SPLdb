@@ -2,39 +2,33 @@ package customDiff;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
-import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
-import org.eclipse.jgit.treewalk.EmptyTreeIterator;
-import org.eclipse.jgit.util.io.DisabledOutputStream;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.eclipse.jgit.diff.DiffFormatter;
-import org.eclipse.jgit.diff.RawTextComparator;
 import java.io.ByteArrayOutputStream;
 import org.eclipse.jgit.lib.ObjectReader;
-
-import customDiff.SPLdomain.CustomizationLine;
+import customDiff.SPLdomain.CustomizationFact;
 import customDiff.SPLdomain.ProductRelease;
+import repodriller.diffparser.CustomDiffBlock;
+import repodriller.diffparser.DiffParser;
+import repodriller.diffparser.Modification;
+import repodriller.diffparser.ModificationType;
 
-
-
-import repodriller.domain.*;
 
 
 public class ProductCustomizationMiner {
 
 	ProductRelease pr;
-	ArrayList<CustomizationLine> customizations;
-	ArrayList<Modification> modifications = new ArrayList<Modification>();
+	ArrayList<CustomizationFact> customizations;
 	
-
 
 	/* Fixed. */	
 	private int maxNumberFilesInACommit = 5000; /* TODO Expose an API to control this value? Also in SubversionRepository. */
@@ -44,22 +38,74 @@ public class ProductCustomizationMiner {
 	
 	public void mine(ProductRelease pr) {
 		this.pr = pr;
-		customizations = new ArrayList<CustomizationLine>();
 		
-		//1: compute the diff between productrelease commit and the baseline it was derived from.
-		List<DiffEntry> diffs = getDiffsBetweenCommits(pr.getFromProduct().getInPortfolio().getDerivedFrom().getRevCommit(), pr.getReleasedCommit());//base,head
+		customizations = new ArrayList<CustomizationFact>();
 		
+		//1: compute the Git diff between productrelease commit and the baseline it was derived from.
+		List<Modification> modifications = getDiffsBetweenCommits(pr.getFromProduct().getInPortfolio().getDerivedFrom().getRevCommit(), pr.getReleasedCommit());//base,head
 		
-	
+		//2: for each  diff, call the parser-> parse diffs per VP changed. 
+		Iterator<Modification> it = modifications.iterator();
+		Modification mod;
+		while (it.hasNext()){
+			mod = it.next();//4: for each  modifications parse and extract  customDiff
+			customizations.addAll(computeCustomizationsInModification(mod, pr));
+
+		}
+		
+		pr.setCustomizations(customizations);
+		
+		/** Printing **/
+		System.out.println("MINED "+pr.getIdRelease()+ " CUSTOMIZATIONS "+customizations.size());
+		Iterator<CustomizationFact> it1 = customizations.iterator();
+		while(it1.hasNext()){
+			System.out.println(" "+it1.next().toString()); 
+		}
+		
 	}
 	
+
 	
 	
+	private ArrayList<CustomizationFact> computeCustomizationsInModification(Modification m, ProductRelease pr) {
+		
+		ArrayList<CustomizationFact> customizations = new ArrayList<CustomizationFact>();
+		
+		//the DiffParser is in charge of parsing the diff into customDiffs
+		DiffParser parsedDiff = new DiffParser(m, pr);
 	
+		if(parsedDiff.getCustomDiffBlocks()==null || parsedDiff.getCustomDiffBlocks().size()==0) 
+			return customizations;
 	
-	private List<DiffEntry> getDiffsBetweenCommits(RevCommit oldCommit, RevCommit newCommit) {
+		int numberOfCustomDiffBlocks = parsedDiff.getCustomDiffBlocks().size();
+		int counter=0;
+		
+		while (counter<numberOfCustomDiffBlocks){
+			CustomDiffBlock custom = parsedDiff.getCustomDiffBlocks().get(counter);
+			if(custom!=null) {
+				/** Create Customization Facts **/
+				CustomizationFact customFact = new CustomizationFact(
+						custom.getAddedlines(), 
+						custom.getDeteledlines(), 
+								custom.getDiffBlock(), 
+								custom.getPaModified(), custom.getCoreAsset(), 
+								custom.getVp(), m.getDiff(), 
+								null, false, false, pr);
+				customFact.toString();
+				customizations.add(customFact);
+			}
+			counter++;
+		}
+		return customizations;
+	}
+
+
+
+	private List<Modification> getDiffsBetweenCommits(RevCommit oldCommit, RevCommit newCommit) {
+		
 		
 		try{
+			ArrayList<Modification> modifications = new ArrayList<Modification>();
 			
 			Repository repo = new FileRepository(customDiff.CustomDiff.repositoryPath+"/.git");	
 			DiffFormatter df = new DiffFormatter( new ByteArrayOutputStream() );
@@ -79,7 +125,7 @@ public class ProductCustomizationMiner {
 			// 1: get the diff entries for commits.
 			List<DiffEntry> diffs = df.scan( oldTreeIter, newTreeIter );
 
-			// 2: for each entry compute customization effort. 
+			// 2: Convert each of the associated DiffEntry's (of a product release) to a Modification!
 			for (DiffEntry diff : diffs) {
 				ModificationType change = Enum.valueOf(ModificationType.class, diff.getChangeType().toString());
 
@@ -90,7 +136,7 @@ public class ProductCustomizationMiner {
 				String sc = "";
 				if (diff.getChangeType() != ChangeType.DELETE) {
 					diffText = getDiffText(repo, diff);
-					System.out.println(diffText);
+					//System.out.println(diffText);
 					sc = getSourceCode(repo, diff);
 				}
 
@@ -99,11 +145,11 @@ public class ProductCustomizationMiner {
 					diffText = "-- TOO BIG --";
 				}
 
-				this.modifications.add(new Modification(oldPath, newPath, change, diffText, sc));
+				modifications.add(new Modification(oldPath, newPath, change, diffText, sc, oldCommit,newCommit));
 			
 			
 			}
-		return diffs;
+		return modifications;
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -123,36 +169,7 @@ public class ProductCustomizationMiner {
 	}
 
 	
-	
-	private List<DiffEntry> diffsForTheCommit(Repository repo, RevCommit commit) throws IOException {
 
-		AnyObjectId currentCommit = repo.resolve(commit.getName());
-		AnyObjectId parentCommit = commit.getParentCount() > 0 ? repo.resolve(commit.getParent(0).getName()) : null;
-
-		try  {
-			DiffFormatter df = new DiffFormatter(DisabledOutputStream.INSTANCE);
-            df.setBinaryFileThreshold(2 * 1024); // 2 mb max a file
-            df.setRepository(repo);
-            df.setDiffComparator(RawTextComparator.DEFAULT);
-            df.setDetectRenames(true);
-            setContext(df);
-
-            List<DiffEntry> diffs = null;
-
-            if (parentCommit == null) {
-               
-                	RevWalk rw = new RevWalk(repo);
-                    diffs = df.scan(new EmptyTreeIterator(), new CanonicalTreeParser(null, rw.getObjectReader(), commit.getTree()));
-               
-            } else {
-                diffs = df.scan(parentCommit, currentCommit);
-            }
-            return diffs;
-        }catch(Exception e){
-        	e.printStackTrace();
-        }
-		return null;
-	}
 
 	private String getDiffText(Repository repo, DiffEntry diff) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();

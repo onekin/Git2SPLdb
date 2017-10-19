@@ -1,4 +1,4 @@
-package repodriller.domain;
+package repodriller.diffparser;
 
 
 public enum DiffLineType {

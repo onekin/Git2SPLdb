@@ -1,4 +1,7 @@
-package repodriller.domain;
+package repodriller.diffparser;
+
+import customDiff.SPLdomain.Developer;
+import customDiff.SPLdomain.VariationPoint;
 
 
 public class DiffLine {
@@ -7,10 +10,28 @@ public class DiffLine {
 	private final String line;
 	private DiffLineType type;
 	
+
+	private Developer blamedDeveloper;
+	
 	public DiffLine(int lineNumber, String line, DiffLineType type) {
 		this.lineNumber = lineNumber;
 		this.line = line;
 		this.type = type;
+	}
+	
+	public DiffLine(int lineNumber, String line, DiffLineType type, VariationPoint vp) {
+		this.lineNumber = lineNumber;
+		this.line = line;
+		this.type = type;
+	
+	}
+	
+	public DiffLine(int lineNumber, String line, DiffLineType type, VariationPoint vp, Developer developer) {
+		this.lineNumber = lineNumber;
+		this.line = line;
+		this.type = type;
+	
+		this.blamedDeveloper = developer;
 	}
 
 	public int getLineNumber() {
@@ -25,12 +46,12 @@ public class DiffLine {
 		return type;
 	}
 
-	@Override
+
 	public String toString() {
 		return "DiffLine [lineNumber=" + lineNumber + ", line=" + line + ", type=" + type + "]";
 	}
 
-	@Override
+
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -40,7 +61,7 @@ public class DiffLine {
 		return result;
 	}
 
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -61,4 +82,16 @@ public class DiffLine {
 		return true;
 	}
 
+
+
+	public Developer getBlamedDeveloper() {
+		return blamedDeveloper;
+	}
+
+	public void setBlamedDeveloper(Developer blamedDeveloper) {
+		this.blamedDeveloper = blamedDeveloper;
+	}
+
+	
+	
 }

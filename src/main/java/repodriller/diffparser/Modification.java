@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package repodriller.domain;
+package repodriller.diffparser;
 
 
 import java.io.File;
+import java.util.List;
+
+import org.eclipse.jgit.revwalk.RevCommit;
 
 import customDiff.SPLdomain.VariationPoint;
+import customDiff.blame.BlamedLine;
 
 
 public class Modification {
@@ -30,21 +34,26 @@ public class Modification {
 	private String sourceCode;//productasset code
 	private int added; //lines added
 	private int removed;//lines deleted
+	RevCommit oldCommit, newCommit;
+	List<BlamedLine> blameLines;
 	
-	private VariationPoint vp; //it belongs to a variation point
-
-	//
-	public Modification(String oldPath, String newPath, ModificationType type, String diff, String sourceCode) {
+	public Modification(String oldPath, String newPath, ModificationType type, String diff, 
+			String sourceCode, RevCommit oldCommit, RevCommit newCommit ) {
 		this.oldPath = oldPath;
 		this.newPath = newPath;
 		this.type = type;
 		this.diff = diff;
 		this.sourceCode = sourceCode;
+		this.newCommit=newCommit;
+		this.oldCommit = oldCommit;
 		
 		for(String line : diff.replace("\r", "").split("\n")) {
 			if(line.startsWith("+") && !line.startsWith("+++")) added++;
 			if(line.startsWith("-") && !line.startsWith("---")) removed++;
 		}
+		
+		blameLines = customDiff.blame.BlameUtils.blame(oldPath, newCommit.getName(), false);
+		
 		
 	}
 

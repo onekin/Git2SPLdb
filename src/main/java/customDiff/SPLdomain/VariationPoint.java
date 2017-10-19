@@ -96,5 +96,14 @@ public class VariationPoint {
 		this.newFeatures = newFeatures;
 	}
 
-	
+	public String getVPFullExpression(VariationPoint vp) {
+		if(vp==null) return "No VP";
+		
+		String header= vp.getExpression().replace("PV:IFCOND", "");
+		header = header.replace(" ", "");header = header.replace("//", "");
+		if(vp.getParentVP()!=null){
+			header= header +" AND "+ getVPFullExpression(vp.getParentVP());
+		}
+		return header;
+	}
 }

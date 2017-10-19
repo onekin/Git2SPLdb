@@ -1,16 +1,15 @@
-package customDiff;
+package customDiff.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import customDiff.CustomDiff;
 import customDiff.SPLdomain.CoreAssetBaseline;
 import customDiff.SPLdomain.Feature;
 import customDiff.SPLdomain.SourceCodeFile;
 import customDiff.SPLdomain.VariationPoint;
-import customDiff.utils.FeatureAnalysisUtils;
-import customDiff.utils.Utils;
 
 
 public class VariationPointAnalysisUtils {

@@ -8,6 +8,7 @@ import java.util.Iterator;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 import customDiff.SPLdomain.CoreAssetBaseline;
+import customDiff.SPLdomain.CustomizationFact;
 import customDiff.SPLdomain.CustomizationLine;
 import customDiff.SPLdomain.Feature;
 import customDiff.SPLdomain.Product;
@@ -111,7 +112,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		ArrayList<ProductRelease> releases ;
 		ArrayList<SourceCodeFile> assets ;
 		ArrayList<Product> products;
-		ArrayList<ProductPortfolio> portfolios = Main.spl.getProductPortfolioList();
+		ArrayList<ProductPortfolio> portfolios = customDiff.CustomDiff.spl.getProductPortfolioList();
 		ArrayList<VariationPoint> vps;
 		VariationPoint vp;
 		ArrayList<Feature> featureList;
@@ -150,7 +151,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		
 		ArrayList<VariationPoint> vps;
 		VariationPoint vp;
-		ArrayList<CoreAssetBaseline> baselines = Main.spl.getCoreAssetBaselines();
+		ArrayList<CoreAssetBaseline> baselines = customDiff.CustomDiff.spl.getCoreAssetBaselines();
 		ArrayList<SourceCodeFile> assets = null;
 		
 		for ( int i=0; i < baselines.size(); i++){
@@ -174,7 +175,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		ArrayList<ProductRelease> releases ;
 		
 		ArrayList<Product> products;
-		ArrayList<ProductPortfolio> portfolios = Main.spl.getProductPortfolioList();
+		ArrayList<ProductPortfolio> portfolios = customDiff.CustomDiff.spl.getProductPortfolioList();
 		
 		ArrayList<SourceCodeFile> passets;
 		for(int x=0; x < portfolios.size();x++){
@@ -208,10 +209,10 @@ public class ExportToMySQLDatabase implements ExportTarget {
 	private String generateInsertsFor_ProductPortfolio_Table() {
 		String insert="";
 		String header = "INSERT INTO ProductPortfolio (idPortfolio,SPL_idSPL, CoreAssetBAseline_idBaseline) VALUES\n";
-		ArrayList<ProductPortfolio> list = Main.spl.getProductPortfolios();
+		ArrayList<ProductPortfolio> list = customDiff.CustomDiff.spl.getProductPortfolios();
 		
 		for (int i=0; i < list.size(); i++){
-			insert=insert.concat(header).concat("('"+list.get(i).getPortfolioID()+"','"+Main.spl.getId()+"','"+list.get(i).getDerivedFrom().getId()+"');\n");
+			insert=insert.concat(header).concat("('"+list.get(i).getPortfolioID()+"','"+customDiff.CustomDiff.spl.getId()+"','"+list.get(i).getDerivedFrom().getId()+"');\n");
 			
 		}		
 		return insert;
@@ -224,7 +225,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		ProductPortfolio pp;
 
 		ArrayList<Product> products;
-		ArrayList<ProductPortfolio> portfolios = Main.spl.getProductPortfolioList();
+		ArrayList<ProductPortfolio> portfolios = customDiff.CustomDiff.spl.getProductPortfolioList();
 
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
@@ -245,7 +246,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		ProductPortfolio pp;
 		ArrayList<ProductRelease> releases;
 		ArrayList<Product> products;
-		ArrayList<ProductPortfolio> portfolios = Main.spl.getProductPortfolioList();
+		ArrayList<ProductPortfolio> portfolios = customDiff.CustomDiff.spl.getProductPortfolioList();
 		
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
@@ -271,7 +272,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 
 		ArrayList<Product> products;
 		
-		ArrayList<ProductPortfolio> portfolios = Main.spl.getProductPortfolioList();
+		ArrayList<ProductPortfolio> portfolios = customDiff.CustomDiff.spl.getProductPortfolioList();
 		
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
@@ -296,11 +297,11 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		
 		ProductPortfolio pp;
 		ArrayList<ProductRelease> releases ;
-		ArrayList<CustomizationLine> customs ;
-		CustomizationLine cust ;
+		ArrayList<CustomizationFact> customs ;
+		CustomizationFact cust ;
 		ArrayList<Product> products;
 		VariationPoint vp,parent;
-		ArrayList<ProductPortfolio> portfolios = Main.spl.getProductPortfolioList();
+		ArrayList<ProductPortfolio> portfolios = customDiff.CustomDiff.spl.getProductPortfolioList();
 		
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
@@ -313,7 +314,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 					for(int z=0; z < customs.size(); z++){
 						cust = customs.get(z);
 						vp = cust.getVp();//can be null
-						if(cust.getIsNewAsset()==true){
+						if(cust.isNewAsset()==true){
 							if(vp==null) 
 								insert=insert.concat(header).concat("('"+cust.getOperation() +"',"+"null"+","+cust.getProductFile().getId() +","+ "1"+", null );\n");
 							else {
@@ -351,7 +352,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 	private String generateInsertsFor_CoreAsset_has_Feature_Table() {
 		String insert="";
 		String header = "INSERT INTO CoreAsset_has_Feature (Feature_idFeature,CoreAsset_idCoreAsset) VALUES\n";
-		ArrayList<CoreAssetBaseline> baselines = Main.spl.getCoreAssetBaselines();
+		ArrayList<CoreAssetBaseline> baselines = customDiff.CustomDiff.spl.getCoreAssetBaselines();
 		ArrayList<SourceCodeFile> caList = null;
 		
 		for(int i=0; i< baselines.size();i++){
@@ -376,7 +377,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		
 		String insert="";
 		String header="INSERT INTO CoreAsset (idCoreAsset, name, path, content, size, CoreAssetBaseline_idBaseline) VALUES\n";
-		ArrayList<CoreAssetBaseline> baselines = Main.spl.getCoreAssetBaselines();
+		ArrayList<CoreAssetBaseline> baselines = customDiff.CustomDiff.spl.getCoreAssetBaselines();
 		ArrayList<SourceCodeFile> list = null;
 		
 		for ( int i=0; i < baselines.size(); i++){
@@ -393,7 +394,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 	private String  generateInsertsFor_CoreAsset_Baseline_has_Feature() {
 		String insert="";
 		String header="INSERT INTO CoreAssetBaseline_has_Feature (CoreAssetBaseline_idBaseline, Feature_idFeature) VALUES\n";
-		ArrayList<CoreAssetBaseline> baselines = Main.spl.getCoreAssetBaselines();
+		ArrayList<CoreAssetBaseline> baselines = customDiff.CustomDiff.spl.getCoreAssetBaselines();
 		ArrayList<Feature> featuresInBaseline;
 		
 	
@@ -410,7 +411,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 	private String generateInsertsFor_Feature_Table() {
 		String insert="";
 		String header = "INSERT INTO Feature (idFeature, name) VALUES\n";
-		ArrayList<Feature> list = Main.features;
+		ArrayList<Feature> list = customDiff.CustomDiff.features;
 		if (list==null) return "";
 		
 		Iterator<Feature> it = list.iterator();
@@ -426,14 +427,14 @@ public class ExportToMySQLDatabase implements ExportTarget {
 	private String generateInsertsFor_CoreAssetBaseline_Table() {
 		String insert="";
 		String header = "INSERT INTO CoreAssetBaseline (idBaseline,releaseDate,SPL_idSPL) VALUES\n";
-		ArrayList<CoreAssetBaseline> list = Main.spl.getCoreAssetBaselines();
+		ArrayList<CoreAssetBaseline> list = customDiff.CustomDiff.spl.getCoreAssetBaselines();
 		if (list==null) return "";
 		
 		Iterator<CoreAssetBaseline> it = list.iterator();
 		CoreAssetBaseline b;
 		while (it.hasNext()){
 			b = it.next();
-			insert=	insert.concat(header).concat("(" +"'"+b.getId()+"'"+","+"'"+convertDateToMysqlForm (b.getReleaseDate())+"'"+","+"'"+Main.spl.getId() +"'"  +");\n");
+			insert=	insert.concat(header).concat("(" +"'"+b.getId()+"'"+","+"'"+convertDateToMysqlForm (b.getReleaseDate())+"'"+","+"'"+customDiff.CustomDiff.spl.getId() +"'"  +");\n");
 		}
 		return insert;
 	}
@@ -442,7 +443,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		String insert="";
 	
 		insert=	insert.concat("INSERT INTO SPL (idSPL)  VALUES \n " );
-		insert=insert.concat ("('"+ Main.spl.getId()+ "')"); 
+		insert=insert.concat ("('"+ customDiff.CustomDiff.spl.getId()+ "')"); 
 		
 		insert=insert.concat(";\n");
 	//	System.out.println(insert);

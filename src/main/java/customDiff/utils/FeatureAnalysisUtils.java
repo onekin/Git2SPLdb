@@ -1,17 +1,12 @@
 package customDiff.utils;
 
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import org.repodriller.domain.Commit;
-import org.repodriller.domain.DiffLine;
-
 import customDiff.SPLdomain.CoreAssetBaseline;
-import customDiff.SPLdomain.CustomizationLine;
 import customDiff.SPLdomain.Feature;
-import customDiff.SPLdomain.ProductAssetFileAnnotated;
 import customDiff.SPLdomain.ProductRelease;
 import customDiff.SPLdomain.SourceCodeFile;
 import customDiff.SPLdomain.VariationPoint;
@@ -19,114 +14,6 @@ import customDiff.SPLdomain.VariationPoint;
 
 public class FeatureAnalysisUtils {
 	
-	
-	public static ArrayList <CustomizationLine> computeCustomizationDetails(String fileName, String path, String content , List<DiffLine> lines, ProductRelease pr, Commit commit) {	
-		//Lista de modificaciones de un archivo. Para una modificacion, que feature cambia y que operacion: borrar o a�adir
-
-		ArrayList <CustomizationLine>	featureModificationDetailList  = new  ArrayList <CustomizationLine> (); 
-    
-		HashMap <Integer,ArrayList<String>> map = customDiff.utils.FileUtils.getProductAssetByFilePath(path, pr).getFeatureToCodeMapping();// extractFeatureMapFromFile(content);
-		if(map==null) return null;
-		 
-		Iterator<DiffLine> diffLineIterator = lines.iterator(); //iteratate diffs 
-		SourceCodeFile paModified = customDiff.utils.FileUtils.getProductAssetByFilePath(path, pr);
-		int lineNumber=0;
-		String modType=null;
-		DiffLine aux=null;
-		ArrayList<String> featureNames = null;
-   
-      
-		while (diffLineIterator.hasNext()){//for each diff know which lines where added/deleted and SUM
-			aux= diffLineIterator.next();
-			lineNumber= aux.getLineNumber();
-			modType=aux.getType().toString();
-			featureNames= map.get(lineNumber);
-			
-		   	if(modType!="KEPT"){//a line that serves as diff context 
-		   		SourceCodeFile ca = customDiff.utils.FileUtils.getCoreAssetByProductAssetPath(paModified.getRelativePath(), pr);
-		   		VariationPoint vp = getVariationPointOfChangedAssetLine(paModified.getRelativePath(), pr, lineNumber);
-		   		
-		   		int newFeature=0;
-		   		int existingAsset = isAssetInBaseline(pr.getFromProduct().getInPortfolio().getDerivedFrom(),fileName);
-		   		if (vp!=null){//cuando no hay un VP
-		   			System.out.println("VP changed is "+vp.getIdVP());
-		   			if(vp.getNewFeatures()!=null)
-			   			newFeature = 1;
-			   		else newFeature = 0;	
-		   		} 
-		   		
-		   		CustomizationLine cust = new  CustomizationLine(modType, lineNumber, paModified, 
-		   				ca, pr, 
-		   				newFeature,
-		   				existingAsset,
-		   				vp);	   	
-		   		
-		    	featureModificationDetailList.add(cust);
-		   				
-		   	}
-		}
-
-		return featureModificationDetailList;
-	}
-	
-
-	private static int isAssetInBaseline(CoreAssetBaseline baseline,
-			String fileName) {
-		
-		ArrayList<SourceCodeFile> list = baseline.getCoreAssetFiles();
-		Iterator<SourceCodeFile> it = list.iterator();
-		SourceCodeFile ca;
-		
-		while(it.hasNext()){
-			ca = it.next();
-			System.out.println("is asset in baseline? "+ca.getFileName()+ "    VS  "+fileName);
-			if (ca.getFileName().equals(fileName))
-				return 1;
-		}
-		return 0;
-	}
-
-
-
-	private static int isFeatureInBaseline(CoreAssetBaseline baseline,String featureName) {
-		
-		ArrayList<Feature> list = baseline.getFeatures();
-		
-		Iterator<Feature> it = list.iterator();
-		Feature f;
-		
-		while(it.hasNext()){
-			f = it.next();
-			if (f.getIdFeature().equals(featureName))
-				return 1;
-		}
-		return 0;
-	}
-
-	private static int isAnyFeatureNewInBaseline(CoreAssetBaseline baseline, ArrayList<Feature> features) {
-		
-		ArrayList<Feature> list = baseline.getFeatures();
-		Iterator<Feature> baselineIt = list.iterator();
-		Iterator<Feature> it = features.iterator();
-	//	ArrayList <Feature> newFeatures=new ArrayList<Feature>();
-		Feature f;
-		int match = 0;
-		
-		while(it.hasNext()){
-			f = it.next();
-			match = 0;
-			while(baselineIt.hasNext()) {
-			  if (f.getIdFeature().equals(baselineIt.next().getName()))
-				match = 1;
-			}
-			if (match ==0) {
-				//newFeatures.add(f);
-				return 1;
-			} 
-		}
-		return 0;
-	}
-
 
 
 
@@ -208,7 +95,6 @@ private static ArrayList<Feature> findNewFeatures(ArrayList<String> listFeatures
 
 
 	public static ArrayList<VariationPoint> extractVPsFromFile(SourceCodeFile file, CoreAssetBaseline baseline) {
-		// TODO Auto-generated method stub
 	
 		String content = file.getContent();
 		if (!content.contains(customDiff.CustomDiff.annotationPatternBeginning)) return null; //the file does not contain variability in it
@@ -254,52 +140,26 @@ private static ArrayList<Feature> findNewFeatures(ArrayList<String> listFeatures
 				}
 			}
 			file.setVariationPoints(variationPoints);
-			
-			//printing VPS			
-			/*Iterator<VariationPoint> it = variationPoints.iterator();
-			VariationPoint var;
-			System.out.println("---------------------------------");
-			System.out.println("------ Variation Points ---------");
-			while (it.hasNext()) {
-				var = it.next();
-				
-				System.out.println("Var "+var.getIdVP()+ 
-				" Expression:"+var.getExpression() +
-				" LineInit:"+ var.getLineInit() +
-				" LineEnd:"+ var.getLineEnd() +
-				" Parent?:"+ var.getParentVP()+ 
-				" Body:"+ var.getBody() +
-				" \nfeatures:"+ var.getFeatures().toString());
-			}		*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	 
 		return variationPoints;
-		
 	}
 
 
 public static VariationPoint getVariationPointOfChangedAssetLine(String relPath, ProductRelease pr, int lineNumber) {
-	
-	System.out.println("Finding VP for file - for CUSTOMIZATION ANALYSIS: "+relPath);
 	SourceCodeFile pa = customDiff.utils.FileUtils.getProductAssetByFilePath(relPath, pr);
-		
-		VariationPoint vp, keyVP=null;
-		
-		System.out.println("IN getVariationPointOfChangedAssetLine " + pa.getFileName());
-		ArrayList<VariationPoint> listVPs = pa.getVariationPoints();
-		System.out.println("IN getVariationPointOfChangedAssetLine; VPs" +pa.getVariationPoints());
-		System.out.println("Line number" +lineNumber);
+	VariationPoint vp, keyVP=null;
 
+		ArrayList<VariationPoint> listVPs = pa.getVariationPoints();
 		Iterator<VariationPoint> it = listVPs.iterator();
 		
 		while (it.hasNext()) {
 			vp=it.next();
-			System.out.println(" Line init:" +vp.getLineInit()+ ";   Line end: "+ vp.getLineEnd());
+			//System.out.println(" Line init:" +vp.getLineInit()+ ";   Line end: "+ vp.getLineEnd());
 			if((vp.getLineInit()<=lineNumber) && (lineNumber<=vp.getLineEnd())) {
 				keyVP=vp;
-				System.out.println("SIIIIIIII");
+				System.out.println("VP found.");
 			}
 				
 		}
