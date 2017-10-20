@@ -9,6 +9,7 @@ import customDiff.CustomDiff;
 import customDiff.SPLdomain.ProductRelease;
 import customDiff.SPLdomain.SourceCodeFile;
 import customDiff.SPLdomain.VariationPoint;
+import customDiff.blame.BlamedLine;
 
 public class DiffParser {
 
@@ -17,12 +18,13 @@ public class DiffParser {
 	private String fullDiff;
 	private ProductRelease pr;
 	private String path; //pa path
-	
+	private Modification modification;
 	public DiffParser(Modification mod, ProductRelease pr){//(String fullDiff, ProductRelease pr, String path) {
 		this.fullDiff = mod.getDiff();//fullDiff;
 		diffBlocks = new ArrayList<DiffBlock>();
 		this.pr  =pr;
 		this.path = mod.getNewPath();// path;
+		this.modification = mod;
 		extractDiffBlocks();
 		
 		extractCustomDiffBlocks();/** Parse blocks for customDiff*/
@@ -83,33 +85,53 @@ public class DiffParser {
 		boolean anyVP=false;
 		
 		for (String line: lines ){
+			if(line.startsWith("-")) oldfileLineNumber++;
+			else if(line.startsWith("+")) newFileLineNumber++;
+			else {//for context lines	
+				oldfileLineNumber++;
+				newFileLineNumber++;
+			}
+			
 			if(line.contains(CustomDiff.annotationPatternBeginning)){
 				anyVP=true;
-				if(startLine==0) 
-					customDiffBlocks.add(createCustomDiffBlock(diffBlock,startLine, lineCounter-1, false));
-				else 
-					customDiffBlocks.add(createCustomDiffBlock(diffBlock,startLine, lineCounter-1, true));
+				customDiffBlocks.add(createCustomDiffBlock(diffBlock,startLine, lineCounter-1, true,oldfileLineNumber,newFileLineNumber));
 				startLine = lineCounter;
 			}
 			lineCounter ++;
 		}
 		
 		if (anyVP==false){//if the diff did not contain any variation point in it
-			customDiffBlocks.add(createCustomDiffBlock(diffBlock,startLine, lines.length-1, false));
+			customDiffBlocks.add(createCustomDiffBlock(diffBlock,startLine, lines.length-1, false,oldfileLineNumber,newFileLineNumber));
 		}
 		return customDiffBlocks;
 	}
 	
 	/** Custom Diff: per variation point. With expression in the header & with authors name in changes**/
-	private CustomDiffBlock createCustomDiffBlock(DiffBlock diffBlock, int startLine, int endline, boolean fixHeader){
-		System.out.println("New chunk. From line "+startLine+" to line:"+ endline);
+	private CustomDiffBlock createCustomDiffBlock(DiffBlock diffBlock, int startLine, int endline, 
+			boolean fixHeader,int d1, int d3){
+		System.out.println("New chunk! From line "+startLine+" to line:"+ endline);
 		ArrayList<String> newDiff = new ArrayList<>();
 		String[] originalDiff = diffBlock.getLines();
 		
-		newDiff.add(originalDiff[0]);//add the header. TODO Fix the header lines! 
-		
+		if (fixHeader) {//TODO Fix the header lines!
+			//newDiff.add(originalDiff[0]);//add the header.
+			newDiff.add("@@-"+d1+",d2"+" +"+d3+",d4");//add the header.
+			
+		}  
+		int newFilelineCounter = startLine+diffBlock.getD3()-2;//TODO startLine+diffBlock.getD3()-1
+		String strblame;
 		for(int i=startLine; i<=endline; i++){
-			newDiff.add(originalDiff[i]);
+			strblame= "";
+			if(originalDiff[i].startsWith("+")) {// introduce THE blame for that line, only for added lines
+				List<BlamedLine> blames = modification.getBlameLines();
+				String author = blames.get(newFilelineCounter).getAuthor();int line = blames.get(newFilelineCounter).getLineNumber();
+				String commit = blames.get(newFilelineCounter).getCommit();String lineAdded = blames.get(newFilelineCounter).getLine();
+				strblame = "//Authored by: "+author+" " + "lineNumber:"+line+"in commit:"+commit+ "line added:"+lineAdded;
+				
+			}
+			newDiff.add(originalDiff[i]+strblame);//add line to the customDiffBlock
+			
+			if (!originalDiff[i].startsWith("-")) newFilelineCounter++;
 		}
 		
 		//add initial context lines. TODO 

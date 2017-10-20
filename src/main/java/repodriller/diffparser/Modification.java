@@ -112,5 +112,29 @@ public class Modification {
 		return removed;
 	}
 
+	public RevCommit getOldCommit() {
+		return oldCommit;
+	}
+
+	public void setOldCommit(RevCommit oldCommit) {
+		this.oldCommit = oldCommit;
+	}
+
+	public RevCommit getNewCommit() {
+		return newCommit;
+	}
+
+	public void setNewCommit(RevCommit newCommit) {
+		this.newCommit = newCommit;
+	}
+
+	public List<BlamedLine> getBlameLines() {
+		return blameLines;
+	}
+
+	public void setBlameLines(List<BlamedLine> blameLines) {
+		this.blameLines = blameLines;
+	}
+
 	
 }
