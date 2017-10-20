@@ -143,6 +143,7 @@ public class RefUtils {
 				}
 			}
 			//System.out.println(productRelease.getName()+" derived from "+baselineCommit.getName());
+			repo.close();
 			return true;
 		}catch(Exception e){
 			e.printStackTrace();

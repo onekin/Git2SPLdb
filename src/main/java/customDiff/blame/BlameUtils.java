@@ -16,7 +16,8 @@ public class BlameUtils {
 	
 	public static List<BlamedLine> blame(String file, String commitToBeBlamed, boolean priorCommit) {
         try{
-        	Git git = openRepository();
+        	Repository repo = new FileRepository(customDiff.CustomDiff.repositoryPath+"/.git");
+			Git git = new Git(repo);
 			ObjectId gitCommitToBeBlamed;
 			if(priorCommit) {
 				Iterable<RevCommit> commits = git.log().add(git.getRepository().resolve(commitToBeBlamed)).call();
@@ -36,7 +37,7 @@ public class BlameUtils {
 							blameResult.getSourceCommitter(i).getName(),
 							blameResult.getSourceCommit(i).getId().getName()));
 				}
-
+				repo.close();
 				return result;
 			} else {
 				throw new RuntimeException("BlameResult not found.");
@@ -48,15 +49,7 @@ public class BlameUtils {
 	}
 
 
-	private static Git openRepository() {
-		try{
-			Repository repo = new FileRepository(customDiff.CustomDiff.repositoryPath+"/.git");
-			Git git = new Git(repo);
-			return git;
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return null;
-	}
+
+	
 	
 }

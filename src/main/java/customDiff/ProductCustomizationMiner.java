@@ -149,6 +149,7 @@ public class ProductCustomizationMiner {
 			
 			
 			}
+			repo.close();
 		return modifications;
 		}catch(Exception e){
 			e.printStackTrace();

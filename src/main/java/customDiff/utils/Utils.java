@@ -54,6 +54,7 @@ public class Utils {
 			System.out.println(c.getName());
 			commitHashList.add(c.getName());
 		}
+		repo.close();
 		return commitHashList;
 		
 		}catch(Exception e){
@@ -86,6 +87,7 @@ public class Utils {
 			    if (object.getName().equals(hash) )
 			    	return tag.getName();
 			}
+			repository.close();
 			return null;
 		
 		}catch (Exception e) {
@@ -147,7 +149,7 @@ public class Utils {
 				}
 						
 			}
-			
+			repository.close();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -163,6 +165,7 @@ public class Utils {
 				 Iterable<RevCommit> revCommits = git.log()
 			                .add(repository.resolve(branchName))
 			                .call();
+				 repository.close();
 			     return  revCommits;
 			}catch(Exception e){
 				e.printStackTrace();

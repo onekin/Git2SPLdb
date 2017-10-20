@@ -21,17 +21,14 @@ public class VariationPointAnalysisUtils {
 		ArrayList<String> valueList;
 		Iterator<String> i;
 		String variable;
-		
-		
+	
 		//1: extract Feature Map for a file
 		HashMap<Integer, ArrayList <String>> map = extractFeatureMapFromFile(ca); //line-feature map
-		
 		//2: extract variation points for a file
 		ArrayList<VariationPoint> vps = extractVPsFromFile(ca, baseline, false);
 		//luego a–adir a la bseline
 
 		if (map == null) return null;
-		
 
 		ca.setFeatureToCodeMapping(map);
 		ca.setVariationPoints(vps);
@@ -159,23 +156,7 @@ public static ArrayList<VariationPoint> extractVPsFromFile(SourceCodeFile file, 
 			}
 		}
 		file.setVariationPoints(variationPoints);
-		
-		//printing VPS			
-		/*Iterator<VariationPoint> it = variationPoints.iterator();
-		VariationPoint var;
-		System.out.println("---------------------------------");
-		System.out.println("------ Variation Points ---------");
-		while (it.hasNext()) {
-			var = it.next();
-			
-			System.out.println("Var "+var.getIdVP()+ 
-			" Expression:"+var.getExpression() +
-			" LineInit:"+ var.getLineInit() +
-			" LineEnd:"+ var.getLineEnd() +
-			" Parent?:"+ var.getParentVP()+ 
-			" Body:"+ var.getBody() +
-			" \nfeatures:"+ var.getFeatures().toString());
-		}		*/
+	
 	} catch (Exception e) {
 		e.printStackTrace();
 	}
