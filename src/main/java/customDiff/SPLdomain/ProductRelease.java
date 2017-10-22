@@ -15,7 +15,7 @@ public class ProductRelease {
 	private Date releaseDate;
 	private	ArrayList<SourceCodeFile> productAssets = new ArrayList<SourceCodeFile>();
 	private RevCommit releasedCommit;
-	
+	private Iterable<RevCommit> listOfcommits;//list of commits from baseline to the release; In reverse order!
 	ArrayList<CustomizationFact> customsList=new ArrayList<CustomizationFact>();
 	
 	
@@ -68,6 +68,27 @@ public class ProductRelease {
 
 	public void setReleasedCommit(RevCommit releasedCommit) {
 		this.releasedCommit = releasedCommit;
+	}
+
+	
+	
+	public ArrayList<RevCommit> getListOfcommits() {
+		return listOfcommits;
+	}
+
+
+	public void setListOfcommits(Iterable<RevCommit> listOfcommits) {
+		this.listOfcommits = listOfcommits;
+	}
+
+
+	public ArrayList<CustomizationFact> getCustomsList() {
+		return customsList;
+	}
+
+
+	public void setCustomsList(ArrayList<CustomizationFact> customsList) {
+		this.customsList = customsList;
 	}
 
 

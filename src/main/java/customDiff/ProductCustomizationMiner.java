@@ -144,7 +144,7 @@ public class ProductCustomizationMiner {
 					System.out.println("diff for " + newPath + " too big");
 					diffText = "-- TOO BIG --";
 				}
-
+				System.out.println("Big diff:\n"+diffText);
 				modifications.add(new Modification(oldPath, newPath, change, diffText, sc, oldCommit,newCommit));
 			
 			

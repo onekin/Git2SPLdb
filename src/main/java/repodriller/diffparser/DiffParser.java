@@ -75,47 +75,72 @@ public class DiffParser {
 		ArrayList<CustomDiffBlock> customDiffBlocks = new ArrayList<CustomDiffBlock>();
 		
 		String header = diffBlock.getLines()[0];//("@@ -(\\d*),(\\d*) \\+(\\d*),(\\d*) @@.*");
-		
-		int lineCounter=0;
-		int oldfileLineNumber = diffBlock.getD1(); //System.out.println("d1: "+oldfileLineNumber);
-		int newFileLineNumber = diffBlock.getD3(); //System.out.println("d3: "+newFileLineNumber);
-		
+		int diff_lineCounter=0;
+		int totalDeletedLines=0, total_addedLines=0, total_contextLines=0;//For d1 and d3
+		int diff_contextLines=0, diff_deletedlines=0, diff_addedLines=0;//for d2 and d4
+		int d1=diffBlock.getD1();//2
+		int d3= diffBlock.getD3();//2
+		int d2,d4;
 		String[] lines = diffBlock.getLines();
-		int startLine=0;
+		
+		int startLineNextblock= 1;//the start diff line for the next block
 		boolean anyVP=false;
 		
 		for (String line: lines ){
-			if(line.startsWith("-")) oldfileLineNumber++;
-			else if(line.startsWith("+")) newFileLineNumber++;
-			else {//for context lines	
-				oldfileLineNumber++;
-				newFileLineNumber++;
+			if(line.startsWith("-")) {
+				diff_deletedlines++;
+				totalDeletedLines++;
+			} 
+			else if(line.startsWith("+")) {
+				diff_addedLines++;
+				total_addedLines++;
+			}  else //is a context line
+				if(line.contains(CustomDiff.annotationPatternBeginning) || line.contains(CustomDiff.annotationPatternEnd)){			
+					//
+					diff_contextLines++;
+					d2 = diff_contextLines + diff_deletedlines;
+					d4 = diff_contextLines + diff_addedLines;
+					
+					customDiffBlocks.add(createCustomDiffBlock(diffBlock,startLineNextblock, diff_lineCounter-1, true, 
+							d1, d2,d3,d4));
+					
+					//headers for the next diff block
+					d1 = diffBlock.getD1() +  total_contextLines + totalDeletedLines ;// + diff_deletedlines;
+					d3 = diffBlock.getD3() +  total_contextLines + total_addedLines;//total_addedLines - totalDeletedLines;
+					
+					startLineNextblock = diff_lineCounter;
+					diff_contextLines=0; diff_deletedlines=0; diff_addedLines=0;
+					anyVP=true;
+					total_contextLines++;
+					
+				
+			}else {
+				if(!line.startsWith("@@")) {
+					diff_contextLines++;
+					total_contextLines++;
+				}
 			}
-			
-			if(line.contains(CustomDiff.annotationPatternBeginning)){
-				anyVP=true;
-				customDiffBlocks.add(createCustomDiffBlock(diffBlock,startLine, lineCounter-1, true,oldfileLineNumber,newFileLineNumber));
-				startLine = lineCounter;
-			}
-			lineCounter ++;
+			diff_lineCounter ++;
 		}
 		
-		if (anyVP==false){//if the diff did not contain any variation point in it
-			customDiffBlocks.add(createCustomDiffBlock(diffBlock,startLine, lines.length-1, false,oldfileLineNumber,newFileLineNumber));
+		if (anyVP==false){//if the diff did not contain any variation point start or end; in it.It goes directly without parsing it
+			/*customDiffBlocks.add(createCustomDiffBlock(diffBlock,startLine, lines.length-1, false,
+					d1, diff_contextLines+diff_deletedlines
+					,d3,diff_contextLines+diff_addedLines));*/
 		}
 		return customDiffBlocks;
 	}
 	
 	/** Custom Diff: per variation point. With expression in the header & with authors name in changes**/
 	private CustomDiffBlock createCustomDiffBlock(DiffBlock diffBlock, int startLine, int endline, 
-			boolean fixHeader,int d1, int d3){
+			boolean fixHeader,int d1, int d2, int d3, int d4){
 		System.out.println("New chunk! From line "+startLine+" to line:"+ endline);
 		ArrayList<String> newDiff = new ArrayList<>();
 		String[] originalDiff = diffBlock.getLines();
 		
 		if (fixHeader) {//TODO Fix the header lines!
 			//newDiff.add(originalDiff[0]);//add the header.
-			newDiff.add("@@-"+d1+",d2"+" +"+d3+",d4");//add the header.
+			newDiff.add("@@-"+d1+","+d2+" +"+d3+","+d4+"@@");//add the header.
 			
 		}  
 		int newFilelineCounter = startLine+diffBlock.getD3()-2;//TODO startLine+diffBlock.getD3()-1
@@ -139,8 +164,7 @@ public class DiffParser {
 
 		if( diffBlockHasModifications(newDiff)==false)
 			return null; //there are no modifications in this chunk - it was part of the context
-		
-		
+				
 		SourceCodeFile paModified = customDiff.utils.FileUtils.getProductAssetByFilePath(path, pr);
 		SourceCodeFile coreAsset = customDiff.utils.FileUtils.getCoreAssetByProductAssetPath( path,  pr );
 		VariationPoint vp = customDiff.utils.FeatureAnalysisUtils.getVariationPointOfChangedAssetLine

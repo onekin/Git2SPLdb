@@ -1,5 +1,6 @@
 package customDiff.blame;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,8 @@ import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.blame.BlameGenerator;
+
 
 public class BlameUtils {
 /*Taken from Repo Driller*/
@@ -48,7 +50,21 @@ public class BlameUtils {
 		}
 	}
 
-
+ public void reverseBlame(String startCommit, String endCommit, String pathFile) {
+	 	Repository repo;
+		try {
+			repo = new FileRepository(customDiff.CustomDiff.repositoryPath+"/.git");
+			Git git = new Git(repo);
+		 	
+		 	BlameGenerator generator = new BlameGenerator( repo,  pathFile);
+		 	
+		 //	generator.reverseResult(startCommit, endCommit);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	 
+ }
 
 	
 	

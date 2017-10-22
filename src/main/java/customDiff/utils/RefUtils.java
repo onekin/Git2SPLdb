@@ -174,4 +174,25 @@ public class RefUtils {
 	
 		return false;
 	}
+
+
+	public static Iterable<RevCommit> getCommitsBetweenCommits(RevCommit baselineCommit, RevCommit prCommit) {
+		try {
+			Repository repo = new FileRepository(customDiff.CustomDiff.repositoryPath+"/.git");
+			RevWalk walk = new RevWalk( repo );
+			Git git = new Git(repo);
+			RevCommit startCommit = walk.parseCommit( repo.resolve( baselineCommit.getName() ) );
+			RevCommit endCommit  = walk.parseCommit( repo.resolve( prCommit.getName() ) );
+			
+			Iterable<RevCommit> commitsInBetween = git.log().addRange(startCommit, endCommit).call();//get the commits between both tags			
+			
+			
+			return 	commitsInBetween;
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+		
+		
+	}
 }

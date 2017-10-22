@@ -30,12 +30,10 @@ public class ProductPortfolioMiner{
 		
 		System.out.println ("------ Mining Product Portfolios ------");
 		
-	
-		
-		// 1: Identify which productreleases were derived from the baseline
+		// 1: Identify which baseline commit
 		RevCommit baselineCommit = RefUtils.getCommitFromRefName(baselineToMine); 
 				
-		System.out.println(baselineCommit);
+		System.out.println("Baseline Commit to mine: "+baselineCommit.getName());
 		
 		// 2: get all the product tags that were derived from the baselineCommit
 		ArrayList<Ref> prRefs = getProductTagsDerivedFromBaseline(baselineCommit); 
@@ -57,14 +55,25 @@ public class ProductPortfolioMiner{
 		productReleases=new ArrayList<ProductRelease>();
 		while(it.hasNext()){
 			ref = it.next();
-			System.out.println("Analysisng "+ref.getName());
+			
 			Product p = createProductFromRef(ref, CustomDiff.portfolios.get(0));
 			Date d = new Date (RefUtils.getCommitFromRef(ref).getCommitTime());
 			ProductRelease pr = new ProductRelease(ref.getName(), p, d, RefUtils.getCommitFromRef(ref));//id,from-product,date,revCommit
+			Iterable<RevCommit> listOfcommits = RefUtils.getCommitsBetweenCommits(baselineCommit,RefUtils.getCommitFromRef(ref)); 
+			pr.setListOfcommits(listOfcommits);
 			p.addProductRelease(pr);
 			productReleases.add(pr);
 			extractAssetsForProductRelease(pr, CustomDiff.pathToWhereCustomizationsAreComputed);
-			System.out.println (pr.toString());
+			
+			/**Printing purposes only -- -- delete*/
+			System.out.println("Commits for "+ref.getName());
+			Iterator<RevCommit> ite = listOfcommits.iterator();
+			RevCommit c;
+			while(ite.hasNext()) {
+				c= ite.next();
+				System.out.println ("Commit:"+c.getName());
+			}
+			System.out.println ("Product Release found: "+pr.toString());
 		}
 
 		System.out.println ("------ Finished Mining Product Portfolios ------");
@@ -101,7 +110,7 @@ public class ProductPortfolioMiner{
 		while(it.hasNext()){
 			Ref aux = it.next();
 			if (RefUtils.isRefFirstDerivedFromBaseline(baselineCommit,aux)){
-				System.out.println(aux.getName()+ " DERIVED FROM "+baselineCommit.getName());
+				System.out.println(aux.getName()+" Id:"+aux.getObjectId().name()+ " DERIVED FROM "+baselineCommit.getName());
 				prs.add(aux);
 			}
 		}
