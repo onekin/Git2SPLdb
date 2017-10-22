@@ -72,7 +72,7 @@ public class ProductRelease {
 
 	
 	
-	public ArrayList<RevCommit> getListOfcommits() {
+	public Iterable<RevCommit> getListOfcommits() {
 		return listOfcommits;
 	}
 
