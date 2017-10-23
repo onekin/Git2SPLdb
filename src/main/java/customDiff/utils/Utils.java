@@ -29,11 +29,13 @@ import customDiff.CustomDiff;
 
 public class Utils {
 	
-	static int customizationCounter = 0;
-	static int coreAssetFileCounter = 0;
-	static int productAssetFileCounter = 0;
-	static int productCounter = 0;
-	static int vpCounter = 0;
+	private static int customizationCounter = 0;
+	private static int coreAssetFileCounter = 0;
+	private static int productAssetFileCounter = 0;
+	private static int productCounter = 0;
+	private static int vpCounter = 0;
+	private static int id_developer = 0;
+	private static int id_productrelease;
 
 
 	
@@ -218,6 +220,13 @@ public class Utils {
 			
 		}
 		
-		
+		public static int getDeveloperId() {
+			id_developer++;
+			return id_developer;
+		}
+		public static int getProductReleaseId() {
+			id_productrelease++;
+			return id_productrelease;
+		}
 	
 }

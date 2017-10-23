@@ -152,4 +152,9 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 	public void setAbsolute_diff(String absolute_diff) {
 		this.absolute_diff = absolute_diff;
 	}
+
+	public void addVariationPoint(VariationPoint vp) {
+		this.variationPoints.add(vp);
+		
+	}
 }

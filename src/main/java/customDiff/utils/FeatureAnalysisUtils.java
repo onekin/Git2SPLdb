@@ -147,7 +147,7 @@ private static ArrayList<Feature> findNewFeatures(ArrayList<String> listFeatures
 	}
 
 
-public static VariationPoint getVariationPointOfChangedAssetLine(String relPath, ProductRelease pr, int lineNumber) {
+public static VariationPoint getVariationPointOfChangedProductAssetLine(String relPath, ProductRelease pr, int lineNumber) {
 	SourceCodeFile pa = customDiff.utils.FileUtils.getProductAssetByFilePath(relPath, pr);
 	VariationPoint vp, keyVP=null;
 
@@ -159,13 +159,38 @@ public static VariationPoint getVariationPointOfChangedAssetLine(String relPath,
 			//System.out.println(" Line init:" +vp.getLineInit()+ ";   Line end: "+ vp.getLineEnd());
 			if((vp.getLineInit()<=lineNumber) && (lineNumber<=vp.getLineEnd())) {
 				keyVP=vp;
-				System.out.println("VP found.");
+				System.out.println("VP found PA.");
 			}
 				
 		}
 		
 		return keyVP;
 	}
+
+public static VariationPoint getVariationPointOfChangedCoreAssetLine(String relPath, int lineNumber) {
+	SourceCodeFile ca = customDiff.utils.FileUtils.getCoreAssetByFilePath(relPath);
+	
+	VariationPoint vp, keyVP=null;
+
+	ArrayList<VariationPoint> listVPs = ca.getVariationPoints();
+	Iterator<VariationPoint> it = listVPs.iterator();
+		
+	while (it.hasNext()) {
+		vp=it.next();
+		//System.out.println(" Line init:" +vp.getLineInit()+ ";   Line end: "+ vp.getLineEnd());
+		if((vp.getLineInit()<=lineNumber) && (lineNumber<=vp.getLineEnd())) {
+			keyVP=vp;
+			System.out.println("VP found in CA.");
+		}
+	}
+		
+	return keyVP;
+}
+
+
+
+
+
 public static HashMap <Integer,ArrayList <String>>  extractFeatureMapFromFile (SourceCodeFile file, CoreAssetBaseline baseline) {//Read the file lineByLine
 	//works fine: tested with properties.js
 

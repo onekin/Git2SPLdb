@@ -51,6 +51,9 @@ public class Feature {
 		return excludes;
 	}
 	
+	public String toString(){
+		return name;
+	}
 	
 	
 	

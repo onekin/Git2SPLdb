@@ -24,7 +24,18 @@ public class VariationPointAnalysisUtils {
 	
 		//1: extract Feature Map for a file
 		HashMap<Integer, ArrayList <String>> map = extractFeatureMapFromFile(ca); //line-feature map
-		//2: extract variation points for a file
+
+		 //2: Add features found in the core asset to the baseline
+        ArrayList<Feature> features = ca.getFeatureList();
+        Iterator<Feature> iterator = features.iterator();
+        Feature feature;
+        while (iterator.hasNext()){
+      	feature = iterator.next();
+  		if(!customDiff.utils.FeatureAnalysisUtils.isFeatureInFeaturesList(baseline.getFeatures(), feature.getName()))
+  			baseline.addFeature(feature);
+  		}
+        
+		//3: extract variation points for a file
 		ArrayList<VariationPoint> vps = extractVPsFromFile(ca, baseline, false);
 		//luego a–adir a la bseline
 
@@ -118,15 +129,21 @@ public static ArrayList<VariationPoint> extractVPsFromFile(SourceCodeFile file, 
 	
 	try {
 		String[] lines = content.split("\n");			
+		ArrayList<String> listFeatures = new ArrayList<String>();
 		int nestingLevel=-1;
+		
 		for(int i=0;i<lines.length;i++){
 			VariationPoint vp = null;
 			if (lines[i].contains(customDiff.CustomDiff.annotationPatternBeginning)){
+				
 				nestingLevel++; //level 0 is when we are inside a VP
 				if (nestingLevel==0)
-				  vp = new VariationPoint(Utils.getVPId(), lines[i],i+1,null);//newVariation point
-				else vp = new VariationPoint(Utils.getVPId(), lines[i],i+1,currentVPsInNestingLevels.get(nestingLevel-1));
-				vp.setFeatures(findFeaturesByNames(extractAllFeaturesFromTheExpression (lines[i]), baseline) );//provide the list of featu
+				  vp = new VariationPoint(Utils.getVPId(), lines[i],i+1,null);//first level vp point
+				else vp = new VariationPoint(Utils.getVPId(), lines[i],i+1,currentVPsInNestingLevels.get(nestingLevel-1));//with parent
+				listFeatures.addAll(extractAllFeaturesFromTheExpression(lines[i]));//extract the list of features
+				
+				vp.setFeatures(findFeaturesByNames(listFeatures,baseline));//(findFeaturesByNames(listFeatures, baseline));
+				
 				if (product) {
 					vp.setNewFeatures(findNewFeatures(extractAllFeaturesFromTheExpression (lines[i]), baseline) );
 				}
@@ -139,6 +156,8 @@ public static ArrayList<VariationPoint> extractVPsFromFile(SourceCodeFile file, 
 						for(int k=0; k <= nestingLevel;k++)//the line needs to go to parent VPs as well.
 							currentVPsInNestingLevels.get(k).setBody(currentVPsInNestingLevels.get(k).getBody().concat("\n"+lines[i]));
 					}
+				System.out.println("New VP in "+file.getFileName()+": "+lines[i]);
+				System.out.println("Features: "+listFeatures.toString());
 			}else{
 				if (lines[i].contains(customDiff.CustomDiff.annotationPatternEnd)){
 					//add the line to all parents of this VP
@@ -146,6 +165,7 @@ public static ArrayList<VariationPoint> extractVPsFromFile(SourceCodeFile file, 
 						currentVPsInNestingLevels.get(k).setBody(currentVPsInNestingLevels.get(k).getBody().concat("\n"+lines[i]));
 					//calculate ending Line for the VP
 					currentVPsInNestingLevels.get(nestingLevel).setLineEnd(i+1);
+					listFeatures.removeAll(extractAllFeaturesFromTheExpression(currentVPsInNestingLevels.get(nestingLevel).getExpression()));
 					nestingLevel--;
 				}
 				else{ //no pattern has been found; we might be inside VPs (nested or not) or inside no VP at all
@@ -179,7 +199,8 @@ public static ArrayList<VariationPoint> extractVPsFromFile(SourceCodeFile file, 
 
 	private static ArrayList<Feature> findFeaturesByNames(ArrayList<String> listFeatures, CoreAssetBaseline baseline) {
 		Iterator<String> itNames = listFeatures.iterator();
-		
+		System.out.println("Baseline features: "+baseline.getFeatures().toString());
+		System.out.println("Finding features in list: "+listFeatures.toString());
 		String name; Feature f;
 		ArrayList<Feature> features = new ArrayList<Feature>();
 		
@@ -192,6 +213,7 @@ public static ArrayList<VariationPoint> extractVPsFromFile(SourceCodeFile file, 
 					features.add(f);
 			}
 		}
+		System.out.println("Features found:"+features.toString());
 		return features;
 	}
 	

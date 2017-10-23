@@ -28,5 +28,6 @@ public interface SourceCodeFile {
 	public void setAbsolute_diff(String computeTheDiffFileBetweenCommits);
 	public String getAbsolute_diff();
 	public String getRelative_diff();
+	public void addVariationPoint(VariationPoint vp_ca);
 	
 }

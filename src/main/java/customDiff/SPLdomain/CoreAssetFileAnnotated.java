@@ -123,5 +123,9 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 		// TODO Auto-generated method stub
 		return "";
 	}
+	public void addVariationPoint(VariationPoint vp) {
+		this.variationPoints.add(vp);
+		
+	}
 	
 }

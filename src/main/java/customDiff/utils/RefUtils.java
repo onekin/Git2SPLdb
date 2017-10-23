@@ -9,6 +9,7 @@ import java.util.Map;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -42,6 +43,21 @@ public class RefUtils {
 		return commit;
 	}
 	
+	public static RevCommit getCommitFromCommitSha (String sha) {
+		RevCommit commit = null;
+		try{
+			Repository repo = new FileRepository(customDiff.CustomDiff.repositoryPath+"/.git");			
+			ObjectId obj = repo.resolve(sha);
+			RevWalk walk = new RevWalk( repo );
+			commit = walk.parseCommit( obj );
+			repo.close();
+			return commit;
+			
+			}catch(Exception e){
+				e.printStackTrace();
+			}		
+		return commit;
+	}
 	
 	public static RevCommit getCommitFromRef(Ref ref) {
 		RevCommit commit = null;
@@ -186,13 +202,22 @@ public class RefUtils {
 			
 			Iterable<RevCommit> commitsInBetween = git.log().addRange(startCommit, endCommit).call();//get the commits between both tags			
 			
-			
+			repo.close();
 			return 	commitsInBetween;
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 		
-		
+	}
+
+	public static String getCommitMessage(String sha) {
+		RevCommit com = getCommitFromCommitSha(sha);
+		return com.getFullMessage();
+	}
+	
+	public static PersonIdent getCommitAuthor(String sha) {
+		RevCommit com = getCommitFromCommitSha(sha);
+		return com.getAuthorIdent();
 	}
 }

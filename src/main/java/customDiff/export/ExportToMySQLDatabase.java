@@ -5,11 +5,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+import org.eclipse.jgit.util.Base64;
 
 import customDiff.SPLdomain.CoreAssetBaseline;
-import customDiff.SPLdomain.CustomizationFact;
-import customDiff.SPLdomain.CustomizationLine;
+import customDiff.SPLdomain.Customization;
 import customDiff.SPLdomain.Feature;
 import customDiff.SPLdomain.Product;
 import customDiff.SPLdomain.ProductAssetFileAnnotated;
@@ -18,17 +17,12 @@ import customDiff.SPLdomain.ProductRelease;
 import customDiff.SPLdomain.SourceCodeFile;
 import customDiff.SPLdomain.VariationPoint;
 
-import preprocessing.deprecated.Main;
 
 public class ExportToMySQLDatabase implements ExportTarget {
 	
 	String pathToDataFile;
 	
-	public ExportToMySQLDatabase (String path){
-		this.pathToDataFile = path;
-	}
-	
-	public void export(){
+	public void export(String pathToDataFile){
 		
 		try{
 			
@@ -297,8 +291,8 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		
 		ProductPortfolio pp;
 		ArrayList<ProductRelease> releases ;
-		ArrayList<CustomizationFact> customs ;
-		CustomizationFact cust ;
+		ArrayList<Customization> customs ;
+		Customization cust ;
 		ArrayList<Product> products;
 		VariationPoint vp,parent;
 		ArrayList<ProductPortfolio> portfolios = customDiff.CustomDiff.spl.getProductPortfolioList();

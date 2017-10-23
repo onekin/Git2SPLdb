@@ -4,15 +4,15 @@ import java.util.ArrayList;
 
 public class VariationPoint {
 	int idVP;
-	String expression;
-	String body;
-	int lineInit;
-	int lineEnd;
-	ArrayList<Feature> features;
-	ArrayList<Feature> newFeatures;
-	VariationPoint parentVP;
+	private String expression;
+	private  String body;
+	private int lineInit;
+	private int lineEnd;
+	private ArrayList<Feature> features;
+	private ArrayList<Feature> newFeatures;
+	private VariationPoint parentVP;
 	
-	 
+	 /*
 	
 	public VariationPoint(int idVP, String expression, String body,
 			int lineInit, int lineEnd, ArrayList<Feature> features, VariationPoint parentVP, ArrayList<String> newFeatures) {
@@ -24,7 +24,7 @@ public class VariationPoint {
 		this.lineEnd = lineEnd;
 		this.features=features;
 		this.parentVP = parentVP;
-	}
+	}*/
 	
 	
 	public VariationPoint(int id, String expression, int lineInit, VariationPoint parentVP) {
@@ -73,9 +73,16 @@ public class VariationPoint {
 
 
 	public void setFeatures(ArrayList<Feature> features) {
+		System.out.println("Setting features for VP:"+expression);
+		System.out.println(features.toString());
 		this.features = features;
 	}
-
+	public void addFeatures(ArrayList<Feature> features) {
+		this.features.addAll(features);
+	}
+	public void addFeature(Feature feature) {
+		this.features.add(feature);
+	}
 
 	public VariationPoint getParentVP() {
 		return parentVP;

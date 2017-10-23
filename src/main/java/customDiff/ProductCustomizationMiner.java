@@ -15,7 +15,8 @@ import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.eclipse.jgit.diff.DiffFormatter;
 import java.io.ByteArrayOutputStream;
 import org.eclipse.jgit.lib.ObjectReader;
-import customDiff.SPLdomain.CustomizationFact;
+import customDiff.SPLdomain.Customization;
+import customDiff.SPLdomain.Developer;
 import customDiff.SPLdomain.ProductRelease;
 import repodriller.diffparser.CustomDiffBlock;
 import repodriller.diffparser.DiffParser;
@@ -27,19 +28,19 @@ import repodriller.diffparser.ModificationType;
 public class ProductCustomizationMiner {
 
 	ProductRelease pr;
-	ArrayList<CustomizationFact> customizations;
+	ArrayList<Customization> customizations;
 	
 
 	/* Fixed. */	
 	private int maxNumberFilesInACommit = 5000; /* TODO Expose an API to control this value? Also in SubversionRepository. */
 	private int maxSizeOfDiff = 100000; /* TODO Expose an API to control this value? Also in SubversionRepository. */
 
-
 	
 	public void mine(ProductRelease pr) {
+		System.out.println ("------ Mining Product Customizations for "+pr.getTagName()+"------");
+		System.out.println ("--------------------------------------------------------------------");
 		this.pr = pr;
-		
-		customizations = new ArrayList<CustomizationFact>();
+		customizations = new ArrayList<Customization>();
 		
 		//1: compute the Git diff between productrelease commit and the baseline it was derived from.
 		List<Modification> modifications = getDiffsBetweenCommits(pr.getFromProduct().getInPortfolio().getDerivedFrom().getRevCommit(), pr.getReleasedCommit());//base,head
@@ -56,8 +57,8 @@ public class ProductCustomizationMiner {
 		pr.setCustomizations(customizations);
 		
 		/** Printing **/
-		System.out.println("MINED "+pr.getIdRelease()+ " CUSTOMIZATIONS "+customizations.size());
-		Iterator<CustomizationFact> it1 = customizations.iterator();
+		System.out.println("MINED "+pr.getTagName()+ " CUSTOMIZATIONS "+customizations.size());
+		Iterator<Customization> it1 = customizations.iterator();
 		while(it1.hasNext()){
 			System.out.println(" "+it1.next().toString()); 
 		}
@@ -67,16 +68,16 @@ public class ProductCustomizationMiner {
 
 	
 	
-	private ArrayList<CustomizationFact> computeCustomizationsInModification(Modification m, ProductRelease pr) {
+	private ArrayList<Customization> computeCustomizationsInModification(Modification m, ProductRelease pr) {
 		
-		ArrayList<CustomizationFact> customizations = new ArrayList<CustomizationFact>();
+		ArrayList<Customization> customizations = new ArrayList<Customization>();
 		
 		//the DiffParser is in charge of parsing the diff into customDiffs
 		DiffParser parsedDiff = new DiffParser(m, pr);
 	
 		if(parsedDiff.getCustomDiffBlocks()==null || parsedDiff.getCustomDiffBlocks().size()==0) 
 			return customizations;
-	
+		
 		int numberOfCustomDiffBlocks = parsedDiff.getCustomDiffBlocks().size();
 		int counter=0;
 		
@@ -84,13 +85,8 @@ public class ProductCustomizationMiner {
 			CustomDiffBlock custom = parsedDiff.getCustomDiffBlocks().get(counter);
 			if(custom!=null) {
 				/** Create Customization Facts **/
-				CustomizationFact customFact = new CustomizationFact(
-						custom.getAddedlines(), 
-						custom.getDeteledlines(), 
-								custom.getDiffBlock(), 
-								custom.getPaModified(), custom.getCoreAsset(), 
-								custom.getVp(), m.getDiff(), 
-								null, false, false, pr);
+				Customization customFact = new Customization
+						(custom.getAddedlines(), custom.getDeteledlines(), m.getDiff(), false, false, pr,custom);
 				customFact.toString();
 				customizations.add(customFact);
 			}

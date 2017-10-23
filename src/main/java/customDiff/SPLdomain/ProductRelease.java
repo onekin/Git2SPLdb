@@ -2,6 +2,7 @@ package customDiff.SPLdomain;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 
@@ -9,39 +10,39 @@ import customDiff.utils.Utils;
 
 
 public class ProductRelease {
-
-	private String idRelease;
+	private int id;
+	private String tagName;
 	private Product fromProduct;
 	private Date releaseDate;
 	private	ArrayList<SourceCodeFile> productAssets = new ArrayList<SourceCodeFile>();
 	private RevCommit releasedCommit;
 	private Iterable<RevCommit> listOfcommits;//list of commits from baseline to the release; In reverse order!
-	ArrayList<CustomizationFact> customsList=new ArrayList<CustomizationFact>();
+	ArrayList<Customization> customsList=new ArrayList<Customization>();
 	
 	
 	
-	public ProductRelease(String idRelease, Product fromProduct, Date l, RevCommit releasedCommit){
-		
+	public ProductRelease(int id, String tagName, Product fromProduct, Date l, RevCommit releasedCommit){
+		this.id = id;
 		this.fromProduct = fromProduct;
 		this.releaseDate = l;
 		this.releasedCommit = releasedCommit;	
-		this.idRelease = Utils.extractRefName(idRelease, 2);
+		this.tagName = Utils.extractRefName(tagName, 2);
 	}
 	
 	
-	public void setCustomizations(ArrayList<CustomizationFact> customs){
+	public void setCustomizations(ArrayList<Customization> customs){
 		this.customsList = customs;
 	}
 	
-	public ArrayList<CustomizationFact>  getCustomizations(){
+	public ArrayList<Customization>  getCustomizations(){
 		return this.customsList;
 	}
 	
-	public String getIdRelease() {
-		return idRelease;
+	public String getTagName() {
+		return tagName;
 	}
-	public void setIdRelease(String tag) {
-		this.idRelease = tag;
+	public void setTagName(String tag) {
+		this.tagName = tag;
 	}
 	public Product getFromProduct() {
 		return fromProduct;
@@ -82,21 +83,30 @@ public class ProductRelease {
 	}
 
 
-	public ArrayList<CustomizationFact> getCustomsList() {
-		return customsList;
+	public int getId() {
+		return id;
 	}
 
 
-	public void setCustomsList(ArrayList<CustomizationFact> customsList) {
-		this.customsList = customsList;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 
 	public String toString(){
-		return "ProductRelease: "+idRelease+" belongs to: "+fromProduct+ " with last commit: "+releasedCommit.getName();
+		return "ProductRelease: "+tagName+" belongs to: "+fromProduct+ " with last commit: "+releasedCommit.getName();
 	}
 	
-	
+	public String getCommitsSetToString(){
+		String list="";
+		Iterator<RevCommit> it = getListOfcommits().iterator();
+		RevCommit c;
+		while(it.hasNext()){
+			c=it.next();
+			list = list.concat(c.getName()+";");
+		}
+		return list;
+	}
 	
 	
 } 

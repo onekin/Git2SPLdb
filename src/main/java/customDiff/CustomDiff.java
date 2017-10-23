@@ -8,11 +8,14 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
 
 import customDiff.SPLdomain.CoreAssetBaseline;
+import customDiff.SPLdomain.Developer;
 import customDiff.SPLdomain.Feature;
 import customDiff.SPLdomain.ProductPortfolio;
 import customDiff.SPLdomain.ProductRelease;
 import customDiff.SPLdomain.SPL;
 import customDiff.SPLdomain.SourceCodeFile;
+import customDiff.export.ExportTarget;
+import customDiff.export.ExportToStarDiagram;
 
 
 public class CustomDiff {
@@ -33,6 +36,7 @@ public class CustomDiff {
 	public static SPL spl;
 	public static ArrayList<ProductPortfolio> portfolios;
 	public static ArrayList<Feature> features;
+	public static ArrayList<Developer> allDevelopers;
 		
 	public static void main(String[] args) {
 		System.out.println ("---------------------------------------------------------");
@@ -64,6 +68,7 @@ public class CustomDiff {
 		/** 1:initialize the SPL objects **/
 		spl = new SPL(repositoryPath);
 		features= new ArrayList<Feature>();
+		allDevelopers = new ArrayList<Developer>();
 		
 		/** 2: fetch the baseline tag to mine & create new coreAssetBaseline release **/
 			BaselineMiner baselineMiner = new BaselineMiner();
@@ -74,9 +79,10 @@ public class CustomDiff {
 			portfolios= new ArrayList<ProductPortfolio>();
 			ProductPortfolioMiner prMiner = new ProductPortfolioMiner();
 			prMiner.mine(baselineToMine);
-		
+			spl.setProductPortfolios(portfolios);
 		/** 4: for each product release - compute customization effort.	**/
 			Iterator< ProductRelease> it = prMiner.productReleases.iterator();
+			
 			ProductCustomizationMiner customizationsMiner;
 			while(it.hasNext()){
 				customizationsMiner = new ProductCustomizationMiner();
@@ -84,7 +90,8 @@ public class CustomDiff {
 			}
 			
 		/** 5: export data to the database	**/
-		
+		ExportTarget export = new ExportToStarDiagram();
+		export.export(pathToResources+"/db-data/olap-inserts.sql");
 	}
 
 	

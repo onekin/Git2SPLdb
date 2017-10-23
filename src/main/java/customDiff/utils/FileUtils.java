@@ -139,6 +139,26 @@ public class FileUtils {
 		return null;
 	}
 
+
+
+	public static SourceCodeFile getCoreAssetByFilePath(String relPath) {
+		
+		ArrayList<SourceCodeFile> caList = customDiff.CustomDiff.spl.getCoreAssetBaseline(0).getCoreAssetFiles();
+		if (caList!= null){
+			Iterator<SourceCodeFile> it = caList.iterator();
+			while(it.hasNext()){
+				SourceCodeFile ca = it.next();
+				//System.out.println(ca.getRelativePath());
+				if(relPath.equals(ca.getRelativePath()))
+					return ca;
+			}
+		
+		}
+		System.out.println("NOT FOUND path:"+relPath);
+		return null;
+		
+	}
+
 	
 
 }

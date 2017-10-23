@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.jgit.revwalk.RevCommit;
+
+import customDiff.SPLdomain.Developer;
 import customDiff.SPLdomain.SourceCodeFile;
 import customDiff.SPLdomain.VariationPoint;
 
@@ -23,21 +26,30 @@ public class CustomDiffBlock {
 	/**Added by Leticia Montalvillo*/
 	private int addedlines;
 	private int deteledlines;
-	private VariationPoint vp;
+	private VariationPoint vp_pa;
+	private VariationPoint vp_ca;
 	private String additionalVPHeader;
 	private SourceCodeFile paModified;
 	private SourceCodeFile coreAsset;
+	private ArrayList<RevCommit> commits;
+	private ArrayList<Developer> developers;
+	private ArrayList<String> messages;
 
 	
-	public CustomDiffBlock(String diffBlock, VariationPoint vp, String additionalheader, SourceCodeFile paModified, SourceCodeFile coreAsset) {//le pasas ya el formateado
+	public CustomDiffBlock(String diffBlock, VariationPoint vp_pa, VariationPoint vp_ca , String additionalheader, 
+			SourceCodeFile paModified, SourceCodeFile coreAsset, ArrayList<RevCommit> commits, ArrayList<Developer> developers,
+			ArrayList<String> messages) {//le pasas ya el formateado
 		this.diffBlock = diffBlock;
 		this.lines = diffBlock.replace("\r", "").split("\n");
-		this.vp=vp;
+		this.vp_pa= vp_pa;
+		this.vp_ca= vp_ca;
 		this.additionalVPHeader = additionalheader;
 		//lines[0] = lines[0] + additionalheader; ya viene en diffblock
 		this.coreAsset=coreAsset;
 		this.paModified = paModified;
-		
+		this.developers = developers;
+		this.commits = commits;
+		this.messages = messages;
 		getLinePositions();
 		getAddedAndDeletedLines();
 	}
@@ -87,14 +99,7 @@ public class CustomDiffBlock {
 	public List<DiffLine> getLinesInOldFile() {
 		return getLines(d1, d2, "-");
 	}
-	
-	/*public Optional<DiffLine> getLineInOldFile(int line) {
-		return getLinesInOldFile().stream().filter(x -> x.getLineNumber() == line).findFirst();
-	}
 
-	public Optional<DiffLine> getLineInNewFile(int line) {
-		return getLinesInNewFile().stream().filter(x -> x.getLineNumber() == line).findFirst();
-	}*/
 
 	public List<DiffLine> getLinesInNewFile() {
 		return getLines(d3, d4, "+");
@@ -104,14 +109,24 @@ public class CustomDiffBlock {
 		return diffBlock;
 	}
 
-	public VariationPoint getVp() {
-		return vp;
+
+	
+	public VariationPoint getVp_pa() {
+		return vp_pa;
 	}
 
-	public void setVp(VariationPoint vp) {
-		this.vp = vp;
+	public void setVp_pa(VariationPoint vp_pa) {
+		this.vp_pa = vp_pa;
 	}
-	
+
+	public VariationPoint getVp_ca() {
+		return vp_ca;
+	}
+
+	public void setVp_ca(VariationPoint vp_ca) {
+		this.vp_ca = vp_ca;
+	}
+
 	public void getAddedAndDeletedLines(){
 		int added=0, removed=0;
 		for(String line : diffBlock.replace("\r", "").split("\n")) {
@@ -201,4 +216,28 @@ public class CustomDiffBlock {
 	public void setDiffBlock(String diffBlock) {
 		this.diffBlock = diffBlock;
 	}
+
+	public ArrayList<RevCommit> getCommits() {
+		return commits;
+	}
+
+	public void setCommits(ArrayList<RevCommit> commits) {
+		this.commits = commits;
+	}
+
+	public ArrayList<Developer> getDevelopers() {
+		return developers;
+	}
+
+	public void setDevelopers(ArrayList<Developer> developers) {
+		this.developers = developers;
+	}
+
+	public ArrayList<String> getMessages() {
+		return messages;
+	}
+
+	public void setMessages(ArrayList<String> messages) {
+		this.messages = messages;
+	}	
 }

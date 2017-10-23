@@ -15,6 +15,7 @@ import customDiff.SPLdomain.Product;
 import customDiff.SPLdomain.ProductAssetFileAnnotated;
 import customDiff.SPLdomain.ProductPortfolio;
 import customDiff.SPLdomain.ProductRelease;
+import customDiff.SPLdomain.SPL;
 import customDiff.SPLdomain.SourceCodeFile;
 import customDiff.SPLdomain.VariationPoint;
 import customDiff.utils.RefUtils;
@@ -29,6 +30,7 @@ public class ProductPortfolioMiner{
 	public void mine (String baselineToMine){
 		
 		System.out.println ("------ Mining Product Portfolios ------");
+		System.out.println ("---------------------------------------");
 		
 		// 1: Identify which baseline commit
 		RevCommit baselineCommit = RefUtils.getCommitFromRefName(baselineToMine); 
@@ -45,6 +47,7 @@ public class ProductPortfolioMiner{
 		 pp = new ProductPortfolio(CustomDiff.spl.getCoreAssetBaseline(0), "Series-from-"+CustomDiff.spl.getCoreAssetBaseline(0).getId());
 	
 		CustomDiff.portfolios.add(pp);
+		
 		ArrayList<Product> products = new ArrayList<Product>();//list of the  portfolio products
 		CustomDiff.portfolios.get(0).setProducts(products);
 		
@@ -58,7 +61,7 @@ public class ProductPortfolioMiner{
 			
 			Product p = createProductFromRef(ref, CustomDiff.portfolios.get(0));
 			Date d = new Date (RefUtils.getCommitFromRef(ref).getCommitTime());
-			ProductRelease pr = new ProductRelease(ref.getName(), p, d, RefUtils.getCommitFromRef(ref));//id,from-product,date,revCommit
+			ProductRelease pr = new ProductRelease(customDiff.utils.Utils.getProductReleaseId(),ref.getName(), p, d, RefUtils.getCommitFromRef(ref));//id,from-product,date,revCommit
 			Iterable<RevCommit> listOfcommits = RefUtils.getCommitsBetweenCommits(baselineCommit,RefUtils.getCommitFromRef(ref)); 
 			pr.setListOfcommits(listOfcommits);
 			p.addProductRelease(pr);
