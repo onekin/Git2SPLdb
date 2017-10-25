@@ -34,8 +34,6 @@ public class FileUtils {
 		
 	}
 	
-
-	
 	public static String readFileContentFromRepository(String fullPath){
 		try{
 			//  System.out.println("File Utils. File:"+ fullPath);

@@ -11,18 +11,28 @@ import repodriller.diffparser.CustomDiffBlock;
 public class Customization {
 	
 		//ArrayList<Integer> linesOfCodeModified;
+		int id;
 		int linesAdded;
 		int linesDeleted;	
 		boolean isNewAsset;
 		boolean hasNewFeature;
-		ProductRelease inRelease;
-		String wholediff;
-		CustomDiffBlock customDiffBlock; //Developers,commits,customDiff, variationPoint
-
+		private ProductRelease inRelease;
+		private String wholediff;
+		private VariationPoint variationpointpa;
+		private VariationPoint variationpointca;
+		private String custom_diff;
+		private SourceCodeFile productasset;
+		private SourceCodeFile coreasset;
+		private ArrayList<Developer> developers;
+		private ArrayList<String> messages;
+		private ArrayList<RevCommit> commits;
+		CustomizationType type;
 		
-		public Customization(int linesAdded, int linesDeleted, String wholediff, boolean isNewAsset, boolean hasNewFeature, 
+		private CustomDiffBlock customDiffBlock; //Developers,commits,customDiff, variationPoint
+		
+		public Customization(int id, int linesAdded, int linesDeleted, String wholediff, boolean isNewAsset, boolean hasNewFeature, 
 				ProductRelease inRelease, CustomDiffBlock customDiffBlock) {
-			
+			this.id=id;
 			this.linesAdded = linesAdded;
 			this.linesDeleted = linesDeleted;
 			this.isNewAsset = isNewAsset;
@@ -30,6 +40,15 @@ public class Customization {
 			this.inRelease = inRelease;
 			this.wholediff=wholediff;
 			this.customDiffBlock = customDiffBlock;
+			this.productasset = customDiffBlock.getPaModified();
+			this.coreasset = customDiffBlock.getCoreAsset();
+			this.developers = customDiffBlock.getDevelopers();
+			this.commits = customDiffBlock.getCommits();
+			this.custom_diff = customDiffBlock.getDiffBlock();
+			this.variationpointca = customDiffBlock.getVp_ca();
+			this.variationpointpa = customDiffBlock.getVp_pa();
+			this.messages = customDiffBlock.getMessages();
+			this.type = customDiffBlock.getType();
 		}
 
 		public String toString(){
@@ -68,30 +87,11 @@ public class Customization {
 			return customDiffBlock.getDiffBlock();
 		}
 	
-		public SourceCodeFile getProductFile() {
-			return customDiffBlock.getPaModified();
-		}
-	
-		public SourceCodeFile getCoreAssetFile() {
-			return customDiffBlock.getCoreAsset();
-		}
 		
-		public VariationPoint getVp_ca() {
-			return customDiffBlock.getVp_ca();
-		}
-	
-		public VariationPoint getVp_pa() {
-			return customDiffBlock.getVp_pa();
-		}
-		public String getWholediff() {
-			return wholediff;
-		}
 		public void setWholediff(String wholediff) {
 			this.wholediff = wholediff;
 		}
-		public ArrayList<Developer> getDevelopers() {
-			return customDiffBlock.getDevelopers();
-		}
+		
 	
 		public boolean isNewAsset() {
 			return isNewAsset;
@@ -112,14 +112,21 @@ public class Customization {
 			this.inRelease = inRelease;
 		}
 
-		public ArrayList<String> getCommitMessages(){
-			return customDiffBlock.getMessages();
+	
+
+		public int getId() {
+			return id;
 		}
+
+		public void setId(int id) {
+			this.id = id;
+		}
+
 
 		public String getCommitShas(){
 			String commits="";
 			
-			Iterator<RevCommit> it = customDiffBlock.getCommits().iterator();
+			Iterator<RevCommit> it = this.commits.iterator();
 			RevCommit commit;
 			
 			while(it.hasNext()){
@@ -132,11 +139,92 @@ public class Customization {
 
 		public String getCommitMessagesToString() {
 			String messages="";
-			Iterator<String> it = getCommitMessages().iterator();
+			Iterator<String> it = this.messages.iterator();
 			while(it.hasNext())
 				messages = messages.concat(it.next()+"; ");
 				
 			return messages;
 		}
+
+		public CustomDiffBlock getCustomDiffBlock() {
+			return customDiffBlock;
+		}
+
+		public void setCustomDiffBlock(CustomDiffBlock customDiffBlock) {
+			this.customDiffBlock = customDiffBlock;
+		}
+
+		public SourceCodeFile getProductasset() {
+			return productasset;
+		}
+
+		public void setProductasset(SourceCodeFile productasset) {
+			this.productasset = productasset;
+		}
+
+		public SourceCodeFile getCoreasset() {
+			return coreasset;
+		}
+
+		public void setCoreasset(SourceCodeFile coreasset) {
+			this.coreasset = coreasset;
+		}
+
+		public ArrayList<Developer> getDevelopers() {
+			return developers;
+		}
+
+		public void setDevelopers(ArrayList<Developer> developers) {
+			this.developers = developers;
+		}
+
+		public ArrayList<String> getMessages() {
+			return messages;
+		}
+
+		public void setMessages(ArrayList<String> messages) {
+			this.messages = messages;
+		}
+
+		public VariationPoint getVariationpointpa() {
+			return variationpointpa;
+		}
+
+		public void setVariationpointpa(VariationPoint variationpointpa) {
+			this.variationpointpa = variationpointpa;
+		}
+
+		public VariationPoint getVariationpointca() {
+			return variationpointca;
+		}
+
+		public void setVariationpointca(VariationPoint variationpointca) {
+			this.variationpointca = variationpointca;
+		}
+
+		public ArrayList<RevCommit> getCommits() {
+			return commits;
+		}
+
+		public void setCommits(ArrayList<RevCommit> commits) {
+			this.commits = commits;
+		}
+
+		public String getWholediff() {
+			return wholediff;
+		}
+
+		public String getCustom_diff() {
+			return custom_diff;
+		}
+
+		public void setCustom_diff(String custom_diff) {
+			this.custom_diff = custom_diff;
+		}
+		
+		public CustomizationType getType() {
+			return this.type;
+		}
+
 
 }

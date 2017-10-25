@@ -68,7 +68,7 @@ public class BaselineMiner {
 		              fileContent = customDiff.utils.FileUtils.readFileContentFromRepository(customDiff.CustomDiff.repositoryPath+"/"+treeWalk.getPathString());
 		              
 		              //1: create new core asset file
-		              CAfile= new CoreAssetFileAnnotated(customDiff.utils.Utils.getNewCoreAssetId(), treeWalk.getNameString(), treeWalk.getPathString(), fileContent, 
+		              CAfile= new CoreAssetFileAnnotated(customDiff.utils.Utils.getNewAssetId(), treeWalk.getNameString(), treeWalk.getPathString(), fileContent, 
 			    				  fileContent.split("\n").length, baseline, 
 			    				  customDiff.CustomDiff.pathToWhereCustomizationsAreComputed.concat(treeWalk.getPathString().split(customDiff.CustomDiff.pathToWhereCustomizationsAreComputed)[1]));
 		              

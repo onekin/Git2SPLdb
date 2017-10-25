@@ -6,12 +6,10 @@ import java.util.Date;
 import java.util.Iterator;
 
 import org.eclipse.jgit.util.Base64;
-
 import customDiff.SPLdomain.CoreAssetBaseline;
 import customDiff.SPLdomain.Customization;
 import customDiff.SPLdomain.Feature;
 import customDiff.SPLdomain.Product;
-import customDiff.SPLdomain.ProductAssetFileAnnotated;
 import customDiff.SPLdomain.ProductPortfolio;
 import customDiff.SPLdomain.ProductRelease;
 import customDiff.SPLdomain.SourceCodeFile;
@@ -249,7 +247,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 			for (int i=0; i < products.size(); i++){
 				 releases = products.get(i).getReleases();
 				for (int j=0; j< releases.size(); j++)
-					insert=insert.concat(header).concat("('"+releases.get(j).getIdRelease()+"','"+ convertDateToMysqlForm(releases.get(j).getReleaseDate())+"',"+releases.get(j).getFromProduct().getId()+");\n");
+					insert=insert.concat(header).concat("('"+releases.get(j).getTagName()+"','"+ convertDateToMysqlForm(releases.get(j).getReleaseDate())+"',"+releases.get(j).getFromProduct().getId()+");\n");
 			}
 		}
 		return insert;	
@@ -277,7 +275,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 				for (int j=0; j< releases.size(); j++){
 					assets = releases.get(j).getProductAssets();
 					for (int z=0; z < assets.size(); z++)
-						insert=insert.concat(header).concat("("+assets.get(z).getId() +",'"+assets.get(z).getFileName()+"','"+assets.get(z).getPath()+"','"+encodeToBase64 (assets.get(z).getContent())+"',"+assets.get(z).getTotalLines()+",'"+releases.get(j).getIdRelease()+"','"+encodeToBase64(assets.get(z).getAbsolute_diff())+"','"+encodeToBase64(assets.get(z).getRelative_diff())+"');\n");
+						insert=insert.concat(header).concat("("+assets.get(z).getId() +",'"+assets.get(z).getFileName()+"','"+assets.get(z).getPath()+"','"+encodeToBase64 (assets.get(z).getContent())+"',"+assets.get(z).getTotalLines()+",'"+releases.get(j).getTagName()+"','"+encodeToBase64(assets.get(z).getAbsolute_diff())+"','"+encodeToBase64(assets.get(z).getRelative_diff())+"');\n");
 				}
 			}
 		}
@@ -286,7 +284,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 
 
 	private String generateInsertsFor_Customization_Table() {
-		String header="INSERT INTO Customization (operation,CoreAsset_idCoreAsset,ProductAsset_idProductAsset, isNewAsset, idvariationpoint) VALUES\n";
+		String header="INSERT INTO Customization (added_lines,deleted_lines,diff,CoreAsset_idCoreAsset,ProductAsset_idProductAsset, isNewAsset, idvariationpoint) VALUES\n";
 		String insert="";
 		
 		ProductPortfolio pp;
@@ -296,7 +294,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		ArrayList<Product> products;
 		VariationPoint vp,parent;
 		ArrayList<ProductPortfolio> portfolios = customDiff.CustomDiff.spl.getProductPortfolioList();
-		
+		//TODO whatch out with variation point pa
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
 			products = pp.getProducts();
@@ -307,16 +305,16 @@ public class ExportToMySQLDatabase implements ExportTarget {
 					customs = releases.get(j).getCustomizations();
 					for(int z=0; z < customs.size(); z++){
 						cust = customs.get(z);
-						vp = cust.getVp();//can be null
+						vp = cust.getVariationpointpa();//can be null
 						if(cust.isNewAsset()==true){
 							if(vp==null) 
-								insert=insert.concat(header).concat("('"+cust.getOperation() +"',"+"null"+","+cust.getProductFile().getId() +","+ "1"+", null );\n");
+								insert=insert.concat(header).concat("("+cust.getLinesAdded()+","+cust.getLinesDeleted()+",'"+cust.getCustomdiff()+"',"+"null"+","+cust.getProductasset().getId() +","+ "1"+", null );\n");
 							else {
 								//compute also a customization for its parents VPs!!
-								insert=insert.concat(header).concat("('"+cust.getOperation()+"',"+"null"+","+cust.getProductFile().getId()+","+"1"+ ","+cust.getVp().getIdVP() +");\n");
+								insert=insert.concat(header).concat("("+cust.getLinesAdded()+","+cust.getLinesDeleted()+",'"+cust.getCustomdiff()+"',"+"null"+","+cust.getProductasset().getId()+","+"1"+ ","+cust.getVariationpointpa().getIdVP() +");\n");
 								parent =vp.getParentVP();
 								while(parent!=null){
-									insert=insert.concat(header).concat("('"+cust.getOperation()+"',"+"null"+","+cust.getProductFile().getId()+","+"1"+ ","+parent.getIdVP() +");\n");
+									insert=insert.concat(header).concat("("+cust.getLinesAdded()+","+cust.getLinesDeleted()+",'"+cust.getCustomdiff()+"',"+"null"+","+cust.getProductasset().getId()+","+"1"+ ","+parent.getIdVP() +");\n");
 									parent = parent.getParentVP();
 								}
 								
@@ -326,14 +324,14 @@ public class ExportToMySQLDatabase implements ExportTarget {
 							
 						else {
 							if(vp!=null){
-								insert=insert.concat(header).concat("('"+cust.getOperation() +"',"+cust.getCoreAssetFile().getId()+","+cust.getProductFile().getId()+","+"0"+","+cust.getVp().getIdVP() +");\n");
+								insert=insert.concat(header).concat("("+cust.getLinesAdded()+","+cust.getLinesDeleted()+",'"+cust.getCustomdiff()+"',"+cust.getCoreasset().getId()+","+cust.getProductasset().getId()+","+"0"+","+cust.getVariationpointpa().getIdVP() +");\n");
 								parent =vp.getParentVP();
 								while(parent!=null){
-									insert=insert.concat(header).concat("('"+cust.getOperation() +"',"+cust.getCoreAssetFile().getId()+","+cust.getProductFile().getId()+","+"0"+","+parent.getIdVP() +");\n");
+									insert=insert.concat(header).concat("("+cust.getLinesAdded()+","+cust.getLinesDeleted()+",'"+cust.getCustomdiff()+"',"+cust.getCoreasset().getId()+","+cust.getProductasset().getId()+","+"0"+","+parent.getIdVP() +");\n");
 									parent = parent.getParentVP();
 								}
 							} 
-							else insert=insert.concat(header).concat("('"+cust.getOperation()+"',"+cust.getCoreAssetFile().getId()+","+cust.getProductFile().getId()+","+"0"+",null);\n");
+							else insert=insert.concat(header).concat("("+cust.getLinesAdded()+","+cust.getLinesDeleted()+",'"+cust.getCustomdiff()+"',"+cust.getCoreasset().getId()+","+cust.getProductasset().getId()+","+"0"+",null);\n");
 						}													
 					}
 				}
@@ -456,7 +454,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		// encode data on your side using BASE64
 		//https://stackoverflow.com/questions/19743851/base64-java-encode-and-decode-a-string
 		if (str ==null) return null;
-		String   bytesEncoded = Base64.encode(str.getBytes());
+		String   bytesEncoded = Base64.encodeBytes(str.getBytes());
 	//	System.out.println("ecncoded value is " + new String(bytesEncoded ));
 		// Decode data on other side, by processing encoded data
 	//	byte[] valueDecoded= Base64.decode(bytesEncoded );

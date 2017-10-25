@@ -127,5 +127,11 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 		this.variationPoints.add(vp);
 		
 	}
+
+	@Override
+	public boolean getIsNewAsset() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }

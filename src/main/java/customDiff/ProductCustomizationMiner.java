@@ -18,6 +18,7 @@ import org.eclipse.jgit.lib.ObjectReader;
 import customDiff.SPLdomain.Customization;
 import customDiff.SPLdomain.Developer;
 import customDiff.SPLdomain.ProductRelease;
+import customDiff.utils.Utils;
 import repodriller.diffparser.CustomDiffBlock;
 import repodriller.diffparser.DiffParser;
 import repodriller.diffparser.Modification;
@@ -50,7 +51,10 @@ public class ProductCustomizationMiner {
 		Modification mod;
 		while (it.hasNext()){
 			mod = it.next();//4: for each  modifications parse and extract  customDiff
-			customizations.addAll(computeCustomizationsInModification(mod, pr));
+			
+			if(! mod.getNewPath().startsWith(customDiff.CustomDiff.pathToWhereCustomizationsAreComputed)) 
+				continue;
+			else customizations.addAll( computeCustomizationsInModification(mod, pr));
 
 		}
 		
@@ -74,7 +78,8 @@ public class ProductCustomizationMiner {
 		
 		//the DiffParser is in charge of parsing the diff into customDiffs
 		DiffParser parsedDiff = new DiffParser(m, pr);
-	
+		
+		
 		if(parsedDiff.getCustomDiffBlocks()==null || parsedDiff.getCustomDiffBlocks().size()==0) 
 			return customizations;
 		
@@ -86,7 +91,9 @@ public class ProductCustomizationMiner {
 			if(custom!=null) {
 				/** Create Customization Facts **/
 				Customization customFact = new Customization
-						(custom.getAddedlines(), custom.getDeteledlines(), m.getDiff(), false, false, pr,custom);
+						(Utils.getNewCustomizationId(), custom.getAddedlines(), custom.getDeteledlines(), m.getDiff(), 
+							false,false, pr,custom);
+				//pr.getFileByPath(m.getNewPath()).getIsNew(), pr.getFileByPath(m.getNewPath()).getHasNewFeature()
 				customFact.toString();
 				customizations.add(customFact);
 			}

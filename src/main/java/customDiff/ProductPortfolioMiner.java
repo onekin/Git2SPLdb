@@ -143,22 +143,25 @@ public class ProductPortfolioMiner{
 	            if(treeWalk.getPathString().contains(inPath)){
 	              fileContent = customDiff.utils.FileUtils.readFileContentFromRepository(customDiff.CustomDiff.repositoryPath+"/"+treeWalk.getPathString());
 	              
-	              //1: create new core asset file
-	              file= new ProductAssetFileAnnotated(customDiff.utils.Utils.getNewCoreAssetId(), treeWalk.getNameString(), treeWalk.getPathString(), fileContent, 
+	              //1: create new product asset file
+	              file= new ProductAssetFileAnnotated(customDiff.utils.Utils.getNewAssetId(), treeWalk.getNameString(), treeWalk.getPathString(), fileContent, 
 		    				  fileContent.split("\n").length, pr, 
-		    				  customDiff.CustomDiff.pathToWhereCustomizationsAreComputed.concat(treeWalk.getPathString().split(customDiff.CustomDiff.pathToWhereCustomizationsAreComputed)[1]));
+		    				  customDiff.CustomDiff.pathToWhereCustomizationsAreComputed.concat(treeWalk.getPathString().split(customDiff.CustomDiff.pathToWhereCustomizationsAreComputed)[1]),
+		    				  isProductAssetNew(treeWalk.getPathString()));//check if it is a new asset
 	              
 	              //2: extract features and variation points for the product asset
-	             
 		      	  ArrayList<VariationPoint> variationPoints = customDiff.utils.VariationPointAnalysisUtils.extractVPsFromFile(file, pr.getFromProduct().getInPortfolio().getDerivedFrom(), true);
 		      	  file.setVariationPoints(variationPoints);
 		      	  file.setFeatureToCodeMapping(customDiff.utils.VariationPointAnalysisUtils.extractFeatureMapFromFile(file));
 	              files.add(file);
+	              
+	          
 	            
 	            }	            	
 	        }
 	        pr.setProductAssets(files);
 	        repo.close();
+		
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -168,5 +171,15 @@ public class ProductPortfolioMiner{
 	}
 
 
+
+	private boolean isProductAssetNew(String pathString) {
+		Iterator<SourceCodeFile> cas = CustomDiff.spl.getCoreAssetBaseline(0).getCoreAssetFiles().iterator();
+		while(cas.hasNext()){
+			if(cas.next().getPath().equals(pathString))
+				return false;
+		}
+		System.out.println("NEW ASSET: "+pathString);
+		return true;
+	}
 
 }

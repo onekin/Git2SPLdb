@@ -30,13 +30,11 @@ import customDiff.CustomDiff;
 public class Utils {
 	
 	private static int customizationCounter = 0;
-	private static int coreAssetFileCounter = 0;
-	private static int productAssetFileCounter = 0;
+	private static int assetCounter = 0;
 	private static int productCounter = 0;
 	private static int vpCounter = 0;
+	private static int id_productrelease = 0;
 	private static int id_developer = 0;
-	private static int id_productrelease;
-
 
 	
 	static public ArrayList<String> getCommitHashesBetweenTwoTags(String baselineTag, String productReleaseTag) {
@@ -198,14 +196,10 @@ public class Utils {
 			return productCounter;
 		}
 		
-		public static int getNewProductAssetId() {
-			 productAssetFileCounter++;
-			return productAssetFileCounter;
-		}
 
-		public static int getNewCoreAssetId() {
-			coreAssetFileCounter ++;
-			return coreAssetFileCounter;
+		public static int getNewAssetId() {
+			assetCounter ++;
+			return assetCounter;
 		}
 		
 		public static int getVPId() {

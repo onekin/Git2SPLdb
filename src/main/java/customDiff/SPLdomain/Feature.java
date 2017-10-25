@@ -8,7 +8,7 @@ public class Feature {
 	
 	ArrayList<SourceCodeFile> coreassets;
 	ArrayList<CoreAssetBaseline> inBaselines;
-	boolean isNew=false;
+	boolean isNew = false;
 	ArrayList<Feature>  requires;
 	ArrayList<Feature>  excludes;
 	
@@ -54,10 +54,14 @@ public class Feature {
 	public String toString(){
 		return name;
 	}
-	
-	
-	
-	
-	
-	
+
+	public boolean getIsNew() {
+		return isNew;
+	}
+
+	public int getIsNewToInt() {
+		if(isNew) return 1;
+		else return 0;
+	}
+
 }

@@ -46,8 +46,10 @@ public class BlameUtils {
 			}
 
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
+		
 		}
+		return null;
 	}
 
  public void reverseBlame(String startCommit, String endCommit, String pathFile) {

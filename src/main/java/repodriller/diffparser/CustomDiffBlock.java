@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 
+import customDiff.SPLdomain.CustomizationType;
 import customDiff.SPLdomain.Developer;
 import customDiff.SPLdomain.SourceCodeFile;
 import customDiff.SPLdomain.VariationPoint;
@@ -34,11 +35,12 @@ public class CustomDiffBlock {
 	private ArrayList<RevCommit> commits;
 	private ArrayList<Developer> developers;
 	private ArrayList<String> messages;
+	CustomizationType type;
 
 	
 	public CustomDiffBlock(String diffBlock, VariationPoint vp_pa, VariationPoint vp_ca , String additionalheader, 
 			SourceCodeFile paModified, SourceCodeFile coreAsset, ArrayList<RevCommit> commits, ArrayList<Developer> developers,
-			ArrayList<String> messages) {//le pasas ya el formateado
+			ArrayList<String> messages, CustomizationType type) {//le pasas ya el formateado
 		this.diffBlock = diffBlock;
 		this.lines = diffBlock.replace("\r", "").split("\n");
 		this.vp_pa= vp_pa;
@@ -50,6 +52,7 @@ public class CustomDiffBlock {
 		this.developers = developers;
 		this.commits = commits;
 		this.messages = messages;
+		this.type = type;
 		getLinePositions();
 		getAddedAndDeletedLines();
 	}
@@ -239,5 +242,9 @@ public class CustomDiffBlock {
 
 	public void setMessages(ArrayList<String> messages) {
 		this.messages = messages;
+	}
+
+	public CustomizationType getType() {
+		return this.type;
 	}	
 }

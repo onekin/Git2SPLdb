@@ -16,12 +16,18 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 	ProductRelease fromPRelease; 
 	String relative_diff;
 	String absolute_diff;
+	
+	
+	boolean isNewAsset;
+	ArrayList<Feature> newfeatures; //tentative
 
 	HashMap <Integer,ArrayList<String>> featureToCodeMapping = new HashMap <Integer,ArrayList<String>>();
 	ArrayList<Feature> featureList= new ArrayList<Feature>();
 	ArrayList<VariationPoint> variationPoints = new ArrayList<VariationPoint>();
 	
-	public ProductAssetFileAnnotated(int id, String fileName, String path, String content, int totalLines, ProductRelease pr , String relativepath) {
+	public ProductAssetFileAnnotated(int id, String fileName, String path, String content, int totalLines, 
+			ProductRelease pr , String relativepath, boolean isNew) {
+		
 		this.id= id;
 		this.fileName=fileName;
 		this.path = path;
@@ -29,6 +35,8 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 		this.totalLines = totalLines;
 		this.fromPRelease = pr;
 		this.relativePath = relativepath;
+		this.newfeatures = new ArrayList<Feature>(); //tentative
+		this.isNewAsset = isNew;
 	}
 
 
@@ -157,4 +165,25 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 		this.variationPoints.add(vp);
 		
 	}
+
+
+
+
+
+	public boolean isNewAsset() {
+		return isNewAsset;
+	}
+
+
+	public void setNewAsset(boolean isNewAsset) {
+		this.isNewAsset = isNewAsset;
+	}
+
+
+	@Override
+	public boolean getIsNewAsset() {
+		// TODO Auto-generated method stub
+		return isNewAsset;
+	}
+	
 }

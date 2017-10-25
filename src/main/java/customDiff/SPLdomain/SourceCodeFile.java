@@ -29,5 +29,6 @@ public interface SourceCodeFile {
 	public String getAbsolute_diff();
 	public String getRelative_diff();
 	public void addVariationPoint(VariationPoint vp_ca);
+	public boolean getIsNewAsset();
 	
 }

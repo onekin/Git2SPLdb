@@ -80,7 +80,9 @@ public class CustomDiff {
 			ProductPortfolioMiner prMiner = new ProductPortfolioMiner();
 			prMiner.mine(baselineToMine);
 			spl.setProductPortfolios(portfolios);
+
 		/** 4: for each product release - compute customization effort.	**/
+			
 			Iterator< ProductRelease> it = prMiner.productReleases.iterator();
 			
 			ProductCustomizationMiner customizationsMiner;
@@ -92,6 +94,7 @@ public class CustomDiff {
 		/** 5: export data to the database	**/
 		ExportTarget export = new ExportToStarDiagram();
 		export.export(pathToResources+"/db-data/olap-inserts.sql");
+		
 	}
 
 	

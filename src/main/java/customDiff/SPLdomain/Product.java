@@ -10,10 +10,10 @@ public class Product {
 	String name=null;
 	ArrayList<ProductRelease> releases= new ArrayList<ProductRelease>();
 	ProductPortfolio inPortfolio=null;
-	
 	ArrayList<RevCommit> commitList=new ArrayList<RevCommit>();//all its commits
 
-
+	ArrayList<SourceCodeFile> newfiles = new ArrayList<SourceCodeFile>();//tentative
+	ArrayList<Feature> newfeatures = new ArrayList<Feature>(); //tentative
 	
 	public Product(int id, String name, ProductPortfolio pp) {
 		this.id = id;

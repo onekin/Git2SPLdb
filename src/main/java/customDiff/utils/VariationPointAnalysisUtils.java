@@ -44,7 +44,7 @@ public class VariationPointAnalysisUtils {
 		ca.setFeatureToCodeMapping(map);
 		ca.setVariationPoints(vps);
 		
-		System.out.println("Feature-to-code Map for file "+ca.getFileName()+ " is: \n" +ca.getFeatureToCodeMapping().toString());
+		//System.out.println("Feature-to-code Map for file "+ca.getFileName()+ " is: \n" +ca.getFeatureToCodeMapping().toString());
 		
 		values = map.values();//ArrayList with repeated features;
 		ite= values.iterator();
@@ -145,7 +145,8 @@ public static ArrayList<VariationPoint> extractVPsFromFile(SourceCodeFile file, 
 				vp.setFeatures(findFeaturesByNames(listFeatures,baseline));//(findFeaturesByNames(listFeatures, baseline));
 				
 				if (product) {
-					vp.setNewFeatures(findNewFeatures(extractAllFeaturesFromTheExpression (lines[i]), baseline) );
+					//System.out.println("Finding new features in product for files:"+file.getFileName());
+					vp.setNewFeatures(findNewFeatures(extractAllFeaturesFromTheExpression (lines[i]), baseline) ); //SET NEW FEATURES!
 				}
 					
 				variationPoints.add(vp);
@@ -156,8 +157,8 @@ public static ArrayList<VariationPoint> extractVPsFromFile(SourceCodeFile file, 
 						for(int k=0; k <= nestingLevel;k++)//the line needs to go to parent VPs as well.
 							currentVPsInNestingLevels.get(k).setBody(currentVPsInNestingLevels.get(k).getBody().concat("\n"+lines[i]));
 					}
-				System.out.println("New VP in "+file.getFileName()+": "+lines[i]);
-				System.out.println("Features: "+listFeatures.toString());
+			//	System.out.println("New VP in "+file.getFileName()+": "+lines[i]);
+			//	System.out.println("Features: "+listFeatures.toString());
 			}else{
 				if (lines[i].contains(customDiff.CustomDiff.annotationPatternEnd)){
 					//add the line to all parents of this VP
@@ -194,13 +195,14 @@ public static ArrayList<VariationPoint> extractVPsFromFile(SourceCodeFile file, 
 				listfeatures.add(pieces[i]);
 			}
 		}
+	//	System.out.println("Expression: "+expression+" -> Features "+listfeatures.toString());
 	return listfeatures;
 	}
 
 	private static ArrayList<Feature> findFeaturesByNames(ArrayList<String> listFeatures, CoreAssetBaseline baseline) {
 		Iterator<String> itNames = listFeatures.iterator();
-		System.out.println("Baseline features: "+baseline.getFeatures().toString());
-		System.out.println("Finding features in list: "+listFeatures.toString());
+	//	System.out.println("Baseline features: "+baseline.getFeatures().toString());
+	//	System.out.println("Finding features in list: "+listFeatures.toString());
 		String name; Feature f;
 		ArrayList<Feature> features = new ArrayList<Feature>();
 		
@@ -218,23 +220,24 @@ public static ArrayList<VariationPoint> extractVPsFromFile(SourceCodeFile file, 
 	}
 	
 
-	private static ArrayList<Feature> findNewFeatures(ArrayList<String> listFeatures, CoreAssetBaseline baseline) {
-		Iterator<String> itNames = listFeatures.iterator();
-		
+	private static ArrayList<Feature> findNewFeatures(ArrayList<String> featuresExtracted, CoreAssetBaseline baseline) {
+		Iterator<String> extractedFeatures = featuresExtracted.iterator();
+	//	System.out.println( " In findNewFeatures "  );
 		String name; Feature f;
 		ArrayList<Feature> newFeatures = new ArrayList<Feature>();
 		
 		boolean match=false;
 		
-		while(itNames.hasNext()){
-			name =itNames.next();
-			Iterator<Feature> itFeatures = baseline.getFeatures().iterator();
+		while(extractedFeatures.hasNext()){//for each feature found in the product asset
+			name =extractedFeatures.next();
+			Iterator<Feature> baseFeatures = baseline.getFeatures().iterator();
 			match = false;
-			while(itFeatures.hasNext()){
-				f = itFeatures.next();
+			
+			while(baseFeatures.hasNext()){
+				f = baseFeatures.next();
 				if (f.getName().equals(name)) {
 					match=true; //newFeatureNames.add(f.getName());
-					continue;
+					break;//the
 				}
 			}
 			if (match==false) {

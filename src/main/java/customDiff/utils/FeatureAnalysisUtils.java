@@ -159,7 +159,7 @@ public static VariationPoint getVariationPointOfChangedProductAssetLine(String r
 			//System.out.println(" Line init:" +vp.getLineInit()+ ";   Line end: "+ vp.getLineEnd());
 			if((vp.getLineInit()<=lineNumber) && (lineNumber<=vp.getLineEnd())) {
 				keyVP=vp;
-				System.out.println("VP found PA.");
+				//System.out.println("VP found PA.");
 			}
 				
 		}
@@ -180,7 +180,7 @@ public static VariationPoint getVariationPointOfChangedCoreAssetLine(String relP
 		//System.out.println(" Line init:" +vp.getLineInit()+ ";   Line end: "+ vp.getLineEnd());
 		if((vp.getLineInit()<=lineNumber) && (lineNumber<=vp.getLineEnd())) {
 			keyVP=vp;
-			System.out.println("VP found in CA.");
+			//System.out.println("VP found in CA.");
 		}
 	}
 		
