@@ -26,7 +26,7 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 	ArrayList<VariationPoint> variationPoints = new ArrayList<VariationPoint>();
 	
 	public ProductAssetFileAnnotated(int id, String fileName, String path, String content, int totalLines, 
-			ProductRelease pr , String relativepath, boolean isNew) {
+			ProductRelease pr , String relativepath, boolean isNew, String st) {
 		
 		this.id= id;
 		this.fileName=fileName;

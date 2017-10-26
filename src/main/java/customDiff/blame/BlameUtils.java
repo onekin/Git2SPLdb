@@ -42,7 +42,7 @@ public class BlameUtils {
 				repo.close();
 				return result;
 			} else {
-				throw new RuntimeException("BlameResult not found.");
+				System.out.println("BlameResult not found.");
 			}
 
 		} catch (Exception e) {

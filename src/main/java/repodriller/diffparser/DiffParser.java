@@ -133,7 +133,8 @@ public class DiffParser {
 		}//end for
 		
 		if (anyVP==false){// TODO if the diff did not contain any variation point start or end; in it.It goes directly without parsing it
-			customDiffBlocks.add(createCustomDiffBlock(diffBlock,startLineNextblock, lines.length-1, false, d1,d2,d3,d4));
+			customDiffBlocks.add(createCustomDiffBlock(diffBlock,startLineNextblock, lines.length-1, false, diffBlock.getD1(),
+					diffBlock.getD2(),diffBlock.getD3(),diffBlock.getD4()));
 		}
 		return customDiffBlocks;
 	}
@@ -151,7 +152,7 @@ public class DiffParser {
 		ArrayList<String> newDiff = new ArrayList<>();
 		String[] originalDiff = diffBlock.getLines();
 		
-		if (fixHeader) /** 1: Add the new header with lines fixed **/
+		//if (fixHeader) /** 1: Add the new header with lines fixed **/
 			newDiff.add("@@ -"+d1+","+d2+" +"+d3+","+d4+" @@ ");
 		
 		/** 2: blame added and deleted lines **/ //add initial context lines and final context lines. TODO 
@@ -165,7 +166,9 @@ public class DiffParser {
 		
 		/** 3: extract variation points for the customization **/
 		//Variation point changed -- On product asset
-		VariationPoint vp_pa = customDiff.utils.FeatureAnalysisUtils.getVariationPointOfChangedProductAssetLine	(paModified.getRelativePath(), pr, d3);
+		VariationPoint vp_pa = customDiff.utils.FeatureAnalysisUtils.getVariationPointOfChangedProductAssetLine	(
+				paModified.getRelativePath(), 
+				pr, d3);
 		//Variation point changed -- On core asset asset
 		VariationPoint vp_ca = customDiff.utils.FeatureAnalysisUtils.getVariationPointOfChangedCoreAssetLine(paModified.getRelativePath(), d1);//;startLine+diffBlock.getD1());
 		
@@ -205,9 +208,10 @@ public class DiffParser {
 		
 		String line;
 	
-		//changes for new asset
-		if(isNewAsset){
-			System.out.println("extractChangeTypeFromDiff NEW_ASSET");
+		//changes for new assetisNewAsset
+		System.out.println("NEW_ASSET:"+isNewAsset);
+		if(isNewAsset==true){
+			System.out.println("this is a NEW_ASSET");
 			
 			if (vpa.getExpression().equals("No Expression")) return  CustomizationType.NEW_ASSET_WITH_NO_VARIATIONPOINT;
 			else 
@@ -230,8 +234,10 @@ public class DiffParser {
 			type = CustomizationType.CHANGE_IN_VARIATION_POINT_BODY;
 		else if(addPvInit==false && deletePvInit==false && vpa.getExpression().equals("No Expression"))
 			   type = CustomizationType.CHANGE_OUTSIDE_VARIATION_POINT;
-			else if (addPvInit==true && deletePvInit==false) 
+			else if (addPvInit==true && deletePvInit==false && vpa.getNewFeatures()==null) 
 				type = CustomizationType.NEW_VARIATION_POINT;
+			else if (addPvInit==true && deletePvInit==false && vpa.getNewFeatures()!=null)
+				type = CustomizationType.NEW_VARIATION_POINT_WITH_NEW_FEATURES;
 				else 
 					if (addPvInit==true && deletePvInit==true && vpa.getNewFeatures()==null) 
 						type = CustomizationType.MODIFIED_VARIATION_POINT_EXPRESSION;

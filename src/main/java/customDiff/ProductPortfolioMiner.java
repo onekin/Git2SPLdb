@@ -138,16 +138,22 @@ public class ProductPortfolioMiner{
 	        
 	        SourceCodeFile file;
 	        String  fileContent;
+	        String path;
+	        boolean isnew=false;
 	        ArrayList<SourceCodeFile> files = new ArrayList<SourceCodeFile>();
+	        System.out.println("BEFORE WHILE");
 	        while (treeWalk.next()) {
-	            if(treeWalk.getPathString().contains(inPath)){
+	        	 path = treeWalk.getPathString();
+	            if(path.contains(inPath)){
 	              fileContent = customDiff.utils.FileUtils.readFileContentFromRepository(customDiff.CustomDiff.repositoryPath+"/"+treeWalk.getPathString());
-	              
+	              path = treeWalk.getPathString();
+	              System.out.println("BEFORE");
+	              isnew = isProductAssetNew(treeWalk.getPathString());
 	              //1: create new product asset file
 	              file= new ProductAssetFileAnnotated(customDiff.utils.Utils.getNewAssetId(), treeWalk.getNameString(), treeWalk.getPathString(), fileContent, 
 		    				  fileContent.split("\n").length, pr, 
 		    				  customDiff.CustomDiff.pathToWhereCustomizationsAreComputed.concat(treeWalk.getPathString().split(customDiff.CustomDiff.pathToWhereCustomizationsAreComputed)[1]),
-		    				  isProductAssetNew(treeWalk.getPathString()));//check if it is a new asset
+		    				  isnew,"");//check if it is a new asset
 	              
 	              //2: extract features and variation points for the product asset
 		      	  ArrayList<VariationPoint> variationPoints = customDiff.utils.VariationPointAnalysisUtils.extractVPsFromFile(file, pr.getFromProduct().getInPortfolio().getDerivedFrom(), true);
@@ -173,6 +179,7 @@ public class ProductPortfolioMiner{
 
 
 	private boolean isProductAssetNew(String pathString) {
+		System.out.println("IS asset new?"+pathString); 
 		Iterator<SourceCodeFile> cas = CustomDiff.spl.getCoreAssetBaseline(0).getCoreAssetFiles().iterator();
 		while(cas.hasNext()){
 			if(cas.next().getPath().equals(pathString))
