@@ -27,15 +27,23 @@ public class DiffParser {
 	private String path; //pa path
 	private Modification modification;
 	private String linesNoHeader;
+	private boolean isNewAsset;
 	
 	
 	public DiffParser(Modification mod, ProductRelease pr){//(String fullDiff, ProductRelease pr, String path) {
 		this.fullDiff = mod.getDiff();//fullDiff;
 		diffBlocks = new ArrayList<DiffBlock>();
 		this.pr  =pr;
-		this.path = mod.getNewPath();// path;
+		
+		this.path = mod.getNewPath();// always New path;
+		System.out.println("NEW PATH"+path);
+		
 		this.modification = mod;
 		extractDiffBlocks();
+		if (mod.getOldPath()==null){
+			System.out.println("A modification NEW ASSET");
+			this.isNewAsset = true;
+		}else this.isNewAsset = false;
 		
 		extractCustomDiffBlocks();/** Parse blocks for customDiff*/
 		
@@ -149,19 +157,30 @@ public class DiffParser {
 		CustomizationType type;
 		 
 		System.out.println("New chunk! From line "+startLine+" to line:"+ endline);
+		
 		ArrayList<String> newDiff = new ArrayList<>();
 		String[] originalDiff = diffBlock.getLines();
-		
+		System.out.println("1");
 		//if (fixHeader) /** 1: Add the new header with lines fixed **/
 			newDiff.add("@@ -"+d1+","+d2+" +"+d3+","+d4+" @@ ");
-		
+			
 		/** 2: blame added and deleted lines **/ //add initial context lines and final context lines. TODO 
+		
+		System.out.println("2");
 		newDiff = blameChangedLines(diffBlock, startLine, endline, developers, commits, messages, newDiff, originalDiff);
+		System.out.println("3");
+		
 		if( diffBlockHasModifications(newDiff) == false)
 			return null; //there were no modifications in this chunk - it was part of the context
-				
+		
+		System.out.println("4");
+		SourceCodeFile coreAsset=null;
 		SourceCodeFile paModified = customDiff.utils.FileUtils.getProductAssetByFilePath(path, pr);
-		SourceCodeFile coreAsset = customDiff.utils.FileUtils.getCoreAssetByProductAssetPath( path,  pr );
+		System.out.println("5");
+		if (!isNewAsset) coreAsset= customDiff.utils.FileUtils.getCoreAssetByProductAssetPath( path, pr);
+		
+		System.out.println("paModified: "+paModified.getFileName());
+		
 		
 		
 		/** 3: extract variation points for the customization **/
@@ -170,18 +189,21 @@ public class DiffParser {
 				paModified.getRelativePath(), 
 				pr, d3);
 		//Variation point changed -- On core asset asset
-		VariationPoint vp_ca = customDiff.utils.FeatureAnalysisUtils.getVariationPointOfChangedCoreAssetLine(paModified.getRelativePath(), d1);//;startLine+diffBlock.getD1());
+		VariationPoint vp_ca =null;
+		if (paModified.getIsNewAsset()==false)
+			vp_ca = customDiff.utils.FeatureAnalysisUtils.getVariationPointOfChangedCoreAssetLine(paModified.getRelativePath(), d1);//;startLine+diffBlock.getD1());
 		
 	
 		/**Create intermediary VPs for changes outside a VP*/
 		//REMOVE THOSE
-		if(vp_ca == null){//this is a new VP in product Asset
+		if(vp_ca == null && paModified.getIsNewAsset()==false){
 			vp_ca = new VariationPoint(Utils.getVPId(),"No Expression", 0, null);
 			coreAsset.addVariationPoint(vp_ca);
 		
 		} 
 		if(vp_pa==null){
 			vp_pa = new VariationPoint(Utils.getVPId(), "No Expression", 0, null);
+			System.out.println("new vp_pa "+vp_pa.getIdVP() + "for pa: "+paModified);
 			paModified.addVariationPoint(vp_pa);
 		}
 		
@@ -257,6 +279,7 @@ public class DiffParser {
 		
 		for(int i=startLine; i<=endline; i++){// 1: annotate the added and deleted lines with BLAME
 			strblame= "";
+			if(originalDiff[i].contains("No newline at end of file")) continue;
 			if(originalDiff[i].startsWith("+")) {// 1.1: annotate the added and deleted lines with BLAME
 				List<BlamedLine> blames = modification.getBlameLines();
 				if (blames==null) continue;

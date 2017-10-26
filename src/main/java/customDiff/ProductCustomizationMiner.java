@@ -92,7 +92,7 @@ public class ProductCustomizationMiner {
 				/** Create Customization Facts **/
 				Customization customFact = new Customization
 						(Utils.getNewCustomizationId(), custom.getAddedlines(), custom.getDeteledlines(), m.getDiff(), 
-							false,false, pr,custom);
+							custom.getIsNewAsset(),false, pr,custom);
 				//pr.getFileByPath(m.getNewPath()).getIsNew(), pr.getFileByPath(m.getNewPath()).getHasNewFeature()
 				customFact.toString();
 				customizations.add(customFact);
@@ -147,7 +147,7 @@ public class ProductCustomizationMiner {
 					System.out.println("diff for " + newPath + " too big");
 					diffText = "-- TOO BIG --";
 				}
-				System.out.println("Big diff:\n"+diffText);
+				//System.out.println("Big diff:\n"+diffText);
 				modifications.add(new Modification(oldPath, newPath, change, diffText, sc, oldCommit,newCommit));
 			
 			

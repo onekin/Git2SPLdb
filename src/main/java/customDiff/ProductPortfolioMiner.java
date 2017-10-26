@@ -160,9 +160,7 @@ public class ProductPortfolioMiner{
 		      	  file.setVariationPoints(variationPoints);
 		      	  file.setFeatureToCodeMapping(customDiff.utils.VariationPointAnalysisUtils.extractFeatureMapFromFile(file));
 	              files.add(file);
-	              
-	          
-	            
+	                          
 	            }	            	
 	        }
 	        pr.setProductAssets(files);
@@ -185,7 +183,7 @@ public class ProductPortfolioMiner{
 			if(cas.next().getPath().equals(pathString))
 				return false;
 		}
-		System.out.println("NEW ASSET: "+pathString);
+		System.out.println("NEW ASSET FOUND: "+pathString);
 		return true;
 	}
 

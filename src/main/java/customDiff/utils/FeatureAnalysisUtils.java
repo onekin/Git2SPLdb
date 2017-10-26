@@ -152,6 +152,7 @@ public static VariationPoint getVariationPointOfChangedProductAssetLine(String r
 	VariationPoint vp, keyVP=null;
 
 		ArrayList<VariationPoint> listVPs = pa.getVariationPoints();
+		if (listVPs==null) return null;
 		Iterator<VariationPoint> it = listVPs.iterator();
 		
 		while (it.hasNext()) {

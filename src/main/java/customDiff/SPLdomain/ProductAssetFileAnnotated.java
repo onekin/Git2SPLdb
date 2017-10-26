@@ -23,7 +23,7 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 
 	HashMap <Integer,ArrayList<String>> featureToCodeMapping = new HashMap <Integer,ArrayList<String>>();
 	ArrayList<Feature> featureList= new ArrayList<Feature>();
-	ArrayList<VariationPoint> variationPoints = new ArrayList<VariationPoint>();
+	ArrayList<VariationPoint> variationPoints;
 	
 	public ProductAssetFileAnnotated(int id, String fileName, String path, String content, int totalLines, 
 			ProductRelease pr , String relativepath, boolean isNew, String st) {
@@ -37,6 +37,7 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 		this.relativePath = relativepath;
 		this.newfeatures = new ArrayList<Feature>(); //tentative
 		this.isNewAsset = isNew;
+		variationPoints = new ArrayList<VariationPoint>();
 	}
 
 
@@ -162,6 +163,8 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 	}
 
 	public void addVariationPoint(VariationPoint vp) {
+		System.out.println ("addVariationPoint "+vp.getExpression());
+		if (variationPoints ==null) this.variationPoints = new ArrayList<VariationPoint>();
 		this.variationPoints.add(vp);
 		
 	}

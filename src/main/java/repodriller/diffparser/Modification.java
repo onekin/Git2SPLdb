@@ -52,7 +52,7 @@ public class Modification {
 			if(line.startsWith("-") && !line.startsWith("---")) removed++;
 		}
 		
-		blameLines = customDiff.blame.BlameUtils.blame(oldPath, newCommit.getName(), false);
+		blameLines = customDiff.blame.BlameUtils.blame(newPath, newCommit.getName(), false);
 		
 		
 	}
@@ -135,6 +135,8 @@ public class Modification {
 	public void setBlameLines(List<BlamedLine> blameLines) {
 		this.blameLines = blameLines;
 	}
+
+	
 
 	
 }

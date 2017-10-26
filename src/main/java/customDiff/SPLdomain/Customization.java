@@ -30,7 +30,8 @@ public class Customization {
 		
 		private CustomDiffBlock customDiffBlock; //Developers,commits,customDiff, variationPoint
 		
-		public Customization(int id, int linesAdded, int linesDeleted, String wholediff, boolean isNewAsset, boolean hasNewFeature, 
+		public Customization(int id, int linesAdded, int linesDeleted, String wholediff, 
+				boolean isNewAsset, boolean hasNewFeature, 
 				ProductRelease inRelease, CustomDiffBlock customDiffBlock) {
 			this.id=id;
 			this.linesAdded = linesAdded;
@@ -53,7 +54,8 @@ public class Customization {
 
 		public String toString(){
 			return "CustomFact for PR:"+inRelease.getTagName()+ " for asset: "+customDiffBlock.getPaModified().getFileName()+
-			" added:"+linesAdded+ " deleted:"+linesDeleted+" vp_ca:"+customDiffBlock.getVp_ca().getVPFullExpression(customDiffBlock.getVp_ca())
+			" added:"+linesAdded+ " deleted:"+linesDeleted
+			//+" vp_ca:"+customDiffBlock.getVp_ca().getVPFullExpression(customDiffBlock.getVp_ca())
 			+" vp_pa:"+customDiffBlock.getVp_pa().getVPFullExpression(customDiffBlock.getVp_pa())
 			+" customDiff:\n"+customDiffBlock.getDiffBlock();
 		}

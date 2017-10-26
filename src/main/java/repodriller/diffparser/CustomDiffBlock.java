@@ -246,5 +246,9 @@ public class CustomDiffBlock {
 
 	public CustomizationType getType() {
 		return this.type;
+	}
+
+	public boolean getIsNewAsset() {
+		return this.paModified.getIsNewAsset();
 	}	
 }

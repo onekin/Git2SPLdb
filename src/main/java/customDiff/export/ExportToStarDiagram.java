@@ -133,7 +133,9 @@ public class ExportToStarDiagram implements ExportTarget{
 				 dev = developers.next();
 				 insert = insert.concat(developer_bridge_header).concat("("+developer_group+","+dev.getId()+");\n");
 			}
-			if (cust.getVariationpointca().getExpression().equals("No Expression") || cust.getVariationpointpa().getExpression().equals("No Expression")){
+			if (cust.getVariationpointca() !=null && 
+					(cust.getVariationpointca().getExpression().equals("No Expression") 
+							|| cust.getVariationpointpa().getExpression().equals("No Expression"))){
 				insert = insert.concat(insertEmptyVPForCustomization(cust));
 			} 
 			insert = insert.concat (generateInsertForCustomization( cust, pr) );
@@ -150,7 +152,9 @@ public class ExportToStarDiagram implements ExportTarget{
 				"custom_diff,commit_set,message_set,greater_diff" +
 				",idvariationpoint,id_developer_group, idproductrelease, type) VALUES\n";
 		
-		int idVariationPoint = cust.getVariationpointca().getIdVP();
+		int idVariationPoint;
+		if (cust.getProductasset().getIsNewAsset()) idVariationPoint= cust.getVariationpointpa().getIdVP();
+		else idVariationPoint= cust.getVariationpointca().getIdVP();
 		
 		if (cust.getType().name().equals("CHANGE_IN_VARIATION_POINT_BODY") || (cust.getType().name().equals("CHANGE_OUTSIDE_VARIATION_POINT")))
 			idVariationPoint = cust.getVariationpointca().getIdVP();
