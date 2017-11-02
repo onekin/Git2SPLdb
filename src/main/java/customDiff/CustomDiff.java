@@ -19,24 +19,27 @@ import customDiff.export.ExportToStarDiagram;
 
 
 public class CustomDiff {
-	
+	/**Configurable fields - arguments*/
 	public static String repositoryPath; 
 	public static String baselineToMine;
 	public static String pathToResources; //E.g.: Users/Onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resource/
 	public static String pathToWhereCustomizationsAreComputed;//folder to look for customization effort. 
-		
-	/**Settings for Git repos and annotation based SPLs*/
-	public static String productBranchPatternName="product";
-	public static String coreAssetsBranchPatternName="master";
-	public static String coreAssetsReleaseName="baseline";
-	public static String productsReleaseName="product";
+	public static String featureModelPath;
+	public static String componentPackageRoot;
+	
+	public static String productsReleaseTagPrefix="product";
+	public static String coreAssetsReleaseTagPrefix="baseline";
+	public static String coreAssetsBranchName="master";
 	public final static String annotationPatternBeginning= "hasFeature";//pv:hasFeature
 	public final static String annotationPatternEnd="PV:ENDCOND";//"PV:ENDCOND";
-		
+	
+	
+	/** Field variables **/
 	public static SPL spl;
 	public static ArrayList<ProductPortfolio> portfolios;
 	public static ArrayList<Feature> features;
 	public static ArrayList<Developer> allDevelopers;
+
 		
 	public static void main(String[] args) {
 		System.out.println ("---------------------------------------------------------");
@@ -48,13 +51,22 @@ public class CustomDiff {
 			/Users/onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resources
 			input
 			Baseline-v1.0
+			/Users/onekin/git/WeatherStationSPL/WS.xfm
+			input
+			product
+			baseline
+			master
+			
 		**/
 		
-		if(args.length==4){
+		if(args.length==9){
 			repositoryPath=args[0];
 			pathToResources=args[1];
 			pathToWhereCustomizationsAreComputed=args[2];
 			baselineToMine=args[3];
+			featureModelPath=args[4];
+			componentPackageRoot=args[5];
+			productsReleaseTagPrefix=args[6];
 		}
 		else 
 			System.out.println ("You need to provide me with the setting parameters");

@@ -153,7 +153,7 @@ public class RefUtils {
 			RevCommit commit;
 			while(it.hasNext()){
 				commit = it.next();
-				if(isCommitInBranch(commit, CustomDiff.coreAssetsBranchPatternName) ||isCommitBaselineRelease(commit) || commit.getCommitTime() < baselineCommit.getCommitTime()){
+				if(isCommitInBranch(commit, CustomDiff.coreAssetsBranchName) ||isCommitBaselineRelease(commit) || commit.getCommitTime() < baselineCommit.getCommitTime()){
 					//System.out.println(productRelease.getName()+" NOT derived from "+baselineCommit.getName());
 					return false;
 				}
@@ -168,7 +168,7 @@ public class RefUtils {
 	}	
 	
 	private static boolean isCommitBaselineRelease(RevCommit commit) {
-		ArrayList<Ref> baselineTags = listTagsFromRepoByPrefix("refs/tags/"+CustomDiff.coreAssetsReleaseName);	//get all baseline tags
+		ArrayList<Ref> baselineTags = listTagsFromRepoByPrefix("refs/tags/"+CustomDiff.coreAssetsReleaseTagPrefix);	//get all baseline tags
 		Iterator<Ref> it = baselineTags.iterator();
 		Ref ref;
 		while(it.hasNext()){

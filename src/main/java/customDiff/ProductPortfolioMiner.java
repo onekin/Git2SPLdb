@@ -105,7 +105,7 @@ public class ProductPortfolioMiner{
 
 	private ArrayList<Ref> getProductTagsDerivedFromBaseline(RevCommit baselineCommit) {
 	
-		ArrayList<Ref> allrefs = RefUtils.listTagsFromRepoByPrefix("refs/tags/"+CustomDiff.productsReleaseName);// get all the tags that match "product" pattern
+		ArrayList<Ref> allrefs = RefUtils.listTagsFromRepoByPrefix("refs/tags/"+CustomDiff.productsReleaseTagPrefix);// get all the tags that match "product" pattern
 		//System.out.println("allrefs: "+allrefs);
 		Iterator<Ref> it = allrefs.iterator();
 		

@@ -2,7 +2,10 @@ package customDiff.export;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map.Entry;
+
 import org.eclipse.jgit.util.Base64;
 import customDiff.CustomDiff;
 import customDiff.SPLdomain.Customization;
@@ -18,14 +21,17 @@ public class ExportToStarDiagram implements ExportTarget{
 	String pathToDataFile;
 	int developer_group =1;
 	int id_feature_group= 1;
+	
+	int id_package =1;
+	HashMap<Integer, String> packages = new HashMap<Integer, String>();
+	HashMap<Integer, ArrayList<Feature>> f_groups = new HashMap<Integer, ArrayList<Feature>>();
 	ArrayList<Feature> addedFeatures = new ArrayList<>();
 	
-	public void export(String pathToDataFile){
+	public void export(String pathToDataFile){//generate SQL with data inserts.
 		
 		try{
 			
 			ArrayList<String> allInserts = generateInserts(pathToDataFile);
-	
 			customDiff.utils.FileUtils.writeToFile(pathToDataFile, allInserts);
 			
 		}catch (Exception e ){
@@ -49,10 +55,8 @@ public class ExportToStarDiagram implements ExportTarget{
 		allInserts.add(generateInsertsForFeatures()); //from baseline 
 		allInserts.add(generateInsertsForVariationPoints());//from baseline core assets only 
 		allInserts.add(generateInsertsForDevelopers());
-		
 		allInserts.add(generateInsertsForNewProductAssets()); //for new product assets && new Features
-		
-		allInserts.add(generateInsertsForProductsReleasesAndCustomizations());//includes inserts to new variation points createed in products
+		allInserts.add(generateInsertsForProductsReleasesAndCustomizations());//includes inserts to new variation points created in products
 		
 		return allInserts;
 	}
@@ -77,13 +81,27 @@ public class ExportToStarDiagram implements ExportTarget{
 		Iterator<SourceCodeFile> assets = pr.getProductAssets().iterator();
 	
 		String  insert="";
-		String header = "INSERT INTO core_asset (idcoreasset, name, path,isNewAsset,size,content) VALUES\n";
+		String header = "INSERT INTO core_asset (idcoreasset, name, path,isNewAsset,size,idpackage) VALUES\n"; //,content
 		SourceCodeFile asset;
+		String package_name;
+		int id_pack=0;
+		
 		while(assets.hasNext()){
 			asset = assets.next();
+			
 			if (asset.getIsNewAsset()){//INSERT THE NEW ASSET
+				package_name = getComponentPackageForCoreAsset(asset);
+				
+				if (packages.containsValue(package_name))
+					id_pack = getKeyByValue(package_name);
+				else insert = insert + getInsertsForComponentPackage(package_name);
+				
+				if (id_pack ==0 ){
+					id_pack = this.id_package;
+				}
+				
 				insert = insert.concat(header).concat("(" +asset.getId() +",'"+asset.getFileName()+"','"+asset.getPath()+"',1,"
-						+(asset.getContent()).split("\n").length+",'"+encodeToBase64(asset.getContent())+"');\n");
+						+(asset.getContent()).split("\n").length+"," +id_pack +");\n"); //	'"+encodeToBase64(asset.getContent())
 			}
 		}
 		return insert;
@@ -92,7 +110,7 @@ public class ExportToStarDiagram implements ExportTarget{
 
 	private String generateInsertsForNewFeaturesInProductAsset(SourceCodeFile pa, ArrayList<Feature> newFeatures) {
 		String  insert="";
-		String header = "INSERT INTO feature (idfeature, name, isNew) VALUES\n";
+		String header = "INSERT INTO feature (idfeature, name, isNew, idparentfeature) VALUES\n";
 		
 		
 		Iterator<VariationPoint> vps = pa.getVariationPoints().iterator();
@@ -105,7 +123,7 @@ public class ExportToStarDiagram implements ExportTarget{
 			while(features.hasNext()){
 				f=features.next();
 				if (f.getIsNew() && !newFeatures.contains(f)){
-					insert = insert.concat(header).concat("('"+f.getIdFeature()+"','"+f.getName()+"',1);\n");
+					insert = insert.concat(header).concat("('"+f.getIdFeature()+"','"+f.getName()+"',1,1);\n");
 					newFeatures.add(f);
 				}
 				
@@ -256,13 +274,13 @@ public class ExportToStarDiagram implements ExportTarget{
 
 	private String generateInsertsForProductsReleasesAndCustomizations() {
 		String  insert="";
-		String product_header = "INSERT INTO product (idproduct,name) VALUES\n";
+	//	String product_header = "INSERT INTO product (idproduct,name) VALUES\n";
 		
 		Iterator<Product> products = customDiff.CustomDiff.spl.getProductPortfolio(0).getProducts().iterator();
 		Product p;
 		while(products.hasNext()){
 			p=products.next();
-			insert = insert.concat(product_header).concat("("+p.getId()+",'"+p.getName()+"');");//introduce product
+			//insert = insert.concat(product_header).concat("("+p.getId()+",'"+p.getName()+"');");//introduce product
 			insert = insert.concat(getInsertsForProductReleases(p));
 		}
 		
@@ -271,14 +289,14 @@ public class ExportToStarDiagram implements ExportTarget{
 
 	private String getInsertsForProductReleases(Product p) {
 		String  insert="";//id_productrelease
-		String releaseHeader = "INSERT INTO product_release (idproductrelease,name,date,commits_set,idproduct) VALUES\n";
+		String releaseHeader = "INSERT INTO product_release (idproductrelease,name,date,commits_set) VALUES\n";//id_product
 		
 		Iterator<ProductRelease> releases = p.getReleases().iterator();
 		ProductRelease pr;
 		while(releases.hasNext()){
 			pr = releases.next();
 			insert = insert.concat(releaseHeader).concat("("+pr.getId()+",'"+ pr.getTagName()+"','"+convertDateToMysqlForm(pr.getReleaseDate())+"','"+pr.getCommitsSetToString()
-					+"'," +pr.getFromProduct().getId()+");\n");//inserts for product release
+					+"');\n");//inserts for product release  +pr.getFromProduct().getId()+
 			
 			
 			
@@ -294,14 +312,20 @@ public class ExportToStarDiagram implements ExportTarget{
 
 	private String generateInsertsForFeatures() {
 		String  insert="";
-		String header = "INSERT INTO feature (idfeature,name,isNew) VALUES\n";
+		//TODO extract parent features from features.
+		
+		String header_parent = "INSERT INTO parent_feature (idparentfeature,name) VALUES\n";
+		insert = insert.concat(header_parent).concat("(1, 'parentFeature');\n");
+		
+		
+		String header = "INSERT INTO feature (idfeature,name,isNew,idparent) VALUES\n";
 		
 		Iterator<Feature> it = CustomDiff.features.iterator();
 		Feature f;
 		while(it.hasNext()){
 			f = it.next();
 			addedFeatures.add(f);
-			insert=insert.concat(header).concat("('"+f.getIdFeature()+"','"+f.getName()+"',"+f.getIsNewToInt()+");\n");
+			insert=insert.concat(header).concat("('"+f.getIdFeature()+"','"+f.getName()+"',"+f.getIsNewToInt()+",1);\n");
 		}
 		
 		//empty feature
@@ -366,20 +390,82 @@ public class ExportToStarDiagram implements ExportTarget{
 
 	private String generateInsertsForCoreAssets() {
 		String  insert="";
-		String header = "INSERT INTO core_asset (idcoreasset, name, path,size,isNewAsset,content) VALUES\n";
+		String header = "INSERT INTO core_asset (idcoreasset, name, path,size,isNewAsset,idpackage) VALUES\n";//,content
+		
 		
 		ArrayList<SourceCodeFile> coreassets = CustomDiff.spl.getCoreAssetBaseline(0).getCoreAssetFiles();
 		Iterator<SourceCodeFile> it = coreassets.iterator();
 		SourceCodeFile ca;
+		
+		String package_name;
+		int id_pack=0;
 		while(it.hasNext()){
 			ca = it.next();
-			insert=insert.concat(header).concat("("+ca.getId()+",'"+ca.getFileName()+"','"+ca.getPath()
-					+"',"+ca.getTotalLines()+","+"0,'"+encodeToBase64(ca.getContent())+"');\n");
+			package_name = getComponentPackageForCoreAsset(ca);
+			if (packages.containsValue(package_name))
+				id_pack = getKeyByValue(package_name);
+			else {
+				insert = insert + getInsertsForComponentPackage(package_name);
+				id_pack = this.id_package -1;
+			}
+		
+			
+			insert = insert.concat(header).concat("("+ca.getId()+",'"+ca.getFileName()+"','"+ca.getPath()
+					+"',"+ca.getTotalLines()+","+"0"+","+id_pack+");\n"); //encodeToBase64(ca.getContent())
 		}
 
 		return insert;
 		
 	}
+
+	private String getInsertsForComponentPackage(String component_name) {
+		String  insert="";
+		String header = "INSERT INTO component_package (idpackage, name, isroot) VALUES\n";
+		
+		this.packages.put(id_package, component_name);
+		
+		int root=0;
+		if (component_name.equals(CustomDiff.componentPackageRoot))
+			root = 1;
+		
+		insert = insert.concat(header).concat("("+id_package+","+"'"+component_name+"',"+root+");\n");
+		
+		this.id_package ++;
+		return insert;
+	}
+
+	public  int  getKeyByValue( String component) {
+	    for (Entry<Integer,String> entry : packages.entrySet()) {
+	        if (component.equals(entry.getValue())) {
+	        	System.out.println("component: "+ component+ "  Identified! with key:"+entry.getKey());
+	            return entry.getKey();
+	        }
+	    }
+	    return 0;
+	}
+
+
+	private String getComponentPackageForCoreAsset(SourceCodeFile ca) {
+        String component_package_name;
+        String ca_path = ca.getPath();
+        String ca_name = ca.getFileName();
+        
+        
+        String[] splitted = ca_path.split(CustomDiff.componentPackageRoot);
+        System.out.println("name:" + ca_path);
+       
+        String[] compontent = splitted[1].split("/");
+        System.out.println("component: " + compontent[1]);
+        
+        component_package_name = compontent[1];
+        
+        if (component_package_name.equals(ca_name))
+        	component_package_name=CustomDiff.componentPackageRoot;//it belongs to the root folder, it does not have a component attached.
+       
+        return component_package_name;
+	}
+
+
 
 	private String convertDateToMysqlForm(Date date){
 		java.text.SimpleDateFormat sdf =  new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -391,7 +477,7 @@ public class ExportToStarDiagram implements ExportTarget{
 	private String encodeToBase64(String str){
 		// encode data on your side using BASE64
 		//https://stackoverflow.com/questions/19743851/base64-java-encode-and-decode-a-string
-		if (str ==null) return null;
+		if (str == null) return null;
 		String   bytesEncoded = Base64.encodeBytes(str.getBytes());
 
 		return bytesEncoded;
