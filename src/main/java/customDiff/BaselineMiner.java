@@ -29,6 +29,10 @@ public class BaselineMiner {
 		
 		System.out.println("Number of files in Baseline: "+files.size());
 		baseline.setCoreAssetFiles(files);
+		/**adding root feature**/
+		String rootName = customDiff.utils.FeatureModelParser.getFMRootElement();
+		Feature root = new Feature(rootName, rootName, false,null);
+		baseline.getFeatures().add(root);
 		
 		/** Printing baseline contents **/
 		System.out.println("Features in baseline: "+baseline.getId()+" are:"+ baseline.getFeatures().toString());
@@ -36,7 +40,7 @@ public class BaselineMiner {
 		Feature f;
 		while(it.hasNext()){
 			f = it.next();
-			System.out.println(f.getName());
+			System.out.println(f.getName()+" with parent-->"+f.getParentFeatureName());
 		}
 	}
 	
@@ -84,10 +88,16 @@ public class BaselineMiner {
 		              ArrayList<Feature> features = CAfile.getFeatureList();
 		              Iterator<Feature> iterator = features.iterator();
 		              Feature feature;
+		              //4: get their parents!!
+		              String parent="";
 		              while (iterator.hasNext()){
 		            	feature = iterator.next();
-			    		if(!customDiff.utils.FeatureAnalysisUtils.isFeatureInFeaturesList(baseline.getFeatures(), feature.getName()))
+			    		if(!customDiff.utils.FeatureAnalysisUtils.isFeatureInFeaturesList(baseline.getFeatures(), feature.getName())){
+			    			parent = customDiff.utils.FeatureModelParser.getParentFeatureOfFeatureByName(feature.getName());
+			    			feature.setParentFeatureName(parent);
 			    			baseline.addFeature(feature);
+			    		}
+			    			
 			    		}
 			         }	            	
 		        }

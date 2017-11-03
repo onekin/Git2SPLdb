@@ -21,11 +21,13 @@ public class ExportToStarDiagram implements ExportTarget{
 	String pathToDataFile;
 	int developer_group =1;
 	int id_feature_group= 1;
-	
+	int id_parentfeature=1;
 	int id_package =1;
+	
 	HashMap<Integer, String> packages = new HashMap<Integer, String>();
 	HashMap<Integer, ArrayList<Feature>> f_groups = new HashMap<Integer, ArrayList<Feature>>();
 	ArrayList<Feature> addedFeatures = new ArrayList<>();
+	HashMap<Integer, String> addedparentFeatures = new HashMap<Integer, String>();
 	
 	public void export(String pathToDataFile){//generate SQL with data inserts.
 		
@@ -47,12 +49,14 @@ public class ExportToStarDiagram implements ExportTarget{
 		return insert;
 	}
 	
+
+	
 	private ArrayList<String> generateInserts(String pathToDataFile) {
 		
 		ArrayList<String> allInserts = new ArrayList<String>();
 		
 		allInserts.add(generateInsertsForCoreAssets());//core assets from baseline
-		allInserts.add(generateInsertsForFeatures()); //from baseline 
+		allInserts.add(generateInsertsForFeatures()); //from baseline & parent features
 		allInserts.add(generateInsertsForVariationPoints());//from baseline core assets only 
 		allInserts.add(generateInsertsForDevelopers());
 		allInserts.add(generateInsertsForNewProductAssets()); //for new product assets && new Features
@@ -298,13 +302,8 @@ public class ExportToStarDiagram implements ExportTarget{
 			insert = insert.concat(releaseHeader).concat("("+pr.getId()+",'"+ pr.getTagName()+"','"+convertDateToMysqlForm(pr.getReleaseDate())+"','"+pr.getCommitsSetToString()
 					+"');\n");//inserts for product release  +pr.getFromProduct().getId()+
 			
-			
-			
 			insert = insert.concat(getInsertsForProductCustomizations(pr));
-			
-			
-		}
-		
+		}		
 		return insert;
 	}
 
@@ -312,33 +311,44 @@ public class ExportToStarDiagram implements ExportTarget{
 
 	private String generateInsertsForFeatures() {
 		String  insert="";
-		//TODO extract parent features from features.
-		
+	
 		String header_parent = "INSERT INTO parent_feature (idparentfeature,name) VALUES\n";
-		insert = insert.concat(header_parent).concat("(1, 'parentFeature');\n");
-		
-		
 		String header = "INSERT INTO feature (idfeature,name,isNew,idparent) VALUES\n";
+		//empty feature- for customizations with no VP
+			String header_bridge = "INSERT INTO feature_bridge (id_feature_group, id_feature) VALUES\n";
+			String header_f_group = "INSERT INTO feature_group (id_feature_group) VALUES\n";
+				
+			insert=insert.concat(header_parent).concat("(0,'No Feature');\n");
+			insert=insert.concat(header).concat("('No Feature','No Feature',0,0);\n");//no feature
+			insert=insert.concat(header_f_group).concat("(0);\n"); //group for no feature
+			insert=insert.concat(header_bridge).concat("(0,'No Feature');\n");
+				
 		
 		Iterator<Feature> it = CustomDiff.features.iterator();
 		Feature f;
+		int idparent=0;
 		while(it.hasNext()){
 			f = it.next();
 			addedFeatures.add(f);
-			insert=insert.concat(header).concat("('"+f.getIdFeature()+"','"+f.getName()+"',"+f.getIsNewToInt()+",1);\n");
+			if(addedparentFeatures.containsValue(f.getParentFeatureName())){//if it is already in inserted in the db 
+			
+				idparent=customDiff.utils.Utils.getKeyFromValue(addedparentFeatures, f.getParentFeatureName());
+				System.out.println("Parent "+f.getParentFeatureName()+ " already inserted with id: "+idparent);
+			}
+			else{//insert the parent_feature first
+				insert=insert.concat(header_parent).concat("("+id_parentfeature+",'"+f.getParentFeatureName()+"');\n");
+				idparent=id_parentfeature;
+				addedparentFeatures.put(id_parentfeature,f.getParentFeatureName());
+				id_parentfeature++;
+			}
+			
+			insert=insert.concat(header).concat("('"+f.getIdFeature()+"','"+f.getName()+"',"+f.getIsNewToInt()+","+idparent+");\n");
+			
+			
 		}
 		
-		//empty feature
 		
-		String header_bridge = "INSERT INTO feature_bridge (id_feature_group, id_feature) VALUES\n";
-		String header_f_group = "INSERT INTO feature_group (id_feature_group) VALUES\n";
-		insert=insert.concat(header).concat("('No Feature','No Feature',0);\n");//no feature
-		insert=insert.concat(header_f_group).concat("(0);\n"); //group for no feature
-		insert=insert.concat(header_bridge).concat("(0,'No Feature');\n");
-		
-		
-		
-		
+
 		return insert;
 	}
 

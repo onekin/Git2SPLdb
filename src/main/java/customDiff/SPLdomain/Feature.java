@@ -11,6 +11,7 @@ public class Feature {
 	boolean isNew = false;
 	ArrayList<Feature>  requires;
 	ArrayList<Feature>  excludes;
+	String parentFeatureName;
 	
 	public Feature (String name, String idFeature){
 		this.name = name;
@@ -21,6 +22,13 @@ public class Feature {
 		this.name = name;
 		this.idFeature= idFeature;
 		this.isNew = isNew;
+	}
+	
+	public Feature (String name, String idFeature, boolean isNew, String parentFeatureName){
+		this.name = name;
+		this.idFeature= idFeature;
+		this.isNew = isNew;
+		this.parentFeatureName = parentFeatureName;
 	}
 	
 	public String getName() {
@@ -63,5 +71,15 @@ public class Feature {
 		if(isNew) return 1;
 		else return 0;
 	}
+
+	public String getParentFeatureName() {
+		return parentFeatureName;
+	}
+
+	public void setParentFeatureName(String parentFeatureName) {
+		System.out.println("Feature "+name+" has parent: "+parentFeatureName);
+		this.parentFeatureName = parentFeatureName;
+	}
+	
 
 }

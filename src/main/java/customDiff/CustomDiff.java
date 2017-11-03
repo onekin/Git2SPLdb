@@ -27,6 +27,7 @@ public class CustomDiff {
 	public static String featureModelPath;
 	public static String componentPackageRoot;
 	
+	
 	public static String productsReleaseTagPrefix="product";
 	public static String coreAssetsReleaseTagPrefix="baseline";
 	public static String coreAssetsBranchName="master";
@@ -56,17 +57,21 @@ public class CustomDiff {
 			product
 			baseline
 			master
+			/Users/onekin/git/WeatherStationSPL/WS.xfm
 			
 		**/
 		
-		if(args.length==9){
-			repositoryPath=args[0];
-			pathToResources=args[1];
+		if(args.length==10){
+			repositoryPath =args[0];
+			pathToResources =args[1];
 			pathToWhereCustomizationsAreComputed=args[2];
-			baselineToMine=args[3];
-			featureModelPath=args[4];
-			componentPackageRoot=args[5];
-			productsReleaseTagPrefix=args[6];
+			baselineToMine =args[3];
+			featureModelPath =args[4];
+			componentPackageRoot =args[5];
+			productsReleaseTagPrefix =args[6];
+			coreAssetsReleaseTagPrefix =args[7];
+			coreAssetsBranchName = args[8];
+			featureModelPath=args[9];
 		}
 		else 
 			System.out.println ("You need to provide me with the setting parameters");
@@ -106,6 +111,8 @@ public class CustomDiff {
 		/** 5: export data to the database	**/
 		ExportTarget export = new ExportToStarDiagram();
 		export.export(pathToResources+"/db-data/olap-inserts.sql");
+		
+	
 		
 	}
 
