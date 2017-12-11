@@ -75,8 +75,16 @@ public class CustomDiff {
 		}
 		else 
 			System.out.println ("You need to provide me with the setting parameters");
+		System.out.println("Arguments: "+args[0].toString());
+		System.out.println("Arguments: "+args[1].toString());
+		System.out.println("Arguments: "+args[2].toString());
 		System.out.println("Arguments: "+args[3].toString());
-		
+		System.out.println("Arguments: "+args[4].toString());
+		System.out.println("Arguments: "+args[5].toString());
+		System.out.println("Arguments: "+args[6].toString());
+		System.out.println("Arguments: "+args[7].toString());
+		System.out.println("Arguments: "+args[8].toString());
+		System.out.println("Arguments: "+args[9].toString());
 		startMiningProcess();
 	}
 

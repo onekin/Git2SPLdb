@@ -19,7 +19,7 @@ public class BaselineMiner {
 
 	
 	public void mine(String baselineToMine) {//CoreAssetBaseline baseline, String pathToWhereCustomizationsAreComputed
-				
+		System.out.println("Mining baseline : "+baselineToMine);
 		RevCommit baselineCommit = customDiff.utils.RefUtils.getCommitFromRefName(baselineToMine);	
 		CoreAssetBaseline baseline = new CoreAssetBaseline(baselineCommit, baselineCommit.getCommitTime(), baselineToMine);
 		CustomDiff.spl.addBaseline(baseline);
