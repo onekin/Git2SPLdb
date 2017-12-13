@@ -20,6 +20,7 @@ public interface SourceCodeFile {
 	public int getId();
 	public int getTotalLines();
 	public ArrayList<Feature> getFeatureList();
+	public void setFeatureList(ArrayList<Feature> featureList);
 	public ArrayList<VariationPoint> getVariationPoints();
 	public HashMap <Integer,ArrayList<String>> getFeatureToCodeMapping();
 	public void setFeatureToCodeMapping (HashMap <Integer, ArrayList<String>>  featureToCodeMapping);
@@ -30,5 +31,6 @@ public interface SourceCodeFile {
 	public String getRelative_diff();
 	public void addVariationPoint(VariationPoint vp_ca);
 	public boolean getIsNewAsset();
+	
 	
 }

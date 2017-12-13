@@ -105,7 +105,7 @@ public class FileUtils {
 	}
 
 	public static SourceCodeFile getProductAssetByFilePath(String path, ProductRelease pr) {
-		//System.out.println("Finding path:"+path);
+		System.out.println("Finding path:"+path);
 		ArrayList<SourceCodeFile> listAssets = pr.getProductAssets();
 		if (listAssets!= null){
 			Iterator<SourceCodeFile> it = listAssets.iterator();

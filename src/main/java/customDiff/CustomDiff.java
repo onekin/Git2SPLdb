@@ -20,7 +20,7 @@ import customDiff.export.ExportToStarDiagram;
 
 public class CustomDiff {
 	/**Configurable fields - arguments*/
-	public static String repositoryPath; 
+	public static String repositoryPath ; 
 	public static String baselineToMine;
 	public static String pathToResources; //E.g.: Users/Onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resource/
 	public static String pathToWhereCustomizationsAreComputed;//folder to look for customization effort. 
@@ -31,9 +31,10 @@ public class CustomDiff {
 	public static String productsReleaseTagPrefix="product";
 	public static String coreAssetsReleaseTagPrefix="baseline";
 	public static String coreAssetsBranchName="master";
-	public final static String annotationPatternBeginning= "hasFeature";//pv:hasFeature
-	public final static String annotationPatternEnd="PV:ENDCOND";//"PV:ENDCOND";
-	
+	public final static String annotationPatternBeginningJava= "hasFeature";//pv:hasFeature
+	public final static String annotationPatternEndJava="PV:ENDCOND";//"PV:ENDCOND";
+	public final static String annotationPatternBeginningCpp= "#if HAS_FEATURE_";//pv:hasFeature
+	public final static String annotationPatternEndCpp="#endif";//"PV:ENDCOND";
 	
 	/** Field variables **/
 	public static SPL spl;
@@ -75,6 +76,7 @@ public class CustomDiff {
 		}
 		else 
 			System.out.println ("You need to provide me with the setting parameters");
+		
 		System.out.println("Arguments: "+args[0].toString());
 		System.out.println("Arguments: "+args[1].toString());
 		System.out.println("Arguments: "+args[2].toString());
@@ -85,6 +87,7 @@ public class CustomDiff {
 		System.out.println("Arguments: "+args[7].toString());
 		System.out.println("Arguments: "+args[8].toString());
 		System.out.println("Arguments: "+args[9].toString());
+		
 		startMiningProcess();
 	}
 
@@ -100,7 +103,7 @@ public class CustomDiff {
 			baselineMiner.mine(baselineToMine);
 		
 
-		/** 3: identify product releases **/			
+		/** 3: identify product releases 	**/	
 			portfolios= new ArrayList<ProductPortfolio>();
 			ProductPortfolioMiner prMiner = new ProductPortfolioMiner();
 			prMiner.mine(baselineToMine);
@@ -120,7 +123,9 @@ public class CustomDiff {
 		ExportTarget export = new ExportToStarDiagram();
 		export.export(pathToResources+"/db-data/olap-inserts.sql");
 		
-	
+		System.out.println ("---------------------------------------------------------");
+		System.out.println ("--- End processing ---");
+		System.out.println ("---------------------------------------------------------");
 		
 	}
 

@@ -69,11 +69,16 @@ private static ArrayList<Feature> findNewFeatures(ArrayList<String> listFeatures
 	public static boolean isFeatureInFeaturesList(ArrayList<Feature> featureList, String name){
 		Iterator<Feature>  it= featureList.iterator();
 		Feature f;
-		
+	
 		while (it.hasNext()){
+		
 			f = it.next();
-			if (f.getIdFeature().equals(name))
+		//	System.out.println("comparing: "+ f.getIdFeature()+" AND "  +name );
+			if (f.getIdFeature().equals(name)) {
+			//	System.out.println("they are equal");
 				return true;
+			}
+				
 			//else System.out.println(f.getIdFeature()+" NOT SAME "+name);
 		}
 		
@@ -95,9 +100,10 @@ private static ArrayList<Feature> findNewFeatures(ArrayList<String> listFeatures
 
 
 	public static ArrayList<VariationPoint> extractVPsFromFile(SourceCodeFile file, CoreAssetBaseline baseline) {
-	
+		//file.getFileName().endsWith(".cpp")
+		
 		String content = file.getContent();
-		if (!content.contains(customDiff.CustomDiff.annotationPatternBeginning)) return null; //the file does not contain variability in it
+		if (!content.contains(customDiff.CustomDiff.annotationPatternBeginningCpp)) return null; //the file does not contain variability in it
 		
 		ArrayList<VariationPoint> variationPoints = new ArrayList<VariationPoint>();
 		
@@ -108,7 +114,7 @@ private static ArrayList<Feature> findNewFeatures(ArrayList<String> listFeatures
 			int nestingLevel=-1;
 			for(int i=0;i<lines.length;i++){
 				VariationPoint vp = null;
-				if (lines[i].contains(customDiff.CustomDiff.annotationPatternBeginning)){
+				if (lines[i].contains(customDiff.CustomDiff.annotationPatternBeginningCpp)){
 					nestingLevel++; //level 0 is when we are inside a VP
 					if (nestingLevel==0)
 					  vp = new VariationPoint(Utils.getVPId(), lines[i],i+1,null);//newVariation point
@@ -124,7 +130,7 @@ private static ArrayList<Feature> findNewFeatures(ArrayList<String> listFeatures
 								currentVPsInNestingLevels.get(k).setBody(currentVPsInNestingLevels.get(k).getBody().concat("\n"+lines[i]));
 						}
 				}else{
-					if (lines[i].contains(customDiff.CustomDiff.annotationPatternEnd)){
+					if (lines[i].contains(customDiff.CustomDiff.annotationPatternEndCpp)){
 						//add the line to all parents of this VP
 						for(int k=0; k <= nestingLevel;k++)//the line needs to go to parent VPs as well.
 							currentVPsInNestingLevels.get(k).setBody(currentVPsInNestingLevels.get(k).getBody().concat("\n"+lines[i]));
@@ -198,7 +204,7 @@ public static HashMap <Integer,ArrayList <String>>  extractFeatureMapFromFile (S
 	HashMap <Integer,ArrayList <String>> featureToCodeMapping = new HashMap<Integer, ArrayList <String>>();//line - list of features for the line
 	String content = file.getContent();
 	int nestingLevel=-1;
-	if (!content.contains(customDiff.CustomDiff.annotationPatternBeginning)) return null; //the file does not contain variability in it
+	if (!content.contains(customDiff.CustomDiff.annotationPatternBeginningCpp)) return null; //the file does not contain variability in it
 	
 	try {
 		String[] lines = content.split("\n");
@@ -208,7 +214,7 @@ public static HashMap <Integer,ArrayList <String>>  extractFeatureMapFromFile (S
 		
 		for(int i=0;i<lines.length;i++){
 			counter ++;
-			if (lines[i].contains(customDiff.CustomDiff.annotationPatternBeginning)){
+			if (lines[i].contains(customDiff.CustomDiff.annotationPatternBeginningCpp)){
 				nestingLevel++;//level 0 is when we are inside a VP
 				currentExpressionsInNestedLevels.put(nestingLevel,lines[i]);
 					if (nestingLevel> 0){//we need to add all the features for all the nesting levels.
@@ -231,7 +237,7 @@ public static HashMap <Integer,ArrayList <String>>  extractFeatureMapFromFile (S
 				}
 			}//end else
 			featureToCodeMapping.put(counter,listFeatures);
-			if (lines[i].contains(customDiff.CustomDiff.annotationPatternEnd))
+			if (lines[i].contains(customDiff.CustomDiff.annotationPatternEndCpp))
 				nestingLevel--;
 		}//end for
 		file.setFeatureToCodeMapping(featureToCodeMapping);

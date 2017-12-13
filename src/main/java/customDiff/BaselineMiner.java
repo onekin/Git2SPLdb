@@ -82,7 +82,7 @@ public class BaselineMiner {
 		              files.add(CAfile);
 		              System.out.println(CAfile.toString());
 		              System.out.println(CAfile.getFeatureToCodeMapping());
-		              System.out.println(baseline.getId() +" " +baseline.getReleaseDate()+ " " +CAfile.getFileName()+ " "+ CAfile.getFeatureToCodeMapping());
+		              System.out.println(baseline.getId() +" "+baseline.getReleaseDate()+ " " +CAfile.getFileName()+ " "+ CAfile.getFeatureToCodeMapping());
 			    					
 		              //3: Add features found in the core asset to the baseline
 		              ArrayList<Feature> features = CAfile.getFeatureList();

@@ -133,5 +133,12 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	
+	public void getFeatureList(ArrayList<Feature> featureList) {
+		this.featureList=featureList;
+		
+	}
+
 	
 }

@@ -106,15 +106,15 @@ public class DiffParser {
 		boolean anyVP=false;
 		
 		for (String line: lines ){
-			if(line.startsWith("-") && (!line.contains(CustomDiff.annotationPatternBeginning)) && (!(line.contains(CustomDiff.annotationPatternEnd)))) {
+			if(line.startsWith("-") && (!line.contains(CustomDiff.annotationPatternBeginningCpp)) && (!(line.contains(CustomDiff.annotationPatternEndCpp)))) {
 				diff_deletedlines++;
 				totalDeletedLines++;
 			} 
-			else if(line.startsWith("+") && !(line.contains(CustomDiff.annotationPatternBeginning)) && (!(line.contains(CustomDiff.annotationPatternEnd)))) {
+			else if(line.startsWith("+") && !(line.contains(CustomDiff.annotationPatternBeginningCpp)) && (!(line.contains(CustomDiff.annotationPatternEndCpp)))) {
 				diff_addedLines++;
 				total_addedLines++;
 			}  else // context line where there is a VP, or added/deleted VP
-				if(line.contains(CustomDiff.annotationPatternBeginning) || line.contains(CustomDiff.annotationPatternEnd)){			
+				if(line.contains(CustomDiff.annotationPatternBeginningCpp) || line.contains(CustomDiff.annotationPatternEndCpp)){			
 					
 					diff_contextLines++;
 					d2 = diff_contextLines + diff_deletedlines;
@@ -180,11 +180,9 @@ public class DiffParser {
 		if (!isNewAsset) coreAsset= customDiff.utils.FileUtils.getCoreAssetByProductAssetPath( path, pr);
 		
 		System.out.println("paModified: "+paModified.getFileName());
-		
-		
-		
+				
 		/** 3: extract variation points for the customization **/
-		//Variation point changed -- On product asset
+		//Variation point changed -- On product asset.
 		VariationPoint vp_pa = customDiff.utils.FeatureAnalysisUtils.getVariationPointOfChangedProductAssetLine	(
 				paModified.getRelativePath(), 
 				pr, d3);
@@ -244,10 +242,10 @@ public class DiffParser {
 		while(it.hasNext()){
 			line=it.next();
 
-			if( line.startsWith("+")&& line.contains(customDiff.CustomDiff.annotationPatternBeginning))
+			if( line.startsWith("+")&& line.contains(customDiff.CustomDiff.annotationPatternBeginningCpp))
 				addPvInit=true;
 				else{ 
-					if( line.startsWith("+")&& line.contains(customDiff.CustomDiff.annotationPatternBeginning))
+					if( line.startsWith("+")&& line.contains(customDiff.CustomDiff.annotationPatternBeginningCpp))
 					deletePvInit=true;
 				}
 		}
@@ -291,7 +289,7 @@ public class DiffParser {
 					message = RefUtils.getCommitMessage(commit);
 					if (!messages.contains(message)) messages.add(message);
 				}
-				strblame = "//Authored by: "+author+" in commit:"+commit+ ", with message:"+message;
+		//		strblame = "//Authored by: "+author+" in commit:"+commit+ ", with message:"+message;
 				commits.add(RefUtils.getCommitFromCommitSha(commit));
 			    developers.add(addAuthor(RefUtils.getCommitAuthor(commit)));
 			}

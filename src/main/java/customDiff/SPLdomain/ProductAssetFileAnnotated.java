@@ -188,5 +188,8 @@ public class ProductAssetFileAnnotated implements SourceCodeFile{
 		// TODO Auto-generated method stub
 		return isNewAsset;
 	}
-	
+	public void getFeatureList(ArrayList<Feature> featureList) {
+		this.featureList=featureList;
+		
+	}
 }
