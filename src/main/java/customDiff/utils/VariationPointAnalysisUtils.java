@@ -203,6 +203,7 @@ public static ArrayList<VariationPoint> extractVPsFromFile(SourceCodeFile file, 
 					for(int k=0; k <= nestingLevel;k++)//the line needs to go to parent VPs as well.
 						currentVPsInNestingLevels.get(k).setBody(currentVPsInNestingLevels.get(k).getBody().concat("\n"+lines[i]));
 					//calculate ending Line for the VP
+					//me da un null pointer exception
 					currentVPsInNestingLevels.get(nestingLevel).setLineEnd(i+1);//(i+1)
 					listFeatures.removeAll(extractAllFeaturesFromTheExpression(currentVPsInNestingLevels.get(nestingLevel).getExpression()));
 					nestingLevel--;

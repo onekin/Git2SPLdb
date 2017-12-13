@@ -34,7 +34,7 @@ public class ProductCustomizationMiner {
 
 	/* Fixed. */	
 	private int maxNumberFilesInACommit = 5000; /* TODO Expose an API to control this value? Also in SubversionRepository. */
-	private int maxSizeOfDiff = 100000; /* TODO Expose an API to control this value? Also in SubversionRepository. */
+	private int maxSizeOfDiff = 1000000; /* TODO Expose an API to control this value? Also in SubversionRepository. */
 
 	
 	public void mine(ProductRelease pr) {
@@ -50,11 +50,17 @@ public class ProductCustomizationMiner {
 		Iterator<Modification> it = modifications.iterator();
 		Modification mod;
 		while (it.hasNext()){
+			System.out.println("IN THE WHILE!");
 			mod = it.next();//4: for each  modifications parse and extract  customDiff
 			
-			if(! mod.getNewPath().startsWith(customDiff.CustomDiff.pathToWhereCustomizationsAreComputed)) 
+			if(! mod.getNewPath().startsWith(customDiff.CustomDiff.pathToWhereCustomizationsAreComputed)) {
 				continue;
-			else customizations.addAll( computeCustomizationsInModification(mod, pr));
+			}
+				
+			else {
+				System.out.println("GOING TO COMPUTE CUSTOMIZATIONS FOR\n:"+mod.getDiff());
+				customizations.addAll(computeCustomizationsInModification(mod, pr));	
+			} 
 
 		}
 		
@@ -78,7 +84,7 @@ public class ProductCustomizationMiner {
 		
 		//the DiffParser is in charge of parsing the diff into customDiffs
 		DiffParser parsedDiff = new DiffParser(m, pr);
-		
+		System.out.println("parsedDiff size: "+parsedDiff.getCustomDiffBlocks().size());
 		
 		if(parsedDiff.getCustomDiffBlocks()==null || parsedDiff.getCustomDiffBlocks().size()==0) 
 			return customizations;
@@ -87,9 +93,12 @@ public class ProductCustomizationMiner {
 		int counter=0;
 		
 		while (counter<numberOfCustomDiffBlocks){
+		//	System.out.println("In the while for counter");
 			CustomDiffBlock custom = parsedDiff.getCustomDiffBlocks().get(counter);
+			System.out.println("CUSTOM: "+custom);
 			if(custom!=null) {
 				/** Create Customization Facts **/
+				System.out.println("Created new CUSTOMIZATION FACT");
 				Customization customFact = new Customization
 						(Utils.getNewCustomizationId(), custom.getAddedlines(), custom.getDeteledlines(), m.getDiff(), 
 							custom.getIsNewAsset(),false, pr,custom);

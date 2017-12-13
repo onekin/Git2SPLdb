@@ -82,7 +82,7 @@ public class DiffParser {
 		System.out.println("Number of blocks to parse are: "+numberOfBlock);
 		
 		for(int i=0; i < numberOfBlock; i++){
-			customDiffBlocks. addAll (parseBlockToExtractCustomDiffBlocks(getBlocks().get(i)));
+			customDiffBlocks.addAll(parseBlockToExtractCustomDiffBlocks(getBlocks().get(i)));
 		}
 	}
 	
@@ -271,7 +271,7 @@ public class DiffParser {
 
 
 	private ArrayList<String> blameChangedLines(DiffBlock diffBlock, int startLine, int endline, ArrayList<Developer> developers, 
-			ArrayList<RevCommit> commits, ArrayList<String> messages, ArrayList<String> newDiff, String[] originalDiff) {
+		ArrayList<RevCommit> commits, ArrayList<String> messages, ArrayList<String> newDiff, String[] originalDiff) {
 		int newFilelineCounter = startLine+diffBlock.getD3()-2;//TODO startLine+diffBlock.getD3()-1
 		String strblame;String commit = null;String author = null, message = null;String developerdHeader="Developed by:";
 		
@@ -281,17 +281,17 @@ public class DiffParser {
 			if(originalDiff[i].startsWith("+")) {// 1.1: annotate the added and deleted lines with BLAME
 				List<BlamedLine> blames = modification.getBlameLines();
 				if (blames==null) continue;
-				author =  blames.get(newFilelineCounter).getAuthor();int line = blames.get(newFilelineCounter).getLineNumber();
-				commit = blames.get(newFilelineCounter).getCommit();String lineAdded = blames.get(newFilelineCounter).getLine();
+				author = "leticia";// blames.get(newFilelineCounter).getAuthor();int line = blames.get(newFilelineCounter).getLineNumber();
+				commit = "commit";//blames.get(newFilelineCounter).getCommit();String lineAdded = blames.get(newFilelineCounter).getLine();
 				developerdHeader = developerdHeader.concat(author+" ");
 				
-				if (!commits.contains(RefUtils.getCommitFromCommitSha(commit))) {
+				/*if (!commits.contains(RefUtils.getCommitFromCommitSha(commit))) {
 					message = RefUtils.getCommitMessage(commit);
 					if (!messages.contains(message)) messages.add(message);
-				}
-		//		strblame = "//Authored by: "+author+" in commit:"+commit+ ", with message:"+message;
-				commits.add(RefUtils.getCommitFromCommitSha(commit));
-			    developers.add(addAuthor(RefUtils.getCommitAuthor(commit)));
+				}*/
+				//strblame = "//Authored by: "+author+" in commit:"+commit+ ", with message:"+message;
+				//commits.add(RefUtils.getCommitFromCommitSha(commit));
+			   // developers.add(addAuthor(RefUtils.getCommitAuthor(commit)));
 			}
 			newDiff.add(originalDiff[i]+strblame);//add line to the customDiffBlock
 			

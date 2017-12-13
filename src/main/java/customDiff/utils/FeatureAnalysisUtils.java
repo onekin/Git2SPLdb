@@ -180,6 +180,7 @@ public static VariationPoint getVariationPointOfChangedCoreAssetLine(String relP
 	VariationPoint vp, keyVP=null;
 
 	ArrayList<VariationPoint> listVPs = ca.getVariationPoints();
+	if (listVPs==null) return null;
 	Iterator<VariationPoint> it = listVPs.iterator();
 		
 	while (it.hasNext()) {

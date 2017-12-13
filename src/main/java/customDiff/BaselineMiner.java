@@ -92,11 +92,11 @@ public class BaselineMiner {
 		              String parent="";
 		              while (iterator.hasNext()){
 		            	feature = iterator.next();
-			    		if(!customDiff.utils.FeatureAnalysisUtils.isFeatureInFeaturesList(baseline.getFeatures(), feature.getName())){
-			    			parent = customDiff.utils.FeatureModelParser.getParentFeatureOfFeatureByName(feature.getName());
+			    		//if(!customDiff.utils.FeatureAnalysisUtils.isFeatureInFeaturesList(baseline.getFeatures(), feature.getName())){
+			    			parent = customDiff.utils.FeatureModelParser.getParentFeatureOfFeatureByName_(feature.getName());
 			    			feature.setParentFeatureName(parent);
 			    			baseline.addFeature(feature);
-			    		}
+			    	//	}
 			    			
 			    		}
 			         }	            	

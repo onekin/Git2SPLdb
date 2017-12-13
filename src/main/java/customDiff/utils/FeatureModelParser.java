@@ -20,7 +20,7 @@ public class FeatureModelParser {
  public static String getFMRootElement(){
 
 		try{
-			File fXmlFile = new File(CustomDiff.featureModelPath);
+		File fXmlFile = new File(CustomDiff.featureModelPath);
 	    	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 	    	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 	    	Document doc = dBuilder.parse(fXmlFile);
@@ -37,9 +37,10 @@ public class FeatureModelParser {
 			return "";  
  }
 
-	public static String getParentFeatureOfFeatureByName(String featureChildName){
+	public static String getParentFeatureOfFeatureByName_(String featureChildName){
 		String parentFeature="";
 		try{
+			System.out.println("Finding parent for feature-->" +featureChildName);
 			File fXmlFile = new File(CustomDiff.featureModelPath);
 	    	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 	    	DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -49,17 +50,18 @@ public class FeatureModelParser {
 	    	//read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
 	    	doc.getDocumentElement().normalize();
 	
-	    	System.out.println("Finding parent for feature-->" +featureChildName);
+	    	
 	
 	    	NodeList nList = doc.getElementsByTagName("cm:element");
-	
+	     	System.out.println("Elements number: " +nList.getLength());
 	    	for (int temp = 0; temp < nList.getLength(); temp++) {
 	    		Node nNode = nList.item(temp);
 	    		if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 	    			Element eElement = (Element) nNode;
-	    			//System.out.println("Element id : " + eElement.getAttribute("cm:id"));
-	    			//System.out.println("Element cm:name : " + eElement.getAttribute("cm:name"));
+	    		
 	    			if(eElement.getAttribute("cm:name").equals(featureChildName)){
+	    				System.out.println("Element id : " + eElement.getAttribute("cm:id"));
+		    			System.out.println("Element cm:name : " + eElement.getAttribute("cm:name"));
 	    			   for(int i=0; i<eElement.getElementsByTagName("cm:relation").getLength();i++){
 	    				   Node node = eElement.getElementsByTagName("cm:relation").item(i);
 	    				   NamedNodeMap attributes = node.getAttributes();
@@ -80,7 +82,8 @@ public class FeatureModelParser {
 	    	}
 	    	System.out.println("No Parent fount-->"+parentFeature);
         } catch (Exception e) {
-    	e.printStackTrace();
+           	System.out.println("ERROR PARSING FM");	
+           	e.printStackTrace();
         }
     return parentFeature;  
 	}

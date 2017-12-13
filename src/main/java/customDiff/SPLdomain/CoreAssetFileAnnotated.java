@@ -124,7 +124,9 @@ public class CoreAssetFileAnnotated implements SourceCodeFile{
 		return "";
 	}
 	public void addVariationPoint(VariationPoint vp) {
-		this.variationPoints.add(vp);
+		if (this.variationPoints==null) this.variationPoints= new ArrayList<VariationPoint>();
+		if (vp!=null)
+			this.variationPoints.add(vp);
 		
 	}
 

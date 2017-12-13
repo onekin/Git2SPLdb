@@ -233,6 +233,8 @@ public class ExportToStarDiagram implements ExportTarget{
 		insert = insert.concat(header_f_group).concat("("+id_feature_group+");\n"); // feature_group
 		
 		ArrayList<Feature> allfeatures = cust.getVariationpointpa().getFeatures();
+		if (allfeatures==null) return "";//CUIDADO
+		
 		allfeatures.addAll( cust.getVariationpointpa().getNewFeatures());
 		
 		Iterator<Feature> features = allfeatures.iterator();
@@ -465,18 +467,15 @@ public class ExportToStarDiagram implements ExportTarget{
         
         
         String[] splitted = ca_path.split(CustomDiff.componentPackageRoot);
-        System.out.println("ca_path:" + ca_path);
-        //System.out.println("splitted:" + splitted[0]);
+        System.out.println("name:" + ca_path);
        
         String[] compontent = splitted[1].split("/");
-        System.out.println(compontent[0]);
-        if (compontent.length<1)
-        	  component_package_name=customDiff.CustomDiff.componentPackageRoot;
-       // System.out.println("component: " + compontent[1]);
-        	 else component_package_name = compontent[0];
+        System.out.println("component: " + compontent[1]);
+        
+        component_package_name = compontent[1];
         
         if (component_package_name.equals(ca_name))
-          	component_package_name=CustomDiff.componentPackageRoot;//it belongs to the root folder, it does not have a component attached.
+        	component_package_name=CustomDiff.componentPackageRoot;//it belongs to the root folder, it does not have a component attached.
        
         return component_package_name;
 	}

@@ -103,7 +103,7 @@ public class CustomDiff {
 			baselineMiner.mine(baselineToMine);
 		
 
-		/** 3: identify product releases 	**/	
+		/** 3: identify product releases **/	
 			portfolios= new ArrayList<ProductPortfolio>();
 			ProductPortfolioMiner prMiner = new ProductPortfolioMiner();
 			prMiner.mine(baselineToMine);
