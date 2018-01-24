@@ -42,20 +42,20 @@ public class ProductCustomizationMiner {
 		System.out.println ("--------------------------------------------------------------------");
 		this.pr = pr;
 		customizations = new ArrayList<Customization>();
+		RevCommit baselineTag = pr.getFromProduct().getInPortfolio().getDerivedFrom().getRevCommit();
 		
 		//1: compute the Git diff between productrelease commit and the baseline it was derived from.
-		List<Modification> modifications = getDiffsBetweenCommits(pr.getFromProduct().getInPortfolio().getDerivedFrom().getRevCommit(), pr.getReleasedCommit());//base,head
+		List<Modification> modifications = getDiffsBetweenCommits(baselineTag, pr.getReleasedCommit());
 		
 		//2: for each  diff, call the parser-> parse diffs per VP changed. 
 		Iterator<Modification> it = modifications.iterator();
 		Modification mod;
 		while (it.hasNext()){
-			mod = it.next();//4: for each  modifications parse and extract  customDiff
+			mod = it.next();//4: for each  modifications parse and extract the customDiff
 			
 			if(! mod.getNewPath().startsWith(customDiff.CustomDiff.pathToWhereCustomizationsAreComputed)) 
 				continue;
 			else customizations.addAll( computeCustomizationsInModification(mod, pr));
-
 		}
 		
 		pr.setCustomizations(customizations);
