@@ -85,7 +85,7 @@ public class ExportToStarDiagram implements ExportTarget{
 		Iterator<SourceCodeFile> assets = pr.getProductAssets().iterator();
 	
 		String  insert="";
-		String header = "INSERT INTO core_asset (idcoreasset, name, path,isNewAsset,size,idpackage) VALUES\n"; //,content
+		String header = "INSERT INTO core_asset (idcoreasset, name, path,isNewAsset,size,idpackage,content) VALUES\n"; //,content
 		SourceCodeFile asset;
 		String package_name;
 		int id_pack=0;
@@ -105,7 +105,7 @@ public class ExportToStarDiagram implements ExportTarget{
 				}
 				
 				insert = insert.concat(header).concat("(" +asset.getId() +",'"+asset.getFileName()+"','"+asset.getPath()+"',1,"
-						+(asset.getContent()).split("\n").length+"," +id_pack +");\n"); //	'"+encodeToBase64(asset.getContent())
+						+(asset.getContent()).split("\n").length+"," +id_pack + ",'"+encodeToBase64(asset.getContent())+"');\n"); //	
 			}
 		}
 		return insert;
@@ -400,7 +400,7 @@ public class ExportToStarDiagram implements ExportTarget{
 
 	private String generateInsertsForCoreAssets() {
 		String  insert="";
-		String header = "INSERT INTO core_asset (idcoreasset, name, path,size,isNewAsset,idpackage) VALUES\n";//,content
+		String header = "INSERT INTO core_asset (idcoreasset, name, path,size,isNewAsset,idpackage,content) VALUES\n";//,content
 		
 		
 		ArrayList<SourceCodeFile> coreassets = CustomDiff.spl.getCoreAssetBaseline(0).getCoreAssetFiles();
@@ -421,7 +421,7 @@ public class ExportToStarDiagram implements ExportTarget{
 		
 			
 			insert = insert.concat(header).concat("("+ca.getId()+",'"+ca.getFileName()+"','"+ca.getPath()
-					+"',"+ca.getTotalLines()+","+"0"+","+id_pack+");\n"); //encodeToBase64(ca.getContent())
+					+"',"+ca.getTotalLines()+","+"0"+","+id_pack+",'"+encodeToBase64(ca.getContent())+"');\n");
 		}
 
 		return insert;

@@ -114,7 +114,7 @@ public class DiffParser {
 				diff_addedLines++;
 				total_addedLines++;
 			}  else // context line where there is a VP, or added/deleted VP
-				if(line.contains(CustomDiff.annotationPatternBeginning) || line.contains(CustomDiff.annotationPatternEnd)){			
+				if(line.contains(CustomDiff.annotationPatternBeginning) ) {//|| line.contains(CustomDiff.annotationPatternEnd)){			
 					
 					diff_contextLines++;
 					d2 = diff_contextLines + diff_deletedlines;
@@ -291,7 +291,7 @@ public class DiffParser {
 					message = RefUtils.getCommitMessage(commit);
 					if (!messages.contains(message)) messages.add(message);
 				}
-				strblame = "//Authored by: "+author+" in commit:"+commit+ ", with message:"+message;
+				strblame = "//Authored by: "+author+" in commit:"+commit+ ", with message:"+message.replace("\n", " ");
 				commits.add(RefUtils.getCommitFromCommitSha(commit));
 			    developers.add(addAuthor(RefUtils.getCommitAuthor(commit)));
 			}
