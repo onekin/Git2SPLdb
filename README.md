@@ -1,6 +1,8 @@
 #Git2SPLdb
 
-A tool that mines Git repositories where SPLs are being developed. It computes the customization effort for SPL products (i.e. what featuares have been customized and how much). Finally, it outputs a db - a set of mysql-based scripts- that constains the information about product customizations.
+Git2SPLdb is part of the CustomDIFF tool. Check a video about it: https://www.youtube.com/watch?v=HF7ZdebMAIo
+
+Git2SPLdb mines a Git repository, where an SPL is  being developed. It traverses all the branches where products have customized/changes feature implementations, and computes the customizations effort those products (i.e. what featuares have been customized and how much). Finally, it outputs  a set of mysql-based scripts - that constain the information about product customizations.
 
 #Git2SPLdb works for:
 1.- Annotated based SPLs. So far it works for pure::variants framework. This means that code is annotated with preprocessor directives with the pattern PV:IFCOND(hasFeature(....))
@@ -32,9 +34,9 @@ After running it you would need to create a mysql database, with the two scripts
 *olap-inserts.sql --> these are the data inserts to populate the database
 
 #What to do next?
-Once you have the database in place, you can deply CustomDIFF to start analysing what features have products customized.
+Once you have the database in place, you can deploy CustomDIFF to start visualizing the data stored in you db. Go to:
+https://github.com/letimome/CustomDiff
 
-https://www.youtube.com/watch?v=HF7ZdebMAIo
 
 #Acknowledgements
 The parsing Git2SPLdb 3rd party tools that SPLCustoms utilizes
