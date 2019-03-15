@@ -2,10 +2,9 @@ package customDiff.SPLdomain;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.eclipse.jgit.revwalk.RevCommit;
-
-import customDiff.utils.RefUtils;
 
 import repodriller.diffparser.CustomDiffBlock;
 public class Customization {
@@ -16,14 +15,14 @@ public class Customization {
 		int linesDeleted;	
 		boolean isNewAsset;
 		boolean hasNewFeature;
-		private ProductRelease inRelease;
+		private CoreAssetBaseline inRelease;
 		private String wholediff;
 		private VariationPoint variationpointpa;
 		private VariationPoint variationpointca;
 		private String custom_diff;
 		private SourceCodeFile productasset;
 		private SourceCodeFile coreasset;
-		private ArrayList<Developer> developers;
+		private Set<Developer> developers;
 		private ArrayList<String> messages;
 		private ArrayList<RevCommit> commits;
 		CustomizationType type;
@@ -32,13 +31,13 @@ public class Customization {
 		
 		public Customization(int id, int linesAdded, int linesDeleted, String wholediff, 
 				boolean isNewAsset, boolean hasNewFeature, 
-				ProductRelease inRelease, CustomDiffBlock customDiffBlock) {
+				CoreAssetBaseline baseline2, CustomDiffBlock customDiffBlock) {
 			this.id=id;
 			this.linesAdded = linesAdded;
 			this.linesDeleted = linesDeleted;
 			this.isNewAsset = isNewAsset;
 			this.hasNewFeature = hasNewFeature;
-			this.inRelease = inRelease;
+			this.inRelease = baseline2;
 			this.wholediff=wholediff;
 			this.customDiffBlock = customDiffBlock;
 			this.productasset = customDiffBlock.getPaModified();
@@ -52,8 +51,23 @@ public class Customization {
 			this.type = customDiffBlock.getType();
 		}
 
+		public Customization(int id, CustomizationType scatteringMod,int scatteringDelta, String featureId) {
+			this.id=id;
+			this.type = scatteringMod;
+			this.linesAdded = scatteringDelta;
+			this.custom_diff = featureId;
+			
+		}
+		
+		public Customization(int id, CustomizationType tanglingMod, String tanglingPair) {
+			this.id=id;
+			this.type = tanglingMod;
+			this.custom_diff = tanglingPair;
+			
+		}
+
 		public String toString(){
-			return "CustomFact for PR:"+inRelease.getTagName()+ " for asset: "+customDiffBlock.getPaModified().getFileName()+
+			return "CustomFact for PR:"+inRelease.getId()+ " for asset: "+customDiffBlock.getPaModified().getFileName()+
 			" added:"+linesAdded+ " deleted:"+linesDeleted
 			//+" vp_ca:"+customDiffBlock.getVp_ca().getVPFullExpression(customDiffBlock.getVp_ca())
 			+" vp_pa:"+customDiffBlock.getVp_pa().getVPFullExpression(customDiffBlock.getVp_pa())
@@ -107,10 +121,10 @@ public class Customization {
 		public void setHasNewFeature(boolean hasNewFeature) {
 			this.hasNewFeature = hasNewFeature;
 		}
-		public ProductRelease getInRelease() {
+		public CoreAssetBaseline getInRelease() {
 			return inRelease;
 		}
-		public void setInRelease(ProductRelease inRelease) {
+		public void setInRelease(CoreAssetBaseline inRelease) {
 			this.inRelease = inRelease;
 		}
 
@@ -172,11 +186,11 @@ public class Customization {
 			this.coreasset = coreasset;
 		}
 
-		public ArrayList<Developer> getDevelopers() {
+		public Set<Developer> getDevelopers() {
 			return developers;
 		}
 
-		public void setDevelopers(ArrayList<Developer> developers) {
+		public void setDevelopers(Set<Developer> developers) {
 			this.developers = developers;
 		}
 

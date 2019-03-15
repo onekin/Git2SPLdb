@@ -1,12 +1,11 @@
 package customDiff.SPLdomain;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jgit.revwalk.RevCommit;
-
-import customDiff.utils.Utils;
 
 
 public class CoreAssetBaseline{//extends Commit
@@ -17,7 +16,11 @@ public class CoreAssetBaseline{//extends Commit
 	RevCommit revCommit;
 	public ArrayList<Feature> features = new ArrayList<Feature>();
 	public ArrayList<SourceCodeFile> coreAssetFiles = new ArrayList<SourceCodeFile>();
+
+	private ArrayList<Customization> customizations;
 		
+	private List<FeatureSibling> featureSiblings = new ArrayList<>();
+	
 	public CoreAssetBaseline(RevCommit revCommit, int commitTime, String refName) {
 		this.revCommit = revCommit;
 		this.releaseDate = new Date(commitTime);
@@ -85,6 +88,22 @@ public class CoreAssetBaseline{//extends Commit
 
 	public void setRevCommit(RevCommit revCommit) {
 		this.revCommit = revCommit;
+	}
+
+	public void setCustomizations(ArrayList<Customization> customizations) {
+		this.customizations=customizations;
+	}
+	
+	public ArrayList<Customization> getCustomizations() {
+		return customizations;
+	}
+
+	public List<FeatureSibling> getFeatureSiblings() {
+		return featureSiblings;
+	}
+
+	public void setFeatureSiblings(List<FeatureSibling> featureSiblings) {
+		this.featureSiblings = featureSiblings;
 	}
 
 }

@@ -104,9 +104,9 @@ public class FileUtils {
 			}
 	}
 
-	public static SourceCodeFile getProductAssetByFilePath(String path, ProductRelease pr) {
+	public static SourceCodeFile getProductAssetByFilePath(String path, CoreAssetBaseline baseline2) {
 		//System.out.println("Finding path:"+path);
-		ArrayList<SourceCodeFile> listAssets = pr.getProductAssets();
+		ArrayList<SourceCodeFile> listAssets = baseline2.getCoreAssetFiles();
 		if (listAssets!= null){
 			Iterator<SourceCodeFile> it = listAssets.iterator();
 			while(it.hasNext()){
@@ -119,8 +119,7 @@ public class FileUtils {
 		return null;
 	}
 	
-	public static SourceCodeFile getCoreAssetByProductAssetPath(String path, ProductRelease pr ) {
-		CoreAssetBaseline baseline = pr.getFromProduct().getInPortfolio().getDerivedFrom();
+	public static SourceCodeFile getCoreAssetByProductAssetPath(String path, CoreAssetBaseline baseline ) {
 		ArrayList<SourceCodeFile> caList = baseline.getCoreAssetFiles();
 		//System.out.println("Finding path:"+path);
 		if (caList!= null){

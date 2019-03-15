@@ -1,11 +1,12 @@
 package customDiff.export;
 
 import java.util.ArrayList;
-
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.eclipse.jgit.util.Base64;
+
 import customDiff.SPLdomain.CoreAssetBaseline;
 import customDiff.SPLdomain.Customization;
 import customDiff.SPLdomain.Feature;
@@ -107,7 +108,7 @@ public class ExportToMySQLDatabase implements ExportTarget {
 		ArrayList<ProductPortfolio> portfolios = customDiff.CustomDiff.spl.getProductPortfolioList();
 		ArrayList<VariationPoint> vps;
 		VariationPoint vp;
-		ArrayList<Feature> featureList;
+		Set<Feature> featureList;
 		
 		for(int x=0; x < portfolios.size();x++){
 			pp=portfolios.get(x);
@@ -122,8 +123,9 @@ public class ExportToMySQLDatabase implements ExportTarget {
 						for (int k=0; k< vps.size();k++){
 							vp=vps.get(k);
 							featureList = vp.getFeatures();
-							for(int w=0; w<featureList.size(); w++){
-								insert=insert.concat(header).concat("('"+featureList.get(w).getIdFeature()+"',"+vp.getIdVP()+");\n");
+							Iterator<Feature> it=featureList.iterator();
+							while (it.hasNext()) {
+								insert=insert.concat(header).concat("('"+it.next().getIdFeature()+"',"+vp.getIdVP()+");\n");
 							}
 						}
 					}

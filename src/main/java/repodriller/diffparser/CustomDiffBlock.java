@@ -2,7 +2,7 @@ package repodriller.diffparser;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,13 +33,13 @@ public class CustomDiffBlock {
 	private SourceCodeFile paModified;
 	private SourceCodeFile coreAsset;
 	private ArrayList<RevCommit> commits;
-	private ArrayList<Developer> developers;
+	private Set<Developer> developers;
 	private ArrayList<String> messages;
 	CustomizationType type;
 
 	
 	public CustomDiffBlock(String diffBlock, VariationPoint vp_pa, VariationPoint vp_ca , String additionalheader, 
-			SourceCodeFile paModified, SourceCodeFile coreAsset, ArrayList<RevCommit> commits, ArrayList<Developer> developers,
+			SourceCodeFile paModified, SourceCodeFile coreAsset, ArrayList<RevCommit> commits, Set<Developer> developers,
 			ArrayList<String> messages, CustomizationType type) {//le pasas ya el formateado
 		this.diffBlock = diffBlock;
 		this.lines = diffBlock.replace("\r", "").split("\n");
@@ -228,11 +228,11 @@ public class CustomDiffBlock {
 		this.commits = commits;
 	}
 
-	public ArrayList<Developer> getDevelopers() {
+	public Set<Developer> getDevelopers() {
 		return developers;
 	}
 
-	public void setDevelopers(ArrayList<Developer> developers) {
+	public void setDevelopers(Set<Developer> developers) {
 		this.developers = developers;
 	}
 

@@ -4,10 +4,12 @@ package customDiff.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
+
 import customDiff.SPLdomain.CoreAssetBaseline;
 import customDiff.SPLdomain.Feature;
-import customDiff.SPLdomain.ProductRelease;
 import customDiff.SPLdomain.SourceCodeFile;
 import customDiff.SPLdomain.VariationPoint;
 
@@ -18,11 +20,11 @@ public class FeatureAnalysisUtils {
 
 
 
-private static ArrayList<Feature> findFeaturesByNames(ArrayList<String> listFeatures, CoreAssetBaseline baseline) {
+private static Set<Feature> findFeaturesByNames(ArrayList<String> listFeatures, CoreAssetBaseline baseline) {
 	Iterator<String> itNames = listFeatures.iterator();
 	
 	String name; Feature f;
-	ArrayList<Feature> features = new ArrayList<Feature>();
+	Set<Feature> features = new HashSet<Feature>();
 	
 	while(itNames.hasNext()){
 		name =itNames.next();
@@ -147,8 +149,8 @@ private static ArrayList<Feature> findNewFeatures(ArrayList<String> listFeatures
 	}
 
 
-public static VariationPoint getVariationPointOfChangedProductAssetLine(String relPath, ProductRelease pr, int lineNumber) {
-	SourceCodeFile pa = customDiff.utils.FileUtils.getProductAssetByFilePath(relPath, pr);
+public static VariationPoint getVariationPointOfChangedProductAssetLine(String relPath, CoreAssetBaseline baseline2, int lineNumber) {
+	SourceCodeFile pa = customDiff.utils.FileUtils.getProductAssetByFilePath(relPath, baseline2);
 	VariationPoint vp, keyVP=null;
 
 		ArrayList<VariationPoint> listVPs = pa.getVariationPoints();

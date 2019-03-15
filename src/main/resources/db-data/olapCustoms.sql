@@ -2,7 +2,8 @@
 -- Thu Nov  2 18:00:19 2017
 -- Model: New Model    Version: 1.0
 -- MySQL Workbench Forward Engineering
-
+DROP SCHEMA  IF EXISTS `olapCustoms`;
+commit;
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
@@ -96,7 +97,7 @@ ENGINE = InnoDB;
 -- Table `olapCustoms`.`product_release`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `olapCustoms`.`product_release` (
-  `idproductrelease` INT NOT NULL,
+  `idproductrelease` VARCHAR(200) NOT NULL,
   `name` VARCHAR(200) NULL,
   `date` DATETIME NULL,
   `commits_set` LONGTEXT NULL,
@@ -118,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `olapCustoms`.`customization_fact` (
   `type` VARCHAR(200) NULL,
   `idvariationpoint` INT NOT NULL,
   `id_developer_group` INT NOT NULL,
-  `idproductrelease` INT NOT NULL,
+  `idproductrelease` VARCHAR(200) NOT NULL,
   PRIMARY KEY (`idcustomization`),
   INDEX `fk_Customization_ProductAssetVP_idx` (`idvariationpoint` ASC),
   INDEX `fk_CustomizationFact_developer_group1_idx` (`id_developer_group` ASC),
