@@ -124,14 +124,21 @@ public class DiffParser {
 				d4 = diff_contextLines + diff_addedLines;
 
 				/** Create a new custom Diff block! **/
-				customDiffBlocks.add(createCustomDiffBlock(diffBlock, startLineNextblock, diff_lineCounter - 1, true,
-						d1, d2, d3, d4));
+				if (line.contains(CustomDiff.annotationPatternEnd)) {
+					customDiffBlocks.add(createCustomDiffBlock(diffBlock, startLineNextblock, diff_lineCounter, true,
+							d1, d2, d3, d4));
+					startLineNextblock = diff_lineCounter+1;
+
+				} else {
+					customDiffBlocks.add(createCustomDiffBlock(diffBlock, startLineNextblock, diff_lineCounter - 1,
+							true, d1, d2, d3, d4));
+					startLineNextblock = diff_lineCounter;
+				}
 
 				// headers for the next diff block
 				d1 = diffBlock.getD1() + total_contextLines + totalDeletedLines;// + diff_deletedlines;
 				d3 = diffBlock.getD3() + total_contextLines + total_addedLines;// total_addedLines - totalDeletedLines;
 
-				startLineNextblock = diff_lineCounter;
 				diff_contextLines = 0;
 				diff_deletedlines = 0;
 				diff_addedLines = 0;
@@ -284,7 +291,7 @@ public class DiffParser {
 	private ArrayList<String> blameChangedLines(DiffBlock diffBlock, int startLine, int endline,
 			Set<Developer> developers, ArrayList<RevCommit> commits, ArrayList<String> messages,
 			ArrayList<String> newDiff, String[] originalDiff) {
-		int newFilelineCounter = startLine + diffBlock.getD3() - 2;//  startLine+diffBlock.getD3()-1
+		int newFilelineCounter = startLine + diffBlock.getD3() - 2;// startLine+diffBlock.getD3()-1
 		String strblame;
 		String commit = null;
 		String author = null, message = null;

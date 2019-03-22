@@ -149,7 +149,8 @@ public class ExportToStarDiagram implements ExportTarget {
 		while (customs.hasNext()) {
 
 			cust = customs.next();
-			if (cust.getType() != CustomizationType.FEATURE_SCATTERING_MODIFICATION && cust.getType() != CustomizationType.FEATURE_TANGLING_MODIFICATION) {
+			if (cust.getType() != CustomizationType.FEATURE_SCATTERING_MODIFICATION
+					&& cust.getType() != CustomizationType.FEATURE_TANGLING_MODIFICATION) {
 				developers = cust.getDevelopers().iterator();
 				insert = insert.concat(developer_group_header).concat("(" + developer_group + ");\n");// insert
 																										// developer
@@ -180,66 +181,59 @@ public class ExportToStarDiagram implements ExportTarget {
 		String insert = "";
 		String cust_header = "INSERT INTO customization_fact (idcustomization, idvariationpoint,id_developer_group,lines_added,"
 				+ "custom_diff,idproductrelease, type) VALUES\n";
-		if (cust.getType() == CustomizationType.FEATURE_SCATTERING_MODIFICATION || cust.getType() == CustomizationType.FEATURE_TANGLING_MODIFICATION) {
-			insert = insert.concat(cust_header)
-					.concat("(" + cust.getId() + ", -1,-1," + cust.getLinesAdded() + ",'" + cust.getCustom_diff()
-							+ "','" + coreAssetBaseline.getId() + "','" + cust.getType().name() + "');\n");
-		} else {
+
 			insert = generateInsertForLOCCustomization(cust, coreAssetBaseline);
 
-		}
 
 		return insert;
 	}
 
 	private String generateInsertForLOCCustomization(Customization cust, CoreAssetBaseline coreAssetBaseline) {
-		String custom_header = "INSERT INTO customization_fact (idcustomization, lines_added,lines_deleted,"
-				+ "custom_diff,commit_set,message_set,greater_diff"
-				+ ",idvariationpoint,id_developer_group, idproductrelease, type) VALUES\n";
+		String insert= "";
+		String custom_header = "INSERT INTO customization_fact (idcustomization, lines_added,lines_deleted," +
+				"custom_diff,commit_set,message_set,greater_diff" +
+				",idvariationpoint,id_developer_group, idproductrelease, type) VALUES\n";
+		
 		int idVariationPoint;
-		String insert = "";
-		if (cust.getProductasset().getIsNewAsset())
+		if (cust.getProductasset().getIsNewAsset()) 
+			idVariationPoint= cust.getVariationpointpa().getIdVP();
+		else idVariationPoint= cust.getVariationpointpa().getIdVP();
+		
+		if (cust.getType().name().equals("CHANGE_IN_VARIATION_POINT_BODY") || (cust.getType().name().equals("CHANGE_OUTSIDE_VARIATION_POINT")))
 			idVariationPoint = cust.getVariationpointpa().getIdVP();
-		else
-			idVariationPoint = cust.getVariationpointca().getIdVP();
 
-		if (cust.getType().name().equals("CHANGE_IN_VARIATION_POINT_BODY")
-				|| (cust.getType().name().equals("CHANGE_OUTSIDE_VARIATION_POINT")))
-			idVariationPoint = cust.getVariationpointca().getIdVP();
-
-		// There is a new Vpoint
-		if (cust.getType().name().equals("NEW_VARIATION_POINT")
-				|| cust.getType().name().equals("MODIFIED_VARIATION_POINT_EXPRESSION")
-				|| cust.getType().name().equals("NEW_VARIATION_POINT_WITH_NEW_FEATURES")) {
-			insert = insert.concat(generateInsertForNewVariationpointInProductAsset(cust, false));
+		//There is a new Vpoint
+		if (cust.getType().name().equals("NEW_VARIATION_POINT") || cust.getType().name().equals("MODIFIED_VARIATION_POINT_EXPRESSION") || cust.getType().name().equals("NEW_VARIATION_POINT_WITH_NEW_FEATURES")){
+			insert = insert.concat (generateInsertForNewVariationpointInProductAsset(cust, false));
 			idVariationPoint = cust.getVariationpointpa().getIdVP();
 		}
-
-		else if (cust.getType().name().equals("NEW_ASSET_WITH_NO_VARIATIONPOINT")) {// introduce fake VP with no
-																					// expression
-			System.out.println("NEW NEW_ASSET_WITH_NO_VARIATIONPOINT");
-			String headerVP = "INSERT INTO variation_point (idvariationpoint, expression, idcoreasset,id_feature_group) VALUES\n";
-			insert = insert.concat(headerVP).concat("(" + cust.getVariationpointpa().getIdVP() + ",'No Expression',"
-					+ cust.getProductasset().getId() + ",0);\n");
+		
+		else if (cust.getType().name().equals("NEW_ASSET_WITH_NO_VARIATIONPOINT")){//introduce fake VP with no expression
+			System.out.println("NEW NEW_ASSET_WITH_NO_VARIATIONPOINT");	
+			String headerVP = "INSERT INTO variation_point (idvariationpoint, expression, idcoreasset,id_feature_group) VALUES\n";	
+				insert = insert.concat(headerVP).concat("("+cust.getVariationpointpa().getIdVP()+",'No Expression',"+cust.getProductasset().getId()+",0);\n");
 
 		}
 
-		// if (cust.getType().name().equals("REMOVE_VARIATION_POINT"))
-		// idVariationPoint = cust.getVariationpointca().getIdVP();
+		
+//		if (cust.getType().name().equals("REMOVE_VARIATION_POINT"))
+//			idVariationPoint = cust.getVariationpointca().getIdVP();
+		
 
-		// if
-		// (cust.getType().name().equals("MODIFIED_VARIATION_POINT_EXPRESSION_WITH_NEWFEATURES"))
+//		if (cust.getType().name().equals("MODIFIED_VARIATION_POINT_EXPRESSION_WITH_NEWFEATURES"))
 
-		// if (cust.getType().name().equals("NEW_ASSET_WITH_VARIATIONPOINTS"))
-		// if
-		// (cust.getType().name().equals("NEW_ASSET_WITH_NEW_VARIATIONPOINT_AND_NEW_FEATURES"))
-
-		return insert.concat(custom_header)
-				.concat("(" + cust.getId() + "," + cust.getLinesAdded() + "," + cust.getLinesDeleted() + ",'"
-						+ encodeToBase64(cust.getCustomdiff()) + "','" + cust.getCommitShas() + "','"
-						+ cust.getCommitMessagesToString() + "','" + encodeToBase64(cust.getWholediff()) + "',"
-						+ idVariationPoint + "," + developer_group + ",'" + coreAssetBaseline.getId() + "','"
-						+ cust.getType().name() + "');\n");
+	
+		
+//		if (cust.getType().name().equals("NEW_ASSET_WITH_VARIATIONPOINTS"))
+//		if (cust.getType().name().equals("NEW_ASSET_WITH_NEW_VARIATIONPOINT_AND_NEW_FEATURES"))
+		
+		 
+			
+		insert = insert.concat(custom_header).concat("("+cust.getId()+","+cust.getLinesAdded()+","+cust.getLinesDeleted()+",'"+encodeToBase64(cust.getCustomdiff())+"','"+
+				cust.getCommitShas()+"','"+cust.getCommitMessagesToString()+"','"+encodeToBase64(cust.getWholediff())+"',"
+				+idVariationPoint+","+developer_group+",'"+coreAssetBaseline.getId()+"','"+cust.getType().name()+"');\n");
+	
+		return insert;
 	}
 
 	private String generateInsertForNewVariationpointInProductAsset(Customization cust, boolean isNew) {
@@ -333,11 +327,11 @@ public class ExportToStarDiagram implements ExportTarget {
 		String header = "INSERT INTO feature (idfeature,name,isNew,idparent) VALUES\n";
 		// empty feature- for customizations with no VP
 		String header_bridge = "INSERT INTO feature_bridge (id_feature_group, id_feature) VALUES\n";
-		String header_f_group = "INSERT INTO feature_group (id_feature_group) VALUES\n";
+		String header_f_group = "INSERT INTO feature_group (id_feature_group, feature_expression) VALUES\n";
 
 		insert = insert.concat(header_parent).concat("(0,'No Feature');\n");
 		insert = insert.concat(header).concat("('No Feature','No Feature',0,0);\n");// no feature
-		insert = insert.concat(header_f_group).concat("(0);\n"); // group for no feature
+		insert = insert.concat(header_f_group).concat("(0, ' No feature');\n"); // group for no feature
 		insert = insert.concat(header_bridge).concat("(0,'No Feature');\n");
 
 		Iterator<Feature> it = CustomDiff.features.iterator();
@@ -369,11 +363,11 @@ public class ExportToStarDiagram implements ExportTarget {
 	private String generateInsertsForVariationPointsAndFeatureGroups() {
 		String insert = "";
 
-		String headerVP = "INSERT INTO variation_point (idvariationpoint, expression, idcoreasset,id_feature_group) VALUES\n";
+		String headerVP = "INSERT INTO variation_point (idvariationpoint, expression, idcoreasset,id_feature_group, body, lines_number) VALUES\n";
 		String header_bridge = "INSERT INTO feature_bridge (id_feature_group, id_feature) VALUES\n";
-		String header_f_group = "INSERT INTO feature_group (id_feature_group) VALUES\n";
+		String header_f_group = "INSERT INTO feature_group (id_feature_group, feature_expression) VALUES\n";
 
-		insert = insert.concat(headerVP).concat("(-1,'',-1, 0);\n");
+		insert = insert.concat(headerVP).concat("(-1,'',-1, 0,'',0 );\n");
 
 		ArrayList<SourceCodeFile> coreassets = CustomDiff.spl.getCoreAssetBaseline(1).getCoreAssetFiles();
 		List<FeatureSibling> featureSiblings = CustomDiff.spl.getCoreAssetBaseline(1).getFeatureSiblings();
@@ -385,13 +379,14 @@ public class ExportToStarDiagram implements ExportTarget {
 		VariationPoint vp;
 		Iterator<String> features;
 		for (FeatureSibling featureSibling : featureSiblings) {
-			insert = insert.concat(header_f_group).concat("(" + featureSibling.getId() + ");\n"); // feature_group
+			insert = insert.concat(header_f_group).concat("(" + featureSibling.getId() +",'"+featureSibling.getFeatureExpression()+ "');\n"); // feature_group
 			features = featureSibling.getFeatures().iterator();
 			while (features.hasNext()) {
 				insert = insert.concat(header_bridge)
 						.concat("(" + featureSibling.getId() + ",'" + features.next() + "');\n");// feature bridge
 			}
 		}
+		int vpLines;
 		while (it.hasNext()) {// if vp.
 			ca = it.next();
 			vps = ca.getVariationPoints();
@@ -403,11 +398,13 @@ public class ExportToStarDiagram implements ExportTarget {
 
 				// System.out.print("\nVp in file:"+ca.getFileName()+" has vp
 				// "+vp.getVPFullExpression(vp) +" with features:\n");
-
+				vpLines = (vp.getLineEnd() - vp.getLineInit()+1)>=0?(vp.getLineEnd() - vp.getLineInit()+1):1;
 				try {
 					insert = insert.concat(headerVP)
 							.concat("(" + vp.getIdVP() + ",'" + encodeToBase64(vp.getVPFullExpression(vp)) + "',"
-									+ ca.getId() + "," + vp.getFeatureSibling().getId() + ");\n");// add vp;
+									+ ca.getId() + "," + vp.getFeatureSibling().getId() + ",'"
+									+ encodeToBase64(vp.getBody()) + "'," + vpLines
+									+ ");\n");// add vp;
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

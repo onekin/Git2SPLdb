@@ -74,4 +74,8 @@ public class FeatureSibling {
 		return true;
 	}
 
+	public String getFeatureExpression() {		
+		return String.join(" - ", features);
+	}
+
 }

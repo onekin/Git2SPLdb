@@ -66,7 +66,7 @@ public class CustomizationMiner {
 			else
 				customizations.addAll(computeCustomizationsInModification(mod, baseline2));
 		}
-		customizations.addAll(computeScatteringAndTanglingModification(baseline, baseline2));
+		//customizations.addAll(computeScatteringAndTanglingModification(baseline, baseline2));
 
 		baseline2.setCustomizations(customizations);
 
@@ -89,7 +89,7 @@ public class CustomizationMiner {
 		for (Feature feature : baseline2.getFeatures()) {
 			op = baseline.getFeatures().stream().filter(f2 -> f2.getIdFeature().equals(feature.getIdFeature()))
 					.findFirst();
-			if (op.isPresent()) {
+			if (op.isPresent()) { 
 				newSize = feature.getFeatureSiblings().size();
 				oldSize = op.get().getFeatureSiblings().size();
 				scatteringNumber = newSize >= oldSize ? newSize - oldSize : 0;

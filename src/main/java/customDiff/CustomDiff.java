@@ -29,8 +29,8 @@ public class CustomDiff {
 
 	public static String coreAssetsReleaseTagPrefix = "baseline";
 	public static String coreAssetsBranchName = "master";
-	public final static String annotationPatternBeginning = "hasFeature";// pv:hasFeature
-	public final static String annotationPatternEnd = "PV:ENDCOND";// "PV:ENDCOND";
+	public final static String annotationPatternBeginning = "#if";// pv:hasFeature
+	public final static String annotationPatternEnd = "#endif";// "PV:ENDCOND";
 
 	/** Field variables **/
 	public static SPL spl;

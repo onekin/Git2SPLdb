@@ -2,26 +2,26 @@
 -- Thu Nov  2 18:00:19 2017
 -- Model: New Model    Version: 1.0
 -- MySQL Workbench Forward Engineering
-DROP SCHEMA  IF EXISTS `olapCustoms`;
+DROP SCHEMA  IF EXISTS `DANFOSSDEMO`;
 commit;
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema olapCustoms
+-- Schema DANFOSSDEMO
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema olapCustoms
+-- Schema DANFOSSDEMO
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `olapCustoms` DEFAULT CHARACTER SET utf8 ;
-USE `olapCustoms` ;
+CREATE SCHEMA IF NOT EXISTS `DANFOSSDEMO` DEFAULT CHARACTER SET utf8 ;
+USE `DANFOSSDEMO` ;
 
 -- -----------------------------------------------------
--- Table `olapCustoms`.`component_package`
+-- Table `DANFOSSDEMO`.`component_package`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`component_package` (
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`component_package` (
   `idpackage` INT NOT NULL,
   `name` VARCHAR(45) NULL,
   `isroot` INT NULL,
@@ -31,9 +31,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `olapCustoms`.`core_asset`
+-- Table `DANFOSSDEMO`.`core_asset`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`core_asset` (
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`core_asset` (
   `idcoreasset` INT NOT NULL,
   `name` VARCHAR(200) NULL,
   `path` VARCHAR(200) NULL,
@@ -45,58 +45,61 @@ CREATE TABLE IF NOT EXISTS `olapCustoms`.`core_asset` (
   INDEX `fk_core_asset_component_package1_idx` (`idpackage` ASC),
   CONSTRAINT `fk_core_asset_component_package1`
     FOREIGN KEY (`idpackage`)
-    REFERENCES `olapCustoms`.`component_package` (`idpackage`)
+    REFERENCES `DANFOSSDEMO`.`component_package` (`idpackage`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `olapCustoms`.`feature_group`
+-- Table `DANFOSSDEMO`.`feature_group`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`feature_group` (
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`feature_group` (
   `id_feature_group` INT NOT NULL,
+  `feature_expression` VARCHAR(200) NOT NULL,
   PRIMARY KEY (`id_feature_group`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `olapCustoms`.`variation_point`
+-- Table `DANFOSSDEMO`.`variation_point`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`variation_point` (
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`variation_point` (
   `idvariationpoint` INT NOT NULL,
   `expression` LONGTEXT NULL,
   `idcoreasset` INT NOT NULL,
   `id_feature_group` INT NULL,
+  `body` LONGTEXT NULL,
+  `lines_number` INT NOT NULL,
   PRIMARY KEY (`idvariationpoint`),
   INDEX `fk_ProductAssetVP_ProductAsset1_idx` (`idcoreasset` ASC),
   INDEX `fk_VariationPoint_Feature_group1_idx` (`id_feature_group` ASC),
   CONSTRAINT `fk_ProductAssetVP_ProductAsset1`
     FOREIGN KEY (`idcoreasset`)
-    REFERENCES `olapCustoms`.`core_asset` (`idcoreasset`)
+    REFERENCES `DANFOSSDEMO`.`core_asset` (`idcoreasset`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_VariationPoint_Feature_group1`
     FOREIGN KEY (`id_feature_group`)
-    REFERENCES `olapCustoms`.`feature_group` (`id_feature_group`)
+    REFERENCES `DANFOSSDEMO`.`feature_group` (`id_feature_group`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `olapCustoms`.`developer_group`
+-- Table `DANFOSSDEMO`.`developer_group`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`developer_group` (
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`developer_group` (
   `id_developer_group` INT NOT NULL,
   PRIMARY KEY (`id_developer_group`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `olapCustoms`.`product_release`
+-- Table `DANFOSSDEMO`.`product_release`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`product_release` (
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`product_release` (
   `idproductrelease` VARCHAR(200) NOT NULL,
   `name` VARCHAR(200) NULL,
   `date` DATETIME NULL,
@@ -106,9 +109,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `olapCustoms`.`customization_fact`
+-- Table `DANFOSSDEMO`.`customization_fact`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`customization_fact` (
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`customization_fact` (
   `idcustomization` INT NOT NULL,
   `lines_added` INT NULL,
   `lines_deleted` INT NULL,
@@ -126,26 +129,26 @@ CREATE TABLE IF NOT EXISTS `olapCustoms`.`customization_fact` (
   INDEX `fk_CustomizationFact_ProductRelease1_idx` (`idproductrelease` ASC),
   CONSTRAINT `fk_Customization_ProductAssetVP`
     FOREIGN KEY (`idvariationpoint`)
-    REFERENCES `olapCustoms`.`variation_point` (`idvariationpoint`)
+    REFERENCES `DANFOSSDEMO`.`variation_point` (`idvariationpoint`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_CustomizationFact_developer_group1`
     FOREIGN KEY (`id_developer_group`)
-    REFERENCES `olapCustoms`.`developer_group` (`id_developer_group`)
+    REFERENCES `DANFOSSDEMO`.`developer_group` (`id_developer_group`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_CustomizationFact_ProductRelease1`
     FOREIGN KEY (`idproductrelease`)
-    REFERENCES `olapCustoms`.`product_release` (`idproductrelease`)
+    REFERENCES `DANFOSSDEMO`.`product_release` (`idproductrelease`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `olapCustoms`.`developer`
+-- Table `DANFOSSDEMO`.`developer`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`developer` (
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`developer` (
   `iddeveloper` INT NOT NULL,
   `name` VARCHAR(200) NULL,
   `email` VARCHAR(45) NULL,
@@ -154,9 +157,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `olapCustoms`.`parent_feature`
+-- Table `DANFOSSDEMO`.`parent_feature`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`parent_feature` (
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`parent_feature` (
   `idparentfeature` INT NOT NULL,
   `name` VARCHAR(45) NULL,
   `responsible` VARCHAR(45) NULL,
@@ -165,9 +168,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `olapCustoms`.`feature`
+-- Table `DANFOSSDEMO`.`feature`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`feature` (
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`feature` (
   `idfeature` VARCHAR(200) NOT NULL,
   `name` VARCHAR(200) NULL,
   `isNew` INT NULL,
@@ -176,16 +179,16 @@ CREATE TABLE IF NOT EXISTS `olapCustoms`.`feature` (
   INDEX `fk_feature_ParentFeature1_idx` (`idparent` ASC),
   CONSTRAINT `fk_feature_ParentFeature1`
     FOREIGN KEY (`idparent`)
-    REFERENCES `olapCustoms`.`parent_feature` (`idparentfeature`)
+    REFERENCES `DANFOSSDEMO`.`parent_feature` (`idparentfeature`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `olapCustoms`.`feature_bridge`
+-- Table `DANFOSSDEMO`.`feature_bridge`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`feature_bridge` (
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`feature_bridge` (
   `id_feature_group` INT NOT NULL,
   `id_feature` VARCHAR(200) NOT NULL,
   PRIMARY KEY (`id_feature_group`, `id_feature`),
@@ -193,21 +196,21 @@ CREATE TABLE IF NOT EXISTS `olapCustoms`.`feature_bridge` (
   INDEX `fk_Feature_group_has_Feature_Feature_group1_idx` (`id_feature_group` ASC),
   CONSTRAINT `fk_Feature_group_has_Feature_Feature_group1`
     FOREIGN KEY (`id_feature_group`)
-    REFERENCES `olapCustoms`.`feature_group` (`id_feature_group`)
+    REFERENCES `DANFOSSDEMO`.`feature_group` (`id_feature_group`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Feature_group_has_Feature_Feature1`
     FOREIGN KEY (`id_feature`)
-    REFERENCES `olapCustoms`.`feature` (`idfeature`)
+    REFERENCES `DANFOSSDEMO`.`feature` (`idfeature`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `olapCustoms`.`developer_bridge`
+-- Table `DANFOSSDEMO`.`developer_bridge`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`developer_bridge` (
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`developer_bridge` (
   `id_developer_group` INT NOT NULL,
   `id_developer` INT NOT NULL,
   PRIMARY KEY (`id_developer_group`, `id_developer`),
@@ -215,78 +218,78 @@ CREATE TABLE IF NOT EXISTS `olapCustoms`.`developer_bridge` (
   INDEX `fk_developer_bridge_Developer1_idx` (`id_developer` ASC),
   CONSTRAINT `fk_developer_bridge_developer_group1`
     FOREIGN KEY (`id_developer_group`)
-    REFERENCES `olapCustoms`.`developer_group` (`id_developer_group`)
+    REFERENCES `DANFOSSDEMO`.`developer_group` (`id_developer_group`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_developer_bridge_Developer1`
     FOREIGN KEY (`id_developer`)
-    REFERENCES `olapCustoms`.`developer` (`iddeveloper`)
+    REFERENCES `DANFOSSDEMO`.`developer` (`iddeveloper`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-USE `olapCustoms` ;
+USE `DANFOSSDEMO` ;
 
 -- -----------------------------------------------------
--- Placeholder table for view `olapCustoms`.`new_assets_in_products`
+-- Placeholder table for view `DANFOSSDEMO`.`new_assets_in_products`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`new_assets_in_products` (`'id'` INT, `'idasset'` INT, `'name'` INT, `'path'` INT, `'content'` INT, `'size'` INT, `'pr_id'` INT, `'pr_name'` INT);
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`new_assets_in_products` (`'id'` INT, `'idasset'` INT, `'name'` INT, `'path'` INT, `'content'` INT, `'size'` INT, `'pr_id'` INT, `'pr_name'` INT);
 
 -- -----------------------------------------------------
--- Placeholder table for view `olapCustoms`.`features_in_variationpoints`
+-- Placeholder table for view `DANFOSSDEMO`.`features_in_variationpoints`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`features_in_variationpoints` (`'id'` INT, `'id_variationpoint'` INT, `expression` INT, `'feature_name'` INT, `'id_feature'` INT, `'id_coreasset'` INT);
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`features_in_variationpoints` (`'id'` INT, `'id_variationpoint'` INT, `expression` INT, `'feature_name'` INT, `'id_feature'` INT, `'id_coreasset'` INT);
 
 -- -----------------------------------------------------
--- Placeholder table for view `olapCustoms`.`churn_productportfolio_features`
+-- Placeholder table for view `DANFOSSDEMO`.`churn_productportfolio_features`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`churn_productportfolio_features` (`'id'` INT, `'id_feature'` INT, `'featuremodified'` INT, `'id_pr'` INT, `'pr_name'` INT, `'added'` INT, `'deleted'` INT, `'churn'` INT);
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`churn_productportfolio_features` (`'id'` INT, `'id_feature'` INT, `'featuremodified'` INT, `'id_pr'` INT, `'pr_name'` INT, `'added'` INT, `'deleted'` INT, `'churn'` INT);
 
 -- -----------------------------------------------------
--- Placeholder table for view `olapCustoms`.`churn_coreassets_and_features_by_pr`
+-- Placeholder table for view `DANFOSSDEMO`.`churn_coreassets_and_features_by_pr`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`churn_coreassets_and_features_by_pr` (`'id'` INT, `'idcoreasset'` INT, `'idproductrelease'` INT, `'pr_name'` INT, `'ca_name'` INT, `'ca_path'` INT, `'idfeature'` INT, `'churn'` INT);
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`churn_coreassets_and_features_by_pr` (`'id'` INT, `'idcoreasset'` INT, `'idproductrelease'` INT, `'pr_name'` INT, `'ca_name'` INT, `'ca_path'` INT, `'idfeature'` INT, `'churn'` INT);
 
 -- -----------------------------------------------------
--- Placeholder table for view `olapCustoms`.`coreassets_and_features`
+-- Placeholder table for view `DANFOSSDEMO`.`coreassets_and_features`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`coreassets_and_features` (`'id'` INT, `'idcoreasset'` INT, `'caname'` INT, `'capath'` INT, `'idpackage'` INT, `'idfeature'` INT, `'size'` INT);
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`coreassets_and_features` (`'id'` INT, `'idcoreasset'` INT, `'caname'` INT, `'capath'` INT, `'idpackage'` INT, `'idfeature'` INT, `'size'` INT);
 
 -- -----------------------------------------------------
--- Placeholder table for view `olapCustoms`.`customs_by_feature_and_coreasset`
+-- Placeholder table for view `DANFOSSDEMO`.`customs_by_feature_and_coreasset`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`customs_by_feature_and_coreasset` (`'id'` INT, `'idcustomization'` INT, `'idfeature'` INT, `'idcoreasset'` INT, `'idparentfeature'` INT, `'parentfeaturename'` INT, `'caname'` INT, `'capath'` INT, `'idproductrelease'` INT, `'prname'` INT, `'added'` INT, `'deleted'` INT, `'custom_diff'` INT, `'messages'` INT, `'commits'` INT, `'maindiff'` INT);
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`customs_by_feature_and_coreasset` (`'id'` INT, `'idcustomization'` INT, `'idfeature'` INT, `'idcoreasset'` INT, `'idparentfeature'` INT, `'parentfeaturename'` INT, `'caname'` INT, `'capath'` INT, `'idproductrelease'` INT, `'prname'` INT, `'added'` INT, `'deleted'` INT, `'custom_diff'` INT, `'messages'` INT, `'commits'` INT, `'maindiff'` INT);
 
 -- -----------------------------------------------------
--- Placeholder table for view `olapCustoms`.`churn_parent_features_productportfolio`
+-- Placeholder table for view `DANFOSSDEMO`.`churn_parent_features_productportfolio`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`churn_parent_features_productportfolio` (`'id'` INT, `'id_parentfeature'` INT, `'parentfeaturename'` INT, `'id_pr'` INT, `'pr_name'` INT, `'added'` INT, `'deleted'` INT, `'churn'` INT);
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`churn_parent_features_productportfolio` (`'id'` INT, `'id_parentfeature'` INT, `'parentfeaturename'` INT, `'id_pr'` INT, `'pr_name'` INT, `'added'` INT, `'deleted'` INT, `'churn'` INT);
 
 -- -----------------------------------------------------
--- Placeholder table for view `olapCustoms`.`churn_parent_features_product_packages`
+-- Placeholder table for view `DANFOSSDEMO`.`churn_parent_features_product_packages`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`churn_parent_features_product_packages` (`'id'` INT, `'id_parentfeature'` INT, `'parentfeaturename'` INT, `'idproductrelease'` INT, `'pr_name'` INT, `'idpackage'` INT, `'package_name'` INT, `'isroot'` INT, `'added'` INT, `'deleted'` INT, `'churn'` INT);
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`churn_parent_features_product_packages` (`'id'` INT, `'id_parentfeature'` INT, `'parentfeaturename'` INT, `'idproductrelease'` INT, `'pr_name'` INT, `'idpackage'` INT, `'package_name'` INT, `'isroot'` INT, `'added'` INT, `'deleted'` INT, `'churn'` INT);
 
 -- -----------------------------------------------------
--- Placeholder table for view `olapCustoms`.`churn_parent_features_package_assets`
+-- Placeholder table for view `DANFOSSDEMO`.`churn_parent_features_package_assets`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`churn_parent_features_package_assets` (`'id'` INT, `'id_parentfeature'` INT, `'parentfeaturename'` INT, `'idproductrelease'` INT, `'pr_name'` INT, `'idpackage'` INT, `'package_name'` INT, `'isroot'` INT, `'idcoreasset'` INT, `'caname'` INT, `'capath'` INT, `'added'` INT, `'deleted'` INT, `'churn'` INT);
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`churn_parent_features_package_assets` (`'id'` INT, `'id_parentfeature'` INT, `'parentfeaturename'` INT, `'idproductrelease'` INT, `'pr_name'` INT, `'idpackage'` INT, `'package_name'` INT, `'isroot'` INT, `'idcoreasset'` INT, `'caname'` INT, `'capath'` INT, `'added'` INT, `'deleted'` INT, `'churn'` INT);
 
 -- -----------------------------------------------------
--- Placeholder table for view `olapCustoms`.`churn_features_product_packages`
+-- Placeholder table for view `DANFOSSDEMO`.`churn_features_product_packages`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`churn_features_product_packages` (`'id'` INT, `'idfeature'` INT, `'featurename'` INT, `'idparentfeature'` INT, `'idproductrelease'` INT, `'pr_name'` INT, `'idpackage'` INT, `'package_name'` INT, `'isroot'` INT, `'added'` INT, `'deleted'` INT, `'churn'` INT);
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`churn_features_product_packages` (`'id'` INT, `'idfeature'` INT, `'featurename'` INT, `'idparentfeature'` INT, `'idproductrelease'` INT, `'pr_name'` INT, `'idpackage'` INT, `'package_name'` INT, `'isroot'` INT, `'added'` INT, `'deleted'` INT, `'churn'` INT);
 
 -- -----------------------------------------------------
--- Placeholder table for view `olapCustoms`.`churn_features_package_assets`
+-- Placeholder table for view `DANFOSSDEMO`.`churn_features_package_assets`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `olapCustoms`.`churn_features_package_assets` (`'id'` INT, `'idfeature'` INT, `'featurename'` INT, `'idparentfeature'` INT, `'idproductrelease'` INT, `'pr_name'` INT, `'idpackage'` INT, `'package_name'` INT, `'isroot'` INT, `'idcoreasset'` INT, `'caname'` INT, `'capath'` INT, `'added'` INT, `'deleted'` INT, `'churn'` INT);
+CREATE TABLE IF NOT EXISTS `DANFOSSDEMO`.`churn_features_package_assets` (`'id'` INT, `'idfeature'` INT, `'featurename'` INT, `'idparentfeature'` INT, `'idproductrelease'` INT, `'pr_name'` INT, `'idpackage'` INT, `'package_name'` INT, `'isroot'` INT, `'idcoreasset'` INT, `'caname'` INT, `'capath'` INT, `'added'` INT, `'deleted'` INT, `'churn'` INT);
 
 -- -----------------------------------------------------
--- View `olapCustoms`.`new_assets_in_products`
+-- View `DANFOSSDEMO`.`new_assets_in_products`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `olapCustoms`.`new_assets_in_products`;
-USE `olapCustoms`;
+DROP TABLE IF EXISTS `DANFOSSDEMO`.`new_assets_in_products`;
+USE `DANFOSSDEMO`;
 CREATE  OR REPLACE VIEW `new_assets_in_products` AS
 
 select UUID() as 'id', ca.idcoreasset as 'idasset', ca.name as 'name', ca.path as 'path', ca.content as 'content', ca.size as 'size', pr.idproductrelease as 'pr_id', pr.name as 'pr_name'
@@ -296,10 +299,10 @@ inner join product_release pr on pr.idproductrelease = c.idproductrelease
 where isNewAsset=1;
 
 -- -----------------------------------------------------
--- View `olapCustoms`.`features_in_variationpoints`
+-- View `DANFOSSDEMO`.`features_in_variationpoints`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `olapCustoms`.`features_in_variationpoints`;
-USE `olapCustoms`;
+DROP TABLE IF EXISTS `DANFOSSDEMO`.`features_in_variationpoints`;
+USE `DANFOSSDEMO`;
 CREATE  OR REPLACE VIEW `features_in_variationpoints` AS
 
 select UUID() as 'id', vp.idvariationpoint as 'id_variationpoint', expression
@@ -311,10 +314,10 @@ inner join feature_bridge fb on fb.id_feature_group = fg.id_feature_group
 inner join feature f on f.idfeature = fb.id_feature;
 
 -- -----------------------------------------------------
--- View `olapCustoms`.`churn_productportfolio_features`
+-- View `DANFOSSDEMO`.`churn_productportfolio_features`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `olapCustoms`.`churn_productportfolio_features`;
-USE `olapCustoms`;
+DROP TABLE IF EXISTS `DANFOSSDEMO`.`churn_productportfolio_features`;
+USE `DANFOSSDEMO`;
 CREATE  OR REPLACE VIEW `churn_productportfolio_features` AS
 
 select UUID() as 'id',f.idfeature as 'id_feature' ,f.name as 'featuremodified', pr.idproductrelease as 'id_pr', pr.name as 'pr_name',
@@ -328,10 +331,10 @@ inner join product_release pr on pr.idproductrelease = c.idproductrelease
 group by f.idfeature, pr.idproductrelease;
 
 -- -----------------------------------------------------
--- View `olapCustoms`.`churn_coreassets_and_features_by_pr`
+-- View `DANFOSSDEMO`.`churn_coreassets_and_features_by_pr`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `olapCustoms`.`churn_coreassets_and_features_by_pr`;
-USE `olapCustoms`;
+DROP TABLE IF EXISTS `DANFOSSDEMO`.`churn_coreassets_and_features_by_pr`;
+USE `DANFOSSDEMO`;
 CREATE  OR REPLACE VIEW `churn_coreassets_and_features_by_pr` AS
 
 select UUID() as 'id', ca.idcoreasset as 'idcoreasset', pr.idproductrelease as 'idproductrelease' , pr.name as 'pr_name', ca.name as 'ca_name',
@@ -347,10 +350,10 @@ inner join product_release pr on pr.idproductrelease = c.idproductrelease
 group by f.idfeature, pr.idproductrelease, ca.idcoreasset;
 
 -- -----------------------------------------------------
--- View `olapCustoms`.`coreassets_and_features`
+-- View `DANFOSSDEMO`.`coreassets_and_features`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `olapCustoms`.`coreassets_and_features`;
-USE `olapCustoms`;
+DROP TABLE IF EXISTS `DANFOSSDEMO`.`coreassets_and_features`;
+USE `DANFOSSDEMO`;
 CREATE  OR REPLACE VIEW `coreassets_and_features` AS
 
 select UUID() as 'id', ca.idcoreasset as 'idcoreasset', ca.name as 'caname', ca.path as 'capath', ca.idpackage as 'idpackage',
@@ -361,10 +364,10 @@ inner join feature_bridge fb on fb.id_feature_group = fg.id_feature_group
 inner join feature f on f.idfeature = fb.id_feature;
 
 -- -----------------------------------------------------
--- View `olapCustoms`.`customs_by_feature_and_coreasset`
+-- View `DANFOSSDEMO`.`customs_by_feature_and_coreasset`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `olapCustoms`.`customs_by_feature_and_coreasset`;
-USE `olapCustoms`;
+DROP TABLE IF EXISTS `DANFOSSDEMO`.`customs_by_feature_and_coreasset`;
+USE `DANFOSSDEMO`;
 CREATE  OR REPLACE VIEW `customs_by_feature_and_coreasset` AS
 
 select UUID() as 'id', c.idcustomization as 'idcustomization', f.idfeature as 'idfeature', ca.idcoreasset as 'idcoreasset', f.idparent as 'idparentfeature', pf.name as 'parentfeaturename',
@@ -382,10 +385,10 @@ inner join product_release pr on pr.idproductrelease = c.idproductrelease
 inner join core_asset ca on ca.idcoreasset = vp.idcoreasset;
 
 -- -----------------------------------------------------
--- View `olapCustoms`.`churn_parent_features_productportfolio`
+-- View `DANFOSSDEMO`.`churn_parent_features_productportfolio`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `olapCustoms`.`churn_parent_features_productportfolio`;
-USE `olapCustoms`;
+DROP TABLE IF EXISTS `DANFOSSDEMO`.`churn_parent_features_productportfolio`;
+USE `DANFOSSDEMO`;
 CREATE  OR REPLACE VIEW `churn_parent_features_productportfolio` AS
 
 select UUID() as 'id',pf.idparentfeature as 'id_parentfeature', pf.name as 'parentfeaturename', pr.idproductrelease as 'id_pr', pr.name as 'pr_name',
@@ -400,10 +403,10 @@ inner join product_release pr on pr.idproductrelease = c.idproductrelease
 group by pf.idparentfeature, pr.idproductrelease;
 
 -- -----------------------------------------------------
--- View `olapCustoms`.`churn_parent_features_product_packages`
+-- View `DANFOSSDEMO`.`churn_parent_features_product_packages`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `olapCustoms`.`churn_parent_features_product_packages`;
-USE `olapCustoms`;
+DROP TABLE IF EXISTS `DANFOSSDEMO`.`churn_parent_features_product_packages`;
+USE `DANFOSSDEMO`;
 CREATE  OR REPLACE VIEW `churn_parent_features_product_packages` AS
 
 select UUID() as 'id',pf.idparentfeature as 'id_parentfeature', pf.name as 'parentfeaturename', pr.idproductrelease as 'idproductrelease', pr.name as 'pr_name', cp.idpackage as 'idpackage', cp.name as 'package_name', cp.isroot as 'isroot',
@@ -422,10 +425,10 @@ inner join product_release pr on pr.idproductrelease = c.idproductrelease
 group by pf.idparentfeature, pr.idproductrelease, cp.idpackage;
 
 -- -----------------------------------------------------
--- View `olapCustoms`.`churn_parent_features_package_assets`
+-- View `DANFOSSDEMO`.`churn_parent_features_package_assets`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `olapCustoms`.`churn_parent_features_package_assets`;
-USE `olapCustoms`;
+DROP TABLE IF EXISTS `DANFOSSDEMO`.`churn_parent_features_package_assets`;
+USE `DANFOSSDEMO`;
 CREATE  OR REPLACE VIEW `churn_parent_features_package_assets` AS
 
 select UUID() as 'id',pf.idparentfeature as 'id_parentfeature', pf.name as 'parentfeaturename', pr.idproductrelease as 'idproductrelease', pr.name as 'pr_name', cp.idpackage as 'idpackage', cp.name as 'package_name', 
@@ -445,10 +448,10 @@ inner join product_release pr on pr.idproductrelease = c.idproductrelease
 group by pf.idparentfeature, pr.idproductrelease, cp.idpackage, ca.idcoreasset;
 
 -- -----------------------------------------------------
--- View `olapCustoms`.`churn_features_product_packages`
+-- View `DANFOSSDEMO`.`churn_features_product_packages`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `olapCustoms`.`churn_features_product_packages`;
-USE `olapCustoms`;
+DROP TABLE IF EXISTS `DANFOSSDEMO`.`churn_features_product_packages`;
+USE `DANFOSSDEMO`;
 CREATE  OR REPLACE VIEW `churn_features_product_packages` AS
 
 select UUID() as 'id',f.idfeature as 'idfeature', f.name as 'featurename', f.idparent as 'idparentfeature', pr.idproductrelease as 'idproductrelease', pr.name as 'pr_name', cp.idpackage as 'idpackage', cp.name as 'package_name', cp.isroot as 'isroot',
@@ -466,10 +469,10 @@ inner join product_release pr on pr.idproductrelease = c.idproductrelease
 group by f.idfeature, pr.idproductrelease, cp.idpackage;
 
 -- -----------------------------------------------------
--- View `olapCustoms`.`churn_features_package_assets`
+-- View `DANFOSSDEMO`.`churn_features_package_assets`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `olapCustoms`.`churn_features_package_assets`;
-USE `olapCustoms`;
+DROP TABLE IF EXISTS `DANFOSSDEMO`.`churn_features_package_assets`;
+USE `DANFOSSDEMO`;
 CREATE  OR REPLACE VIEW `churn_features_package_assets` AS
 
 select UUID() as 'id',f.idfeature as 'idfeature', f.name as 'featurename', f.idparent as 'idparentfeature', pr.idproductrelease as 'idproductrelease', pr.name as 'pr_name', 

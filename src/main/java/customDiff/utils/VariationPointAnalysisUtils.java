@@ -233,17 +233,37 @@ public class VariationPointAnalysisUtils {
 
 	}
 
+	/*
+	 * private static ArrayList<String> extractAllFeaturesFromTheExpression(String
+	 * expression) { ArrayList<String> listfeatures = new ArrayList<String>();
+	 * String[] pieces = expression.split("'"); // Expression example
+	 * //PV:IFCOND(pv:hasFeature('Fa') and // pv:hasFeature('FB')) for (int i = 0; i
+	 * < pieces.length; i++) { if ((i / 2) * 2 != i) { // if it is odd
+	 * listfeatures.add(pieces[i]); } } //
+	 * System.out.println("Expression: "+expression+" -> Features //
+	 * "+listfeatures.toString()); return listfeatures; }
+	 */
 	private static ArrayList<String> extractAllFeaturesFromTheExpression(String expression) {
 		ArrayList<String> listfeatures = new ArrayList<String>();
-		String[] pieces = expression.split("'"); // Expression example //PV:IFCOND(pv:hasFeature('Fa') and
-													// pv:hasFeature('FB'))
-		for (int i = 0; i < pieces.length; i++) {
-			if ((i / 2) * 2 != i) { // if it is odd
-				listfeatures.add(pieces[i]);
+		String[] pieces;
+		if (expression.trim().startsWith("#ifdef")) {
+			pieces = expression.split(" "); // Expression example //PV:IFCOND(pv:hasFeature('Fa') and
+			// pv:hasFeature('FB'))
+
+			for (int i = 0; i < pieces.length; i++) {
+				if ((i / 2) * 2 != i) { // if it is odd
+					listfeatures.add(pieces[i]);
+				}
 			}
+		} else {
+			pieces = expression.split("define");
+			String feature;
+			for(int i=1; i<pieces.length;i++) {
+				feature = pieces[i].replaceAll("/^(&&|\\||\\s)$/", "");
+				listfeatures.add(feature);
+			}
+			
 		}
-		// System.out.println("Expression: "+expression+" -> Features
-		// "+listfeatures.toString());
 		return listfeatures;
 	}
 

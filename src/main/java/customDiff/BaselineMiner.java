@@ -35,9 +35,9 @@ public class BaselineMiner {
 		System.out.println("Number of files in Baseline: " + files.size());
 		baseline.setCoreAssetFiles(files);
 		/** adding root feature **/
-		String rootName = customDiff.utils.FeatureModelParser.getFMRootElement();
+		/*String rootName = customDiff.utils.FeatureModelParser.getFMRootElement();
 		Feature root = new Feature(rootName, rootName, false, null);
-		baseline.getFeatures().add(root);
+		baseline.getFeatures().add(root);/*
 
 		/** Printing baseline contents **/
 		System.out.println("Features in baseline: " + baseline.getId() + " are:" + baseline.getFeatures().toString());
