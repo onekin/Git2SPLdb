@@ -29,6 +29,7 @@ public class BaselineMiner {
 		CustomDiff.spl.addBaseline(baseline);
 
 		// This is JUST FOR ONE BASELINE
+                System.out.println("Reading files from baseline ");
 		ArrayList<SourceCodeFile> files = extractCoreAssetsAndFeaturesFromBaseline(baseline,
 				CustomDiff.pathToWhereCustomizationsAreComputed, secondRelease);
 
@@ -65,7 +66,7 @@ public class BaselineMiner {
 
 	public ArrayList<SourceCodeFile> extractCoreAssetsAndFeaturesFromBaseline(CoreAssetBaseline baseline, String inPath,
 			boolean secondRelease) {
-
+                System.out.println("Extract CoreAssets And Features From Baseline "+baseline.getId());
 		ArrayList<SourceCodeFile> files = new ArrayList<SourceCodeFile>();
 
 		try {
@@ -118,8 +119,8 @@ public class BaselineMiner {
 						feature = iterator.next();
 						if (!customDiff.utils.FeatureAnalysisUtils.isFeatureInFeaturesList(baseline.getFeatures(),
 								feature.getName())) {
-							parent = customDiff.utils.FeatureModelParser
-									.getParentFeatureOfFeatureByName(feature.getName());
+							//parent = customDiff.utils.FeatureModelParser
+							//		.getParentFeatureOfFeatureByName(feature.getName());
 							feature.setParentFeatureName(parent);
 							baseline.addFeature(feature);
 						}

@@ -174,7 +174,7 @@ public class DiffParser {
 
 		System.out.println("New chunk! From line " + startLine + " to line:" + endline);
 
-		ArrayList<String> newDiff = new ArrayList<>();
+		ArrayList<String> newDiff = new ArrayList<String>();
 		String[] originalDiff = diffBlock.getLines();
 		System.out.println("1");
 		// if (fixHeader) /** 1: Add the new header with lines fixed **/
@@ -194,6 +194,7 @@ public class DiffParser {
 		SourceCodeFile coreAsset = null;
 		SourceCodeFile paModified = customDiff.utils.FileUtils.getProductAssetByFilePath(path, baseline2);
 		System.out.println("5");
+                System.out.println("paModified "+ paModified);
 		if (!isNewAsset)
 			coreAsset = customDiff.utils.FileUtils.getCoreAssetByProductAssetPath(path, baseline2);
 

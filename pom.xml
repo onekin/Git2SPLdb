@@ -1,17 +1,17 @@
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.onekin</groupId>
-	<artifactId>testingRepoDriller</artifactId>
+	<artifactId>Git2SPL</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-
-
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.8</java.version>
+		<java.version>1.10</java.version>
+	    <maven.compiler.source>1.10</maven.compiler.source>
+	    <maven.compiler.target>1.10</maven.compiler.target>
 	</properties>
 
 	<dependencies>
@@ -23,16 +23,14 @@
 			<version>1.1.2</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.repodriller</groupId>
-			<artifactId>repodriller</artifactId>
-			<version>1.2.1</version>
-		</dependency>
+		
 		<!-- https://mvnrepository.com/artifact/org.eclipse.emf/org.eclipse.emf.common -->
-
-
-
-
+	 <dependency>
+	  <groupId>org.repodriller</groupId>
+	  <artifactId>repodriller</artifactId>
+	  <version>1.2.1</version>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 
 </project>

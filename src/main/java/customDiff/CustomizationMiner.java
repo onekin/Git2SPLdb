@@ -38,11 +38,11 @@ public class CustomizationMiner {
 	ArrayList<Customization> customizations;
 
 	/* Fixed. */
-	private int maxNumberFilesInACommit = 5000; /*
+	private final int maxNumberFilesInACommit = 50000; /*
 												 * TODO Expose an API to control this value? Also in
 												 * SubversionRepository.
 												 */
-	private int maxSizeOfDiff = 100000; /* TODO Expose an API to control this value? Also in SubversionRepository. */
+	private final int maxSizeOfDiff = 1000000; /* TODO Expose an API to control this value? Also in SubversionRepository. */
 
 	public void mine(CoreAssetBaseline baseline, CoreAssetBaseline baseline2) {
 		System.out.println("------ Mining Product Customizations for " + baseline2.getId() + "------");
@@ -61,7 +61,9 @@ public class CustomizationMiner {
 		while (it.hasNext()) {
 			mod = it.next();// 4: for each modifications parse and extract the customDiff
 
-			if (!mod.getNewPath().startsWith(customDiff.CustomDiff.pathToWhereCustomizationsAreComputed))
+			if (( Utils.isFileExcluded(mod.getNewPath())) &&
+                                (customDiff.CustomDiff.pathToWhereCustomizationsAreComputed!=null) 
+                                && (!mod.getNewPath().startsWith(customDiff.CustomDiff.pathToWhereCustomizationsAreComputed)))
 				continue;
 			else
 				customizations.addAll(computeCustomizationsInModification(mod, baseline2));
@@ -253,4 +255,6 @@ public class CustomizationMiner {
 		String val = System.getProperty(name);
 		return Integer.parseInt(val);
 	}
+
+    
 }

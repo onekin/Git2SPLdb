@@ -1,113 +1,117 @@
 package customDiff;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.revwalk.RevCommit;
-
 import customDiff.SPLdomain.CoreAssetBaseline;
 import customDiff.SPLdomain.Developer;
 import customDiff.SPLdomain.Feature;
 import customDiff.SPLdomain.ProductPortfolio;
-import customDiff.SPLdomain.ProductRelease;
 import customDiff.SPLdomain.SPL;
-import customDiff.SPLdomain.SourceCodeFile;
 import customDiff.export.ExportTarget;
 import customDiff.export.ExportToStarDiagram;
 
 public class CustomDiff {
-	/** Configurable fields - arguments */
-	public static String repositoryPath;
-	public static String baselineToMine;
-	public static String baselineToMine2;
-	public static String pathToResources; // E.g.:
-											// Users/Onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resource/
-	public static String pathToWhereCustomizationsAreComputed;// folder to look for customization effort.
-	public static String featureModelPath;
-	public static String componentPackageRoot;
 
-	public static String coreAssetsReleaseTagPrefix = "baseline";
-	public static String coreAssetsBranchName = "master";
-	public final static String annotationPatternBeginning = "#if";// pv:hasFeature
-	public final static String annotationPatternEnd = "#endif";// "PV:ENDCOND";
+    /**
+     * Configurable fields - arguments
+     */
+    public static String repositoryPath = "/Users/leticia/git/linux";
+    public static String baselineToMine2 = "v5.0-rc8";
+    public static String baselineToMine = "v5.0";
+    public static String pathToResources = "/Users/leticia/git/SPL2Gitdb/src/main/resources";
+    // Users/Onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resource/
+    public static String pathToWhereCustomizationsAreComputed="kernel";// folder to look for customization effort.
+    public static ArrayList<String> exludedExtensions;
+    public static String featureModelPath = null;
+    public static String componentPackageRoot;
 
-	/** Field variables **/
-	public static SPL spl;
-	public static ArrayList<ProductPortfolio> portfolios;
-	public static ArrayList<Feature> features;
-	public static ArrayList<Developer> allDevelopers;
+    public static String coreAssetsReleaseTagPrefix = "v5.0";
+    public static String coreAssetsBranchName = "master";
 
-	public static void main(String[] args) {
-		System.out.println("---------------------------------------------------------");
-		System.out.println("--- Welcome to CustomDiff: Git to db extraction module---");
-		System.out.println("---------------------------------------------------------");
+    /*annotation beginings can be #if, #ifndef #ifdef; the ending is #endif*/
+    public final static String annotationPatternBeginning = "#if";// pv:hasFeature
+    public final static String annotationPatternEnd = "#endif";// "PV:ENDCOND";
 
-		/**
-		 * /Users/onekin/git/WeatherStationSPL
-		 * /Users/onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resources
-		 * input Baseline-v1.0 /Users/onekin/git/WeatherStationSPL/WS.xfm input product
-		 * baseline master /Users/onekin/git/WeatherStationSPL/WS.xfm
-		 * 
-		 **/
 
-		if (args.length == 10) {
-			repositoryPath = args[0];
-			pathToResources = args[1];
-			pathToWhereCustomizationsAreComputed = args[2];
-			baselineToMine = args[3];
-			featureModelPath = args[4];
-			componentPackageRoot = args[5];
-			baselineToMine2 = args[6];
-			coreAssetsReleaseTagPrefix = args[7];
-			coreAssetsBranchName = args[8];
-			featureModelPath = args[9];
-		} else
-			System.out.println("You need to provide me with the setting parameters");
-		System.out.println("Arguments: " + args[0].toString());
-		System.out.println("Arguments: " + args[1].toString());
-		System.out.println("Arguments: " + args[2].toString());
-		System.out.println("Arguments: " + args[3].toString());
-		System.out.println("Arguments: " + args[4].toString());
-		System.out.println("Arguments: " + args[5].toString());
-		System.out.println("Arguments: " + args[6].toString());
-		System.out.println("Arguments: " + args[7].toString());
-		System.out.println("Arguments: " + args[8].toString());
-		System.out.println("Arguments: " + args[9].toString());
-		startMiningProcess();
-	}
+    /**
+     * Field variables *
+     */
+    public static SPL spl;
+    public static ArrayList<ProductPortfolio> portfolios;
+    public static ArrayList<Feature> features;
+    public static ArrayList<Developer> allDevelopers;
 
-	private static void startMiningProcess() {
+    public static void main(String[] args) {
+        System.out.println("---------------------------------------------------------");
+        System.out.println("--- Welcome to CustomDiff: Git to db extraction module---");
+        System.out.println("---------------------------------------------------------");
 
-		/** 1:initialize the SPL objects **/
-		spl = new SPL(repositoryPath);
-		features = new ArrayList<Feature>();
-		allDevelopers = new ArrayList<Developer>();
+        /**
+         * /Users/onekin/git/WeatherStationSPL
+         * /Users/onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resources
+         * input Baseline-v1.0 /Users/onekin/git/WeatherStationSPL/WS.xfm input
+         * product baseline master /Users/onekin/git/WeatherStationSPL/WS.xfm
+         *
+         *
+         */
+        if (args.length == 10) {
+            repositoryPath = args[0];
+            pathToResources = args[1];
+            pathToWhereCustomizationsAreComputed = args[2];
+            baselineToMine = args[3];
+            featureModelPath = args[4];
+            componentPackageRoot = args[5];
+            baselineToMine2 = args[6];
+            coreAssetsReleaseTagPrefix = args[7];
+            coreAssetsBranchName = args[8];
+            featureModelPath = args[9];
+        }
+        else{
+            //take initilized ones
+            exludedExtensions = new  ArrayList<>();
+            exludedExtensions.add("xtfpga.dtsi");
+            exludedExtensions.add("Makefile");
+        }
+        
+        startMiningProcess();
+    }
 
-		/**
-		 * 2: fetch the first baseline tag to mine & create new coreAssetBaseline
-		 * release
-		 **/
-		BaselineMiner baselineMiner = new BaselineMiner();
-		CoreAssetBaseline baseline =baselineMiner.mine(baselineToMine,false);
+    private static void startMiningProcess() {
 
-		/**
-		 * 3: fetch the second baseline tag to mine & create new coreAssetBaseline
-		 * release
-		 **/
-		BaselineMiner baselineMiner2 = new BaselineMiner();
-		CoreAssetBaseline baseline2=baselineMiner2.mine(baselineToMine2,true);
-		;
+        /**
+         * 1:initialize the SPL objects *
+         */
+        spl = new SPL(repositoryPath);
+        features = new ArrayList<>();
+        allDevelopers = new ArrayList<>();
 
-		/** 4: for each product release - compute customization effort. **/
+        /**
+         * 2: fetch the first baseline tag to mine & create new
+         * coreAssetBaseline release
+		 *
+         */
+        BaselineMiner baselineMiner = new BaselineMiner();
+        CoreAssetBaseline baseline = baselineMiner.mine(baselineToMine, false);
 
-		CustomizationMiner customizationsMiner = new CustomizationMiner();
-		customizationsMiner.mine(baseline,baseline2);
+        /**
+         * 3: fetch the second baseline tag to mine & create new
+         * coreAssetBaseline release
+		 *
+         */
+        BaselineMiner baselineMiner2 = new BaselineMiner();
+        CoreAssetBaseline baseline2 = baselineMiner2.mine(baselineToMine2, true);
 
-		/** 5: export data to the database **/
-		ExportTarget export = new ExportToStarDiagram();
- 		export.export(pathToResources + "/db-data/olap-inserts.sql");
+        /**
+         * 4: for each product release - compute customization effort. *
+         */
+        CustomizationMiner customizationsMiner = new CustomizationMiner();
+        customizationsMiner.mine(baseline, baseline2);
 
-	}
+        /**
+         * 5: export data to the database *
+         */
+        ExportTarget export = new ExportToStarDiagram();
+        export.export(pathToResources + "/db-data/olap-inserts.sql");
+
+    }
 
 }
