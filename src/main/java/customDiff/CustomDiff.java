@@ -68,7 +68,8 @@ public class CustomDiff {
         else{
             //take initilized ones
             exludedExtensions = new  ArrayList<>();
-            exludedExtensions.add("xtfpga.dtsi");
+            exludedExtensions.add("dtsi");
+            exludedExtensions.add("xtfpga.dts");
             exludedExtensions.add("Makefile");
         }
         

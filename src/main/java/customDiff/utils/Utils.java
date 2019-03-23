@@ -20,9 +20,10 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
+/*
 import org.repodriller.domain.ChangeSet;
 import org.repodriller.domain.Commit;
-import org.repodriller.scm.SCMRepository;
+import org.repodriller.scm.SCMRepository;*/
 
 import customDiff.CustomDiff;
 
@@ -60,7 +61,7 @@ public class Utils {
             return null;
         }
     }
-
+/*
     static public ChangeSet convertHashToCommit(String hash, SCMRepository scmRepository) {
 
         List<ChangeSet> all = scmRepository.getScm().getChangeSets();
@@ -71,7 +72,7 @@ public class Utils {
             }
         }
         return null;
-    }
+    }*/
 
     static public String getTagForACommitHash(String hash) {
         Repository repository;
@@ -169,6 +170,7 @@ public class Utils {
         return null;
     }
 
+    /*
     public static boolean isCommitInBranch(Commit newerCommit, String branchName) {
         Iterable<RevCommit> commitsForBranch = Utils.getCommitsInBranch(branchName);
         Iterator<RevCommit> it = commitsForBranch.iterator();
@@ -181,7 +183,7 @@ public class Utils {
         }
 
         return false;
-    }
+    }*/
 
     static public int getNewCustomizationId() {
         customizationCounter++;
