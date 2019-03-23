@@ -246,8 +246,9 @@ public class VariationPointAnalysisUtils {
 	private static ArrayList<String> extractAllFeaturesFromTheExpression(String expression) {
 		ArrayList<String> listfeatures = new ArrayList<String>();
 		String[] pieces;
-		if (expression.trim().startsWith("#ifdef")) {
-			pieces = expression.split(" "); // Expression example //PV:IFCOND(pv:hasFeature('Fa') and
+		if (expression.trim().startsWith("#if")) {
+                        expression = expression.replace("#if", "");
+			pieces = expression.toLowerCase().split("enabled"); // Expression example //PV:IFCOND(pv:hasFeature('Fa') and
 			// pv:hasFeature('FB'))
 
 			for (int i = 0; i < pieces.length; i++) {
@@ -256,11 +257,12 @@ public class VariationPointAnalysisUtils {
 				}
 			}
 		} else {
-			pieces = expression.split("define");
+			pieces = expression.toLowerCase().split(" ");
 			String feature;
 			for(int i=1; i<pieces.length;i++) {
 				feature = pieces[i].replaceAll("/^(&&|\\||\\s)$/", "");
 				listfeatures.add(feature);
+                                System.out.println("F: "+feature);
 			}
 			
 		}

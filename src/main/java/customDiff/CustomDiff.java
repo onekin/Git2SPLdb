@@ -18,18 +18,18 @@ import customDiff.export.ExportToStarDiagram;
 
 public class CustomDiff {
 	/** Configurable fields - arguments */
-	public static String repositoryPath;
-	public static String baselineToMine;
-	public static String baselineToMine2;
-	public static String pathToResources; // E.g.:
+	public static String repositoryPath="/Users/leticia/git/Marlin";
+	public static String baselineToMine="1.1.8";
+	public static String baselineToMine2="1.1.9";
+	public static String pathToResources= "/Users/leticia/git/Git2SPLdb/src/main/resources"; // E.g.:
 											// Users/Onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resource/
-	public static String pathToWhereCustomizationsAreComputed;// folder to look for customization effort.
+	public static String pathToWhereCustomizationsAreComputed="Marlin";// folder to look for customization effort.
 	public static String featureModelPath;
-	public static String componentPackageRoot;
+	public static String componentPackageRoot="Marlin";
 
-	public static String coreAssetsReleaseTagPrefix = "baseline";
+	public static String coreAssetsReleaseTagPrefix = "1.";
 	public static String coreAssetsBranchName = "master";
-	public final static String annotationPatternBeginning = "#if";// pv:hasFeature
+	public final static String annotationPatternBeginning = "#if ENABLED";// pv:hasFeature
 	public final static String annotationPatternEnd = "#endif";// "PV:ENDCOND";
 
 	/** Field variables **/
@@ -63,17 +63,8 @@ public class CustomDiff {
 			coreAssetsBranchName = args[8];
 			featureModelPath = args[9];
 		} else
-			System.out.println("You need to provide me with the setting parameters");
-		System.out.println("Arguments: " + args[0].toString());
-		System.out.println("Arguments: " + args[1].toString());
-		System.out.println("Arguments: " + args[2].toString());
-		System.out.println("Arguments: " + args[3].toString());
-		System.out.println("Arguments: " + args[4].toString());
-		System.out.println("Arguments: " + args[5].toString());
-		System.out.println("Arguments: " + args[6].toString());
-		System.out.println("Arguments: " + args[7].toString());
-		System.out.println("Arguments: " + args[8].toString());
-		System.out.println("Arguments: " + args[9].toString());
+                    System.out.println("Parameters are those hard-coded");
+                
 		startMiningProcess();
 	}
 
@@ -81,8 +72,8 @@ public class CustomDiff {
 
 		/** 1:initialize the SPL objects **/
 		spl = new SPL(repositoryPath);
-		features = new ArrayList<Feature>();
-		allDevelopers = new ArrayList<Developer>();
+		features = new ArrayList<>();
+		allDevelopers = new ArrayList<>();
 
 		/**
 		 * 2: fetch the first baseline tag to mine & create new coreAssetBaseline

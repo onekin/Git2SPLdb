@@ -119,9 +119,11 @@ public class VariationPoint {
 		if (vp == null)
 			return "No VP";
 
-		String header = vp.getExpression().replace("PV:IFCOND", "");
+		String header = vp.getExpression().replace("ENABLED", "");
 		header = header.replace(" ", "");
 		header = header.replace("//", "");
+                header = header.replace("(", "");
+                header = header.replace(")", "");
 		if (vp.getParentVP() != null) {
 			header = header + " AND " + getVPFullExpression(vp.getParentVP());
 		}

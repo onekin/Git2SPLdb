@@ -42,7 +42,7 @@ public class CustomizationMiner {
 												 * TODO Expose an API to control this value? Also in
 												 * SubversionRepository.
 												 */
-	private int maxSizeOfDiff = 100000; /* TODO Expose an API to control this value? Also in SubversionRepository. */
+	private final int maxSizeOfDiff = 100000000; /* TODO Expose an API to control this value? Also in SubversionRepository. */
 
 	public void mine(CoreAssetBaseline baseline, CoreAssetBaseline baseline2) {
 		System.out.println("------ Mining Product Customizations for " + baseline2.getId() + "------");
@@ -63,8 +63,12 @@ public class CustomizationMiner {
 
 			if (!mod.getNewPath().startsWith(customDiff.CustomDiff.pathToWhereCustomizationsAreComputed))
 				continue;
-			else
-				customizations.addAll(computeCustomizationsInModification(mod, baseline2));
+                        else{
+                            
+                            customizations.addAll(computeCustomizationsInModification(mod, baseline2));
+                            System.out.println("ADDDE CUSTOM "+mod);
+                        }
+				
 		}
 		//customizations.addAll(computeScatteringAndTanglingModification(baseline, baseline2));
 

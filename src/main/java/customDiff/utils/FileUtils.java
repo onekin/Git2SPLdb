@@ -90,6 +90,7 @@ public class FileUtils {
 	}
 
 	public static void writeToFile(String path, ArrayList<String> allInserts) {
+            System.out.println(" Writing to "+path);
 		Iterator<String> it = allInserts.iterator();
 		String st;
 			try {

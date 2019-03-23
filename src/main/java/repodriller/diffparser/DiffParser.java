@@ -183,8 +183,8 @@ public class DiffParser {
 		/** 2: blame added and deleted lines **/ // add initial context lines and final context lines. TODO
 
 		System.out.println("2");
-		newDiff = blameChangedLines(diffBlock, startLine, endline, developers, commits, messages, newDiff,
-				originalDiff);
+//		newDiff = blameChangedLines(diffBlock, startLine, endline, developers, commits, messages, newDiff,
+//				originalDiff);
 		System.out.println("3");
 
 		if (diffBlockHasModifications(newDiff) == false)
