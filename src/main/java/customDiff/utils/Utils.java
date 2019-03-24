@@ -241,7 +241,7 @@ public class Utils {
     }
 
     public static boolean isFileExcluded(String newPath) {
-
+        if (customDiff.CustomDiff.exludedExtensions == null) return false;
         Iterator it = customDiff.CustomDiff.exludedExtensions.iterator();
         while (it.hasNext())
             if (newPath.contains(it.next().toString()))

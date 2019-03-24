@@ -111,7 +111,7 @@ public class FileUtils {
 			Iterator<SourceCodeFile> it = listAssets.iterator();
 			while(it.hasNext()){
 				SourceCodeFile pa = it.next();
-		//		System.out.println(pa.getRelativePath());
+				System.out.println(pa.getRelativePath());
 				if(path.equals(pa.getRelativePath()))
 					return pa;
 			}

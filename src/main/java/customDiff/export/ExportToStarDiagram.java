@@ -474,7 +474,7 @@ public class ExportToStarDiagram implements ExportTarget {
 		String component_package_name;
 		String ca_path = ca.getPath();
 		String ca_name = ca.getFileName();
-
+                if (ca_path == null) return "";
 		String[] splitted = ca_path.split(CustomDiff.componentPackageRoot);
 		System.out.println("name:" + ca_path);
 

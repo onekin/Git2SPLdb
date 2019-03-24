@@ -195,11 +195,17 @@ public class DiffParser {
 		SourceCodeFile paModified = customDiff.utils.FileUtils.getProductAssetByFilePath(path, baseline2);
 		System.out.println("5");
                 System.out.println("paModified "+ paModified);
+                
+                if (paModified==null){
+                    System.out.println("CANNOT FIND file in path" +path);
+                    return null; //aqui llega u y me da null
+                } 
+                        
 		if (!isNewAsset)
 			coreAsset = customDiff.utils.FileUtils.getCoreAssetByProductAssetPath(path, baseline2);
 
 		System.out.println("paModified: " + paModified.getFileName());
-
+                
 		/** 3: extract variation points for the customization **/
 		// Variation point changed -- On product asset
 		VariationPoint vp_pa = customDiff.utils.FeatureAnalysisUtils
