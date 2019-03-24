@@ -55,27 +55,28 @@ public class DiffParser {
 
 	private void extractDiffBlocks() {
 		String[] lines = fullDiff.replace("\r", "").split("\n");
-		String[] linesNoHeader = Arrays.copyOfRange(lines, 4, lines.length);
-		this.linesNoHeader = lines[0] + "\n" + lines[1] + "\n" + lines[2] + "\n" + lines[3];
-		StringBuilder currentDiff = new StringBuilder();
-		boolean currentInADiff = false;
+		if (lines.length > 4) {
+			String[] linesNoHeader = Arrays.copyOfRange(lines, 4, lines.length);
+			this.linesNoHeader = lines[0] + "\n" + lines[1] + "\n" + lines[2] + "\n" + lines[3];
+			StringBuilder currentDiff = new StringBuilder();
+			boolean currentInADiff = false;
 
-		for (int i = 0; i < linesNoHeader.length; i++) {
-			String currentLine = linesNoHeader[i];
-			if (currentLine.startsWith("@@ -") && !currentInADiff) {
-				currentInADiff = true;
-			} else if (currentLine.startsWith("@@ -") && currentInADiff) {
-				diffBlocks.add(new DiffBlock(currentDiff.toString()));
-				currentDiff = new StringBuilder();
-				currentInADiff = false;
-				i--;
+			for (int i = 0; i < linesNoHeader.length; i++) {
+				String currentLine = linesNoHeader[i];
+				if (currentLine.startsWith("@@ -") && !currentInADiff) {
+					currentInADiff = true;
+				} else if (currentLine.startsWith("@@ -") && currentInADiff) {
+					diffBlocks.add(new DiffBlock(currentDiff.toString()));
+					currentDiff = new StringBuilder();
+					currentInADiff = false;
+					i--;
+				}
+
+				if (currentInADiff)
+					currentDiff.append(currentLine + "\n");
 			}
-
-			if (currentInADiff)
-				currentDiff.append(currentLine + "\n");
+			diffBlocks.add(new DiffBlock(currentDiff.toString()));
 		}
-		diffBlocks.add(new DiffBlock(currentDiff.toString()));
-
 	}
 
 	/** Leticia Montalvillo **/
@@ -127,7 +128,7 @@ public class DiffParser {
 				if (line.contains(CustomDiff.annotationPatternEnd)) {
 					customDiffBlocks.add(createCustomDiffBlock(diffBlock, startLineNextblock, diff_lineCounter, true,
 							d1, d2, d3, d4));
-					startLineNextblock = diff_lineCounter+1;
+					startLineNextblock = diff_lineCounter + 1;
 
 				} else {
 					customDiffBlocks.add(createCustomDiffBlock(diffBlock, startLineNextblock, diff_lineCounter - 1,
@@ -183,8 +184,9 @@ public class DiffParser {
 		/** 2: blame added and deleted lines **/ // add initial context lines and final context lines. TODO
 
 		System.out.println("2");
-//		newDiff = blameChangedLines(diffBlock, startLine, endline, developers, commits, messages, newDiff,
-//				originalDiff);
+		// newDiff = blameChangedLines(diffBlock, startLine, endline, developers,
+		// commits, messages, newDiff,
+		// originalDiff);
 		System.out.println("3");
 
 		if (diffBlockHasModifications(newDiff) == false)

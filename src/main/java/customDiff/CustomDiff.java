@@ -29,7 +29,7 @@ public class CustomDiff {
 
 	public static String coreAssetsReleaseTagPrefix = "1.";
 	public static String coreAssetsBranchName = "master";
-	public final static String annotationPatternBeginning = "#if ENABLED";// pv:hasFeature
+	public final static String annotationPatternBeginning = "#if";// pv:hasFeature
 	public final static String annotationPatternEnd = "#endif";// "PV:ENDCOND";
 
 	/** Field variables **/

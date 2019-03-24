@@ -246,25 +246,18 @@ public class VariationPointAnalysisUtils {
 	private static ArrayList<String> extractAllFeaturesFromTheExpression(String expression) {
 		ArrayList<String> listfeatures = new ArrayList<String>();
 		String[] pieces;
-		if (expression.trim().startsWith("#if")) {
-                        expression = expression.replace("#if", "");
-			pieces = expression.toLowerCase().split("enabled"); // Expression example //PV:IFCOND(pv:hasFeature('Fa') and
-			// pv:hasFeature('FB'))
+		if (expression.trim().startsWith("#ifdef") || expression.trim().startsWith("#ifdef")) {
+			expression = expression.replaceAll("#ifdef", "").replaceAll("#ifndef", "");
+			listfeatures.add(expression.trim());
 
-			for (int i = 0; i < pieces.length; i++) {
-				if ((i / 2) * 2 != i) { // if it is odd
-					listfeatures.add(pieces[i]);
-				}
-			}
 		} else {
-			pieces = expression.toLowerCase().split(" ");
-			String feature;
-			for(int i=1; i<pieces.length;i++) {
-				feature = pieces[i].replaceAll("/^(&&|\\||\\s)$/", "");
-				listfeatures.add(feature);
-                                System.out.println("F: "+feature);
+			expression= expression.replaceAll("/^(&&|\\||\\s|\\|\\))$/", "");
+			expression= expression.replaceAll("#if", "");
+			pieces = expression.toLowerCase().split("/^(ENABLED\\(|DEFINED\\(|DISABLED\\(|!DEFINED\\()$/");
+			for (int i = 2; i < pieces.length; i=i+2) {
+				listfeatures.add(pieces[i].trim());
 			}
-			
+
 		}
 		return listfeatures;
 	}
