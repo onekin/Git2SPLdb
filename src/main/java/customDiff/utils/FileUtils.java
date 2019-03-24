@@ -113,7 +113,7 @@ public class FileUtils {
 			while(it.hasNext()){
 				SourceCodeFile pa = it.next();
 		//		System.out.println(pa.getRelativePath());
-				if(path.equals(pa.getRelativePath()))
+				if(path.equals(pa.getRelativePath())||path.equals(pa.getPath()))
 					return pa;
 			}
 		}
@@ -128,7 +128,7 @@ public class FileUtils {
 			while(it.hasNext()){
 				SourceCodeFile ca = it.next();
 				//System.out.println(ca.getRelativePath());
-				if(path.equals(ca.getRelativePath()))
+				if(path.equals(ca.getRelativePath())||path.equals(ca.getPath()))
 					return ca;
 			}
 		
@@ -141,7 +141,7 @@ public class FileUtils {
 
 	public static SourceCodeFile getCoreAssetByFilePath(String relPath) {
 		
-		ArrayList<SourceCodeFile> caList = customDiff.CustomDiff.spl.getCoreAssetBaseline(0).getCoreAssetFiles();
+		ArrayList<SourceCodeFile> caList = customDiff.CustomDiff.spl.getCoreAssetBaseline(1).getCoreAssetFiles();
 		if (caList!= null){
 			Iterator<SourceCodeFile> it = caList.iterator();
 			while(it.hasNext()){

@@ -38,7 +38,7 @@ public class CustomizationMiner {
 	ArrayList<Customization> customizations;
 
 	/* Fixed. */
-	private int maxNumberFilesInACommit = 5000; /*
+	private int maxNumberFilesInACommit = 50000; /*
 												 * TODO Expose an API to control this value? Also in
 												 * SubversionRepository.
 												 */
@@ -70,7 +70,6 @@ public class CustomizationMiner {
                         }
 				
 		}
-		//customizations.addAll(computeScatteringAndTanglingModification(baseline, baseline2));
 
 		baseline2.setCustomizations(customizations);
 

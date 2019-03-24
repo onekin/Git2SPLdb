@@ -184,9 +184,8 @@ public class DiffParser {
 		/** 2: blame added and deleted lines **/ // add initial context lines and final context lines. TODO
 
 		System.out.println("2");
-		// newDiff = blameChangedLines(diffBlock, startLine, endline, developers,
-		// commits, messages, newDiff,
-		// originalDiff);
+		newDiff = blameChangedLines(diffBlock, startLine, endline, developers, commits, messages, newDiff,
+				originalDiff);
 		System.out.println("3");
 
 		if (diffBlockHasModifications(newDiff) == false)
@@ -215,6 +214,9 @@ public class DiffParser {
 		// REMOVE THOSE
 		if (vp_ca == null && paModified.getIsNewAsset() == false) {
 			vp_ca = new VariationPoint(Utils.getVPId(), "No Expression", 0, null, new FeatureSibling(0, "No feature"));
+			if(coreAsset.getVariationPoints()==null) {
+				coreAsset.setVariationPoints(new ArrayList<>());
+			}
 			coreAsset.addVariationPoint(vp_ca);
 
 		}
@@ -299,35 +301,38 @@ public class DiffParser {
 		String author = null, message = null;
 		String developerdHeader = "Developed by:";
 		List<BlamedLine> blames = modification.getBlameLines();
-
-		for (int i = startLine; i <= endline; i++) {// 1: annotate the added and deleted lines with BLAME
-			strblame = "";
-			if (originalDiff[i].contains("No newline at end of file"))
-				continue;
-			if (originalDiff[i].startsWith("+")) {// 1.1: annotate the added and deleted lines with BLAME
-				if (blames == null)
+		try {
+			for (int i = startLine; i <= endline; i++) {// 1: annotate the added and deleted lines with BLAME
+				strblame = "";
+				if (originalDiff[i].contains("No newline at end of file"))
 					continue;
-				author = blames.get(newFilelineCounter).getAuthor();
-				int line = blames.get(newFilelineCounter).getLineNumber();
-				commit = blames.get(newFilelineCounter).getCommit();
-				String lineAdded = blames.get(newFilelineCounter).getLine();
-				developerdHeader = developerdHeader.concat(author + " ");
+				if (originalDiff[i].startsWith("+")) {// 1.1: annotate the added and deleted lines with BLAME
+					if (blames == null)
+						continue;
+					author = blames.get(newFilelineCounter).getAuthor();
+					int line = blames.get(newFilelineCounter).getLineNumber();
+					commit = blames.get(newFilelineCounter).getCommit();
+					String lineAdded = blames.get(newFilelineCounter).getLine();
+					developerdHeader = developerdHeader.concat(author + " ");
 
-				if (!commits.contains(RefUtils.getCommitFromCommitSha(commit))) {
-					message = RefUtils.getCommitMessage(commit);
-					if (!messages.contains(message))
-						messages.add(message);
+					if (!commits.contains(RefUtils.getCommitFromCommitSha(commit))) {
+						message = RefUtils.getCommitMessage(commit);
+						if (!messages.contains(message))
+							messages.add(message);
+					}
+					strblame = "//Authored by: " + author + " in commit:" + commit + ", with message:" + message;
+					commits.add(RefUtils.getCommitFromCommitSha(commit));
+					developers.add(addAuthor(RefUtils.getCommitAuthor(commit)));
 				}
-				strblame = "//Authored by: " + author + " in commit:" + commit + ", with message:" + message;
-				commits.add(RefUtils.getCommitFromCommitSha(commit));
-				developers.add(addAuthor(RefUtils.getCommitAuthor(commit)));
-			}
-			newDiff.add(originalDiff[i] + strblame);// add line to the customDiffBlock
+				newDiff.add(originalDiff[i] + strblame);// add line to the customDiffBlock
 
-			if (!originalDiff[i].startsWith("-")) {// 1.2: annotate the deleted lines with BLAME --REVERSE TODO
-				newFilelineCounter++;
-			}
-		} // end for
+				if (!originalDiff[i].startsWith("-")) {// 1.2: annotate the deleted lines with BLAME --REVERSE TODO
+					newFilelineCounter++;
+				}
+			} // end for
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return newDiff;
 	}
 

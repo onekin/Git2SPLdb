@@ -246,7 +246,7 @@ public class VariationPointAnalysisUtils {
 	private static ArrayList<String> extractAllFeaturesFromTheExpression(String expression) {
 		ArrayList<String> listfeatures = new ArrayList<String>();
 		String[] pieces;
-		if (expression.trim().startsWith("#ifdef") || expression.trim().startsWith("#ifdef")) {
+		if (expression.trim().startsWith("#ifdef") || expression.trim().startsWith("#ifndef")) {
 			expression = expression.replaceAll("#ifdef", "").replaceAll("#ifndef", "");
 			listfeatures.add(expression.trim());
 
