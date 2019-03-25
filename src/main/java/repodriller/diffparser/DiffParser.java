@@ -189,7 +189,7 @@ public class DiffParser {
 		System.out.println("3");
 
 		if (diffBlockHasModifications(newDiff) == false)
-			return null; // there were no modifications in this chunk - it was part of the context
+			return null; // there were no modifications in this chunk - it was part of the context*/
 
 		System.out.println("4");
 		SourceCodeFile coreAsset = null;

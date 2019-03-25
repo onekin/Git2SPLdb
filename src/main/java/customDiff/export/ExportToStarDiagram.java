@@ -1,6 +1,7 @@
 package customDiff.export;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -65,7 +66,7 @@ public class ExportToStarDiagram implements ExportTarget {
 		allInserts.add(generateInsertsForVariationPointsAndFeatureGroups());// from baseline core assets only
 		allInserts.add(generateInsertsForDevelopers());
 		allInserts.add(generateInsertsForNewProductAssets()); // for new product assets && new Features
-		allInserts.add(generateInsertsForProductsReleasesAndCustomizations());// includes inserts to new variation
+		allInserts.addAll(generateInsertsForProductsReleasesAndCustomizations());// includes inserts to new variation
 		// points created in products
 		System.out.println("returning inserts");
 		return allInserts;
@@ -140,12 +141,12 @@ public class ExportToStarDiagram implements ExportTarget {
 		return insert;
 	}
 
-	private String getInsertsForCustomizations(CoreAssetBaseline coreAssetBaseline) { // for customizations and its
+	private List<String> getInsertsForCustomizations(CoreAssetBaseline coreAssetBaseline) { // for customizations and its
 		// developers
-		String insert = "";
+		List<String> insert = new ArrayList<>();
 		String developer_group_header = "INSERT INTO developer_group (id_developer_group) VALUES \n";
 		String developer_bridge_header = "INSERT INTO developer_bridge (id_developer_group,id_developer) VALUES \n";
-		insert = insert.concat(developer_group_header).concat("(-1);\n");
+		insert.add(developer_group_header.concat("(-1);\n"));
 		Iterator<Customization> customs = coreAssetBaseline.getCustomizations().iterator();
 		Customization cust;
 		Developer dev;
@@ -156,13 +157,13 @@ public class ExportToStarDiagram implements ExportTarget {
 			if (cust.getType() != CustomizationType.FEATURE_SCATTERING_MODIFICATION
 					&& cust.getType() != CustomizationType.FEATURE_TANGLING_MODIFICATION) {
 				developers = cust.getDevelopers().iterator();
-				insert = insert.concat(developer_group_header).concat("(" + developer_group + ");\n");// insert
+				insert.add(developer_group_header.concat("(" + developer_group + ");\n"));// insert
 				// developer
 				// group
 				while (developers.hasNext()) {// insert developer bridge
 					dev = developers.next();
-					insert = insert.concat(developer_bridge_header)
-							.concat("(" + developer_group + "," + dev.getId() + ");\n");
+					insert.add(developer_bridge_header
+							.concat("(" + developer_group + "," + dev.getId() + ");\n"));
 				}
 				/*
 				 * if (cust.getVariationpointca() != null &&
@@ -170,19 +171,19 @@ public class ExportToStarDiagram implements ExportTarget {
 				 * cust.getVariationpointpa().getExpression().equals("No Expression"))) { insert
 				 * = insert.concat(insertEmptyVPForCustomization(cust)); }
 				 */
-				insert = insert.concat(generateInsertForCustomization(cust, coreAssetBaseline));
+				insert.addAll(generateInsertForCustomization(cust, coreAssetBaseline));
 				developer_group++;
 			} else {
-				insert = insert.concat(generateInsertForCustomization(cust, coreAssetBaseline));
+				insert.addAll(generateInsertForCustomization(cust, coreAssetBaseline));
 			}
 		}
 
 		return insert;
 	}
 
-	private String generateInsertForCustomization(Customization cust, CoreAssetBaseline coreAssetBaseline) {
+	private Collection<? extends String> generateInsertForCustomization(Customization cust, CoreAssetBaseline coreAssetBaseline) {
 
-		String insert = "";
+		List<String> insert = new ArrayList<>();// id_productrelease
 		String cust_header = "INSERT INTO customization_fact (idcustomization, idvariationpoint,id_developer_group,lines_added,"
 				+ "custom_diff,idproductrelease, type) VALUES\n";
 
@@ -191,8 +192,8 @@ public class ExportToStarDiagram implements ExportTarget {
 		return insert;
 	}
 
-	private String generateInsertForLOCCustomization(Customization cust, CoreAssetBaseline coreAssetBaseline) {
-		String insert = "";
+	private List<String> generateInsertForLOCCustomization(Customization cust, CoreAssetBaseline coreAssetBaseline) {
+		List<String> insert = new ArrayList<>();// id_productrelease
 		String custom_header = "INSERT INTO customization_fact (idcustomization, lines_added,lines_deleted,"
 				+ "custom_diff,commit_set,message_set,greater_diff"
 				+ ",idvariationpoint,id_developer_group, idproductrelease, type) VALUES\n";
@@ -213,14 +214,14 @@ public class ExportToStarDiagram implements ExportTarget {
 		if (cust.getType().name().equals("NEW_VARIATION_POINT")
 				|| cust.getType().name().equals("MODIFIED_VARIATION_POINT_EXPRESSION")
 				|| cust.getType().name().equals("NEW_VARIATION_POINT_WITH_NEW_FEATURES")) {
-			insert = insert.concat(generateInsertForNewVariationpointInProductAsset(cust, false));
+			insert.add(generateInsertForNewVariationpointInProductAsset(cust, false));
 			idVariationPoint = cust.getVariationpointpa().getIdVP();
 		} else if (cust.getType().name().equals("NEW_ASSET_WITH_NO_VARIATIONPOINT")) {// introduce fake VP with no
 																						// expression
 			System.out.println("NEW NEW_ASSET_WITH_NO_VARIATIONPOINT");
 			String headerVP = "INSERT INTO variation_point (idvariationpoint, expression, idcoreasset,id_feature_group) VALUES\n";
-			insert = insert.concat(headerVP).concat("(" + cust.getVariationpointpa().getIdVP() + ",'No Expression',"
-					+ cust.getProductasset().getId() + ",0);\n");
+			insert.add(headerVP.concat("(" + cust.getVariationpointpa().getIdVP() + ",'No Expression',"
+					+ cust.getProductasset().getId() + ",0);\n"));
 
 		}
 
@@ -231,12 +232,14 @@ public class ExportToStarDiagram implements ExportTarget {
 		// if (cust.getType().name().equals("NEW_ASSET_WITH_VARIATIONPOINTS"))
 		// if
 		// (cust.getType().name().equals("NEW_ASSET_WITH_NEW_VARIATIONPOINT_AND_NEW_FEATURES"))
-		insert = insert.concat(custom_header)
-				.concat("(" + cust.getId() + "," + cust.getLinesAdded() + "," + cust.getLinesDeleted() + ",'"
-						+ encodeToBase64(cust.getCustomdiff()) + "','" + cust.getCommitShas() + "','"
-						+ cust.getCommitMessagesToString() + "','" + encodeToBase64(cust.getWholediff()) + "',"
-						+ idVariationPoint + "," + developer_group + ",'" + coreAssetBaseline.getId() + "','"
-						+ cust.getType().name() + "');\n");
+		StringBuilder b = new StringBuilder();
+		 b.append(custom_header);
+		 b.append("(" + cust.getId() + "," + cust.getLinesAdded() + "," + cust.getLinesDeleted() + ",'");
+		 b.append(encodeToBase64(cust.getCustomdiff()) + "','" +  cust.getCommitShas() + "','");
+		 b.append(encodeToBase64(cust.getCommitMessagesToString()) + "','',");
+		 b.append( idVariationPoint + "," + developer_group + ",'" + coreAssetBaseline.getId() + "','");
+		 b.append(cust.getType().name() + "');\n");
+		insert.add(b.toString());
 
 		return insert;
 	}
@@ -298,18 +301,18 @@ public class ExportToStarDiagram implements ExportTarget {
 		return insert;
 	}
 
-	private String generateInsertsForProductsReleasesAndCustomizations() {
+	private List<String> generateInsertsForProductsReleasesAndCustomizations() {
 
 		return getInsertsForReleases(customDiff.CustomDiff.spl.getCoreAssetBaseline(1));
 	}
 
-	private String getInsertsForReleases(CoreAssetBaseline coreAssetBaseline) {
-		String insert = "";// id_productrelease
+	private List<String> getInsertsForReleases(CoreAssetBaseline coreAssetBaseline) {
+		List<String> insert = new ArrayList<>();// id_productrelease
 		String releaseHeader = "INSERT INTO product_release (idproductrelease,name,date,commits_set) VALUES\n";// id_product
-		insert = insert.concat(releaseHeader)
+		insert.add((releaseHeader)
 				.concat("('" + coreAssetBaseline.getId() + "','" + coreAssetBaseline.getId() + "','"
 						+ convertDateToMysqlForm(coreAssetBaseline.getReleaseDate()) + "','"
-						+ coreAssetBaseline.getRevCommit().toString() + "');\n");
+						+ coreAssetBaseline.getRevCommit().toString() + "');\n"));
 		/*
 		 * Iterator<ProductRelease> releases =
 		 * coreAssetBaseline.getReleases().iterator(); ProductRelease pr; while
@@ -320,7 +323,7 @@ public class ExportToStarDiagram implements ExportTarget {
 		 * // +pr.getFromProduct().getId()+
 		 */
 
-		insert = insert.concat(getInsertsForCustomizations(coreAssetBaseline));
+		 insert.addAll(getInsertsForCustomizations(coreAssetBaseline));
 
 		return insert;
 	}

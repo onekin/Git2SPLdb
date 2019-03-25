@@ -248,14 +248,16 @@ public class VariationPointAnalysisUtils {
 		String[] pieces;
 		if (expression.trim().startsWith("#ifdef") || expression.trim().startsWith("#ifndef")) {
 			expression = expression.replaceAll("#ifdef", "").replaceAll("#ifndef", "");
-			listfeatures.add(expression.trim());
+			expression= expression.split("//")[0];
+			listfeatures.add(expression.trim().toUpperCase());
 
 		} else {
 			expression= expression.replaceAll("/^(&&|\\||\\s|\\|\\))$/", "");
 			expression= expression.replaceAll("#if", "");
-			pieces = expression.toLowerCase().split("/^(ENABLED\\(|DEFINED\\(|DISABLED\\(|!DEFINED\\()$/");
+			expression= expression.split("//")[0];
+			pieces = expression.toLowerCase().split("/^(IS_ENABLED\\(|ENABLED\\(|DEFINED\\(|DISABLED\\(|!DEFINED\\()$/");
 			for (int i = 2; i < pieces.length; i=i+2) {
-				listfeatures.add(pieces[i].trim());
+				listfeatures.add(pieces[i].trim().toUpperCase());
 			}
 
 		}
