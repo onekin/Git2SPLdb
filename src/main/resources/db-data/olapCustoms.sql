@@ -151,7 +151,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `MARLIN`.`developer` (
   `iddeveloper` INT NOT NULL,
   `name` VARCHAR(200) NULL,
-  `email` VARCHAR(45) NULL,
+  `email` VARCHAR(100) NULL,
   PRIMARY KEY (`iddeveloper`))
 ENGINE = InnoDB;
 

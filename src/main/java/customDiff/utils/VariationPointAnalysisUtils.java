@@ -246,18 +246,27 @@ public class VariationPointAnalysisUtils {
 	private static ArrayList<String> extractAllFeaturesFromTheExpression(String expression) {
 		ArrayList<String> listfeatures = new ArrayList<String>();
 		String[] pieces;
+		String feature;
 		if (expression.trim().startsWith("#ifdef") || expression.trim().startsWith("#ifndef")) {
 			expression = expression.replaceAll("#ifdef", "").replaceAll("#ifndef", "");
-			expression= expression.split("//")[0];
-			listfeatures.add(expression.trim().toUpperCase());
+			expression = expression.split("//")[0];
+			if (!(expression.trim().toUpperCase().startsWith("H_")
+					|| expression.trim().toUpperCase().matches(".*_H[_]{0,2}$"))) {
+				feature= expression.replaceAll("(>|<|!=|=|==)[0-9]", "");
+				listfeatures.add(feature.trim().toUpperCase());
+			}
 
 		} else {
-			expression= expression.replaceAll("/^(&&|\\||\\s|\\|\\))$/", "");
-			expression= expression.replaceAll("#if", "");
-			expression= expression.split("//")[0];
-			pieces = expression.toLowerCase().split("/^(IS_ENABLED\\(|ENABLED\\(|DEFINED\\(|DISABLED\\(|!DEFINED\\()$/");
-			for (int i = 2; i < pieces.length; i=i+2) {
-				listfeatures.add(pieces[i].trim().toUpperCase());
+			expression = expression.replaceAll("(&&|\\s|\\)|\\\\|\\|)", "");
+			expression = expression.replaceAll("#if", "");
+			expression = expression.split("//")[0];
+			pieces = expression.toUpperCase().split("(IS_ENABLED\\(|ENABLED\\(|DEFINED\\(|DISABLED\\(|!DEFINED\\()");
+			for (int i = 1; i < pieces.length; i ++) {
+				if (!(pieces[i].trim().toUpperCase().startsWith("H_")
+						|| pieces[i].trim().toUpperCase().matches(".*_H[_]{0,2}$"))) {
+					feature= pieces[i].replaceAll("(>|<|!=|=|==)[0-9]", "");
+					listfeatures.add(feature.trim().toUpperCase());
+				}
 			}
 
 		}
