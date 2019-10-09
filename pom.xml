@@ -24,7 +24,34 @@
 			<artifactId>repodriller</artifactId>
 			<version>1.2.1</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.eclipse.emf/org.eclipse.emf.common -->
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations-java5</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+		<!-- https://mvnrepository.com/artifact/junit/junit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.1</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime -->
+		<dependency>
+			<groupId>org.glassfish.jaxb</groupId>
+			<artifactId>jaxb-runtime</artifactId>
+			<version>2.3.1</version>
+		</dependency>
+
 
 	</dependencies>
 	<properties>
@@ -74,8 +101,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.6.1</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>8</source>
+					<target>8</target>
 				</configuration>
 			</plugin>
 		</plugins>

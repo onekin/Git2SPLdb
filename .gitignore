@@ -10,4 +10,12 @@ target/*
 /*.sql
 /*.bak
 /*.png
-src/main/resources/spl-data/baselines.csv
+src/main/resources/spl-data/baselines.
+
+.project
+.idea
+.classpath
+.github
+.settings
+
+testingRepoDriller.iml

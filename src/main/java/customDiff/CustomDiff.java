@@ -1,36 +1,30 @@
 package customDiff;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.revwalk.RevCommit;
 
 import customDiff.SPLdomain.CoreAssetBaseline;
 import customDiff.SPLdomain.Developer;
 import customDiff.SPLdomain.Feature;
 import customDiff.SPLdomain.ProductPortfolio;
-import customDiff.SPLdomain.ProductRelease;
 import customDiff.SPLdomain.SPL;
-import customDiff.SPLdomain.SourceCodeFile;
 import customDiff.export.ExportTarget;
 import customDiff.export.ExportToStarDiagram;
 
 public class CustomDiff {
 	/** Configurable fields - arguments */
-	public static String repositoryPath="/Users/leticia/git/Marlin";
-	public static String baselineToMine="1.1.8";
-	public static String baselineToMine2="1.1.9";
-	public static String pathToResources= "/Users/leticia/git/Git2SPLdb/src/main/resources"; // E.g.:
+	public static String repositoryPath="/Users/RaulMedeiros/Documents/19CustomDiff/WebAnnotatorSPL";
+	public static String baselineToMine="tag2";
+	public static String baselineToMine2="tag1";
+	public static String pathToResources= "/Users/RaulMedeiros/Documents/19CustomDiff/Git2SPLdb/src/main/resources"; // E.g.:
 											// Users/Onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resource/
-	public static String pathToWhereCustomizationsAreComputed="Marlin";// folder to look for customization effort.
+	public static String pathToWhereCustomizationsAreComputed="input";// folder to look for customization effort.
 	public static String featureModelPath;
-	public static String componentPackageRoot="Marlin";
+	public static String componentPackageRoot="input";
 
 	public static String coreAssetsReleaseTagPrefix = "1.";
 	public static String coreAssetsBranchName = "master";
-	public final static String annotationPatternBeginning = "#if";// pv:hasFeature
-	public final static String annotationPatternEnd = "#endif";// "PV:ENDCOND";
+	public final static String annotationPatternBeginning = "PVSCL:IFCOND";// pv:hasFeature
+	public final static String annotationPatternEnd = "PVSCL:ENDCOND";// "PV:ENDCOND";
 
 	/** Field variables **/
 	public static SPL spl;
@@ -97,7 +91,7 @@ public class CustomDiff {
 
 		/** 5: export data to the database **/
 		ExportTarget export = new ExportToStarDiagram();
- 		export.export(pathToResources + "/db-data/olap-inserts.sql");
+ 		export.export(pathToResources + "/db-data/WebAnnotator.sql");
 
 	}
 

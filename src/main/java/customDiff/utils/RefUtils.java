@@ -31,7 +31,7 @@ public class RefUtils {
 		RevCommit commit = null;
 		try{
 			Repository repo = new FileRepository(customDiff.CustomDiff.repositoryPath+"/.git");			
-			Ref ref = repo.getRef(tag);
+			Ref ref = repo.findRef(tag);
 		//	System.out.println(ref);
 			RevWalk walk = new RevWalk( repo );
 			commit = walk.parseCommit( ref.getObjectId() );//find the commit for a 
