@@ -19,3 +19,4 @@ src/main/resources/spl-data/baselines.
 .settings
 
 testingRepoDriller.iml
+logs/
