@@ -38,6 +38,7 @@ public class RefUtils {
             logger.error(e);
             return null;
         }
+
         return commit;
     }
 
@@ -87,8 +88,11 @@ public class RefUtils {
              Git git = new Git(repo)) {
             List<Ref> references = git.tagList().call();
             for (Ref ref : references) {
-                if (ref.getName().toLowerCase().startsWith(prefix.toLowerCase()))
+                if (ref.getName().toLowerCase().startsWith(prefix.toLowerCase())) {
                     refNames.add(ref);
+                } else if (ref.getName().toLowerCase().contains(prefix.toLowerCase())){
+                    refNames.add(ref);
+                }
             }
             repo.close();
         } catch (IOException | GitAPIException e) {

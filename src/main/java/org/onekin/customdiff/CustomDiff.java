@@ -16,19 +16,19 @@ public class CustomDiff {
     /**
      * Configurable fields - arguments
      */
-    public static  String repositoryPath = "/Users/RaulMedeiros/Documents/19CustomDiff/WebAnnotatorSPL";
-    public static  String baselineToMine = "v1";
-    public static  String baselineToMine2 = "v2";
-    public static   String pathToResources = "/Users/RaulMedeiros/Documents/19CustomDiff/Git2SPLdb/src/main/resources"; // E.g.:
+    public static  String repositoryPath = "/Users/RaulMedeiros/IdeaProjects/WacLine";
+    public static  String baselineToMine = "2.0.7.1";
+    public static  String baselineToMine2 = "2.0.7.2";
+    public static   String pathToResources = "/Users/RaulMedeiros/IdeaProjects/Git2SPLdb/src/main/resources"; // E.g.:
     // Users/Onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resource/
-    public static  String pathToWhereCustomizationsAreComputed = "input";// folder to look for customization effort.
-    public static  String featureModelPath = "/Users/RaulMedeiros/Documents/19CustomDiff/WebAnnotatorSPL/WebAnnotator.xfm";
-    public static  String componentPackageRoot = "input";
+    public static  String pathToWhereCustomizationsAreComputed = "marlin";// folder to look for customization effort.
+    public static  String featureModelPath = "/Users/RaulMedeiros/IdeaProjects/WacLine";
+    public static  String componentPackageRoot = "Marlin/src";
 
     public static  String coreAssetsReleaseTagPrefix = "1.";
     public static  String coreAssetsBranchName = "master";
-    public  static  String annotationPatternBeginning = "PVSCL:IFCOND";
-    public  static  String annotationPatternEnd = "PVSCL:ENDCOND";
+    public final static String annotationPatternBeginning= "PVSCL:IFCOND";//pv:hasFeature
+    public final static String annotationPatternEnd="PVSCL:ENDCOND";//"PV:ENDCOND";
 
     /**
      * Field variables
@@ -83,20 +83,20 @@ public class CustomDiff {
          * release
          **/
         BaselineMiner baselineMiner = new BaselineMiner();
-        CoreAssetBaseline baseline = baselineMiner.mine(baselineToMine, false);
+        CoreAssetBaseline baseline = baselineMiner.mine(baselineToMine, false,spl,pathToWhereCustomizationsAreComputed,features);
 
         /**
          * 3: fetch the second baseline tag to mine & create new coreAssetBaseline
          * release
          **/
         BaselineMiner baselineMiner2 = new BaselineMiner();
-        CoreAssetBaseline baseline2 = baselineMiner2.mine(baselineToMine2, true);
+        CoreAssetBaseline baseline2 = baselineMiner2.mine(baselineToMine2, true,spl,pathToWhereCustomizationsAreComputed,features);
         ;
 
         /** 4: for each product release - compute customization effort. **/
 
         CustomizationMiner customizationsMiner = new CustomizationMiner();
-        customizationsMiner.mine(baseline, baseline2);
+        customizationsMiner.mine(baseline, baseline2,spl);
 
 
         /** 5: export data to the database **/

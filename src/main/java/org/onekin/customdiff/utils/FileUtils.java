@@ -3,9 +3,7 @@ package org.onekin.customdiff.utils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.onekin.customdiff.CustomDiff;
-import org.onekin.customdiff.spldomain.CoreAssetBaseline;
-import org.onekin.customdiff.spldomain.ProductRelease;
-import org.onekin.customdiff.spldomain.SourceCodeFile;
+import org.onekin.customdiff.spldomain.*;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -116,6 +114,19 @@ public class FileUtils {
         return null;
     }
 
+    public static SourceCodeFile getProductAssetByFilePath(String path, ProductPortfolio baseline2) {
+        List<SourceCodeFile> listAssets = baseline2.getDerivedFrom().getCoreAssetFiles();
+        if (listAssets != null) {
+            Iterator<SourceCodeFile> it = listAssets.iterator();
+            while (it.hasNext()) {
+                SourceCodeFile pa = it.next();
+                if (path.equals(pa.getRelativePath()) || path.equals(pa.getPath()))
+                    return pa;
+            }
+        }
+        return null;
+    }
+
     public static SourceCodeFile getCoreAssetByProductAssetPath(String path, CoreAssetBaseline baseline) {
         List<SourceCodeFile> caList = baseline.getCoreAssetFiles();
         if (caList != null) {
@@ -132,9 +143,9 @@ public class FileUtils {
     }
 
 
-    public static SourceCodeFile getCoreAssetByFilePath(String relPath) {
+    public static SourceCodeFile getCoreAssetByFilePath(String relPath, SPL spl) {
 
-        List<SourceCodeFile> caList = CustomDiff.spl.getCoreAssetBaseline(1).getCoreAssetFiles();
+        List<SourceCodeFile> caList = spl.getCoreAssetBaseline(0).getCoreAssetFiles();
         if (caList != null) {
             Iterator<SourceCodeFile> it = caList.iterator();
             while (it.hasNext()) {
@@ -150,4 +161,31 @@ public class FileUtils {
     }
 
 
+    public static SourceCodeFile getProductAssetByFilePath(String path, ProductRelease pr) {
+        List<SourceCodeFile> listAssets = pr.getProductAssets();
+        if (listAssets != null) {
+            Iterator<SourceCodeFile> it = listAssets.iterator();
+            while (it.hasNext()) {
+                SourceCodeFile pa = it.next();
+                if (path.equals(pa.getRelativePath()) || path.equals(pa.getPath()))
+                    return pa;
+            }
+        }
+        return null;
+    }
+
+    public static SourceCodeFile getCoreAssetByProductAssetPath(String path, ProductRelease productRelease) {
+        List<SourceCodeFile> caList = productRelease.getProductAssets();
+        if (caList != null) {
+            Iterator<SourceCodeFile> it = caList.iterator();
+            while (it.hasNext()) {
+                SourceCodeFile ca = it.next();
+                if (path.equals(ca.getRelativePath()) || path.equals(ca.getPath()))
+                    return ca;
+            }
+
+        }
+        logger.error("NOT FOUND path:" + path);
+        return null;
+    }
 }

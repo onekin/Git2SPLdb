@@ -10,7 +10,7 @@ public class VariationPoint {
 	private int lineInit;
 	private int lineEnd;
 	private Set<Feature> features;
-	private ArrayList<Feature> newFeatures;
+	private Set<Feature> newFeatures;
 	private VariationPoint parentVP;
 	private FeatureSibling featureSibling;
 
@@ -97,11 +97,11 @@ public class VariationPoint {
 		this.parentVP = parentVP;
 	}
 
-	public ArrayList<Feature> getNewFeatures() {
+	public Set<Feature> getNewFeatures() {
 		return newFeatures;
 	}
 
-	public void setNewFeatures(ArrayList<Feature> newFeatures) {
+	public void setNewFeatures(Set<Feature> newFeatures) {
 		this.newFeatures = newFeatures;
 	}
 

@@ -3,10 +3,7 @@ package org.onekin.customdiff.utils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.onekin.customdiff.CustomDiff;
-import org.onekin.customdiff.spldomain.CoreAssetBaseline;
-import org.onekin.customdiff.spldomain.Feature;
-import org.onekin.customdiff.spldomain.SourceCodeFile;
-import org.onekin.customdiff.spldomain.VariationPoint;
+import org.onekin.customdiff.spldomain.*;
 
 import java.util.*;
 
@@ -36,12 +33,12 @@ public class FeatureAnalysisUtils {
         return features;
     }
 
-    private static ArrayList<Feature> findNewFeatures(ArrayList<String> listFeatures, CoreAssetBaseline baseline) {
+    private static Set<Feature> findNewFeatures(ArrayList<String> listFeatures, CoreAssetBaseline baseline) {
         Iterator<String> itNames = listFeatures.iterator();
 
         String name;
         Feature f;
-        ArrayList<Feature> newFeatures = new ArrayList<Feature>();
+        Set<Feature> newFeatures = new HashSet<>();
 
         boolean match = false;
 
@@ -170,8 +167,8 @@ public class FeatureAnalysisUtils {
         return keyVP;
     }
 
-    public static VariationPoint getVariationPointOfChangedCoreAssetLine(String relPath, int lineNumber) {
-        SourceCodeFile ca = FileUtils.getCoreAssetByFilePath(relPath);
+    public static VariationPoint getVariationPointOfChangedCoreAssetLine(String relPath, int lineNumber, SPL spl) {
+        SourceCodeFile ca = FileUtils.getCoreAssetByFilePath(relPath,  spl);
 
         VariationPoint vp, keyVP = null;
 
@@ -248,6 +245,28 @@ public class FeatureAnalysisUtils {
         }
 
         return featureToCodeMapping;
+    }
+
+
+    public static VariationPoint getVariationPointOfChangedProductAssetLine(String relPath, ProductRelease productRelease,
+                                                                            int lineNumber) {
+        SourceCodeFile pa = FileUtils.getProductAssetByFilePath(relPath, productRelease);
+        VariationPoint vp, keyVP = null;
+
+        List<VariationPoint> listVPs = pa.getVariationPoints();
+        if (listVPs == null)
+            return null;
+        Iterator<VariationPoint> it = listVPs.iterator();
+
+        while (it.hasNext()) {
+            vp = it.next();
+            if ((vp.getLineInit() <= lineNumber) && (lineNumber <= vp.getLineEnd())) {
+                keyVP = vp;
+            }
+
+        }
+
+        return keyVP;
     }
 
 }

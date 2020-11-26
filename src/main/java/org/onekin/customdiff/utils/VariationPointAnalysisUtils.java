@@ -10,7 +10,7 @@ public class VariationPointAnalysisUtils {
     private VariationPointAnalysisUtils(){}
 
     public static HashMap<Integer, ArrayList<String>> extractFeaturesAndVPsForCoreAsset(SourceCodeFile ca,
-                                                                                        CoreAssetBaseline baseline, boolean secondRelease) {
+                                                                                        CoreAssetBaseline baseline, boolean secondRelease, List<Feature> allFeatures) {
         Collection<ArrayList<String>> values = null;
         Iterator<ArrayList<String>> ite;
         ArrayList<String> valueList;
@@ -37,9 +37,9 @@ public class VariationPointAnalysisUtils {
             while (i.hasNext()) {
                 variable = i.next();
                 Feature f = new Feature(variable, variable);
-                if (!FeatureAnalysisUtils.isFeatureInFeaturesList(CustomDiff.features,
+                if (!FeatureAnalysisUtils.isFeatureInFeaturesList(allFeatures,
                         variable)) {
-                    CustomDiff.features.add(f);
+                    allFeatures.add(f);
                 }
                 if (!FeatureAnalysisUtils.isFeatureInFeaturesList(ca.getFeatureList(), variable)) {
                     ca.getFeatureList().add(f);
@@ -281,12 +281,12 @@ public class VariationPointAnalysisUtils {
         return features;
     }
 
-    private static ArrayList<Feature> findNewFeatures(ArrayList<String> featuresExtracted, CoreAssetBaseline
+    private static Set<Feature> findNewFeatures(ArrayList<String> featuresExtracted, CoreAssetBaseline
             baseline) {
         Iterator<String> extractedFeatures = featuresExtracted.iterator();
         String name;
         Feature f;
-        ArrayList<Feature> newFeatures = new ArrayList<Feature>();
+        Set<Feature> newFeatures = new HashSet<>();
 
         boolean match = false;
 

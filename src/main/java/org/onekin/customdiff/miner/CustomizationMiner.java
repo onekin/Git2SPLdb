@@ -3,6 +3,7 @@ package org.onekin.customdiff.miner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.onekin.customdiff.CustomDiff;
+import org.onekin.customdiff.spldomain.SPL;
 import org.onekin.customdiff.utils.Utils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -35,7 +36,7 @@ public class CustomizationMiner {
 
     private static final int MAX_SIZE_OF_DIFF = 100000000; //TODO Expose an API to control this value?
 
-    public void mine(CoreAssetBaseline baseline, CoreAssetBaseline baseline2) {
+    public void mine(CoreAssetBaseline baseline, CoreAssetBaseline baseline2, SPL spl) {
         logger.info("------ Mining Product Customizations for " + baseline2.getId() + "------");
         logger.info("--------------------------------------------------------------------");
         this.baseline2 = baseline2;
@@ -53,7 +54,7 @@ public class CustomizationMiner {
             mod = it.next();// 4: for each modifications parse and extract the customDiff
 
             if (mod.getNewPath().startsWith(CustomDiff.pathToWhereCustomizationsAreComputed)) {
-                customizations.addAll(computeCustomizationsInModification(mod, baseline2));
+                customizations.addAll(computeCustomizationsInModification(mod, baseline2,spl));
                 logger.info("ADDDE CUSTOM " + mod);
             }
 
@@ -64,12 +65,12 @@ public class CustomizationMiner {
 
 
 
-    private List<Customization> computeCustomizationsInModification(Modification m, CoreAssetBaseline baseline22) {
+    private List<Customization> computeCustomizationsInModification(Modification m, CoreAssetBaseline baseline22, SPL spl) {
 
         ArrayList<Customization> customizationList = new ArrayList<>();
 
         // the DiffParser is in charge of parsing the diff into customDiffs
-        DiffParser parsedDiff = new DiffParser(m, baseline22);
+        DiffParser parsedDiff = new DiffParser(m, baseline22,spl);
 
         if (parsedDiff.getCustomDiffBlocks() == null || parsedDiff.getCustomDiffBlocks().isEmpty())
             return customizationList;

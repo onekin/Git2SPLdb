@@ -29,7 +29,7 @@ public class DiffParser {
 
     private static final String NO_EXPRESSION = "No Expression";
 
-    public DiffParser(Modification mod, CoreAssetBaseline baseline2) {
+    public DiffParser(Modification mod, CoreAssetBaseline baseline2, SPL spl) {
         this.fullDiff = mod.getDiff();
         diffBlocks = new ArrayList<>();
         this.baseline2 = baseline2;
@@ -46,7 +46,7 @@ public class DiffParser {
             this.isNewAsset = false;
         }
 
-        extractCustomDiffBlocks();/** Parse blocks for customDiff */
+        extractCustomDiffBlocks(spl);/** Parse blocks for customDiff */
 
     }
 
@@ -79,17 +79,17 @@ public class DiffParser {
     /**
      * Leticia Montalvillo
      **/
-    public void extractCustomDiffBlocks() {
+    public void extractCustomDiffBlocks(SPL spl) {
         customDiffBlocks = new ArrayList<CustomDiffBlock>();
         int numberOfBlock = getBlocks().size(); // how many blocks in the "normal" diff
         logger.debug("Number of blocks to parse are: {}", numberOfBlock);
 
         for (int i = 0; i < numberOfBlock; i++) {
-            customDiffBlocks.addAll(parseBlockToExtractCustomDiffBlocks(getBlocks().get(i)));
+            customDiffBlocks.addAll(parseBlockToExtractCustomDiffBlocks(getBlocks().get(i),spl));
         }
     }
 
-    private ArrayList<CustomDiffBlock> parseBlockToExtractCustomDiffBlocks(DiffBlock diffBlock) {
+    private ArrayList<CustomDiffBlock> parseBlockToExtractCustomDiffBlocks(DiffBlock diffBlock, SPL spl) {
 
         logger.debug("Parsing diff block diff {}", diffBlock.getContent());
         ArrayList<CustomDiffBlock> customDiffBlocksList = new ArrayList<CustomDiffBlock>();
@@ -126,12 +126,12 @@ public class DiffParser {
                     /** Create a new custom Diff block! **/
                     if (line.contains(CustomDiff.annotationPatternEnd)) {
                         customDiffBlocksList.add(createCustomDiffBlock(diffBlock, startLineNextblock, diff_lineCounter, true,
-                                d1, d2, d3, d4));
+                                d1, d2, d3, d4,spl));
                         startLineNextblock = diff_lineCounter + 1;
 
                     } else {
                         customDiffBlocksList.add(createCustomDiffBlock(diffBlock, startLineNextblock, diff_lineCounter - 1,
-                                true, d1, d2, d3, d4));
+                                true, d1, d2, d3, d4,spl));
                         startLineNextblock = diff_lineCounter;
                     }
 
@@ -156,7 +156,7 @@ public class DiffParser {
         if (anyVP == false) {// TODO if the diff did not contain any variation point start or end; in it.It
             // goes directly without parsing it
             customDiffBlocksList.add(createCustomDiffBlock(diffBlock, startLineNextblock, lines.length - 1, false,
-                    diffBlock.getD1(), diffBlock.getD2(), diffBlock.getD3(), diffBlock.getD4()));
+                    diffBlock.getD1(), diffBlock.getD2(), diffBlock.getD3(), diffBlock.getD4(),spl));
         }
         return customDiffBlocksList;
     }
@@ -166,7 +166,7 @@ public class DiffParser {
      * authors name in changes
      **/
     private CustomDiffBlock createCustomDiffBlock(DiffBlock diffBlock, int startLine, int endline, boolean fixHeader,
-                                                  int d1, int d2, int d3, int d4) {
+                                                  int d1, int d2, int d3, int d4, SPL spl) {
         Set<Developer> developers = new HashSet<Developer>();
         ArrayList<RevCommit> commits = new ArrayList<RevCommit>();
         ArrayList<String> messages = new ArrayList<String>();
@@ -204,7 +204,7 @@ public class DiffParser {
         VariationPoint vp_ca = null;
         if (paModified.getIsNewAsset() == false)
             vp_ca = FeatureAnalysisUtils
-                    .getVariationPointOfChangedCoreAssetLine(paModified.getRelativePath(), d1);
+                    .getVariationPointOfChangedCoreAssetLine(paModified.getRelativePath(), d1,spl);
 
         /** Create intermediary VPs for changes outside a VP */
         // REMOVE THOSE

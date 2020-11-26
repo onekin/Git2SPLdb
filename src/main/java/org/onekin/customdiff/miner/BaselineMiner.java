@@ -3,10 +3,7 @@ package org.onekin.customdiff.miner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.onekin.customdiff.CustomDiff;
-import org.onekin.customdiff.spldomain.CoreAssetBaseline;
-import org.onekin.customdiff.spldomain.CoreAssetFileAnnotated;
-import org.onekin.customdiff.spldomain.Feature;
-import org.onekin.customdiff.spldomain.SourceCodeFile;
+import org.onekin.customdiff.spldomain.*;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.Repository;
@@ -26,17 +23,16 @@ public class BaselineMiner {
     private static final Logger logger = LogManager.getLogger(BaselineMiner.class);
 
 
-    public CoreAssetBaseline mine(String baselineToMine, boolean secondRelease) {// CoreAssetBaseline baseline, String
+    public CoreAssetBaseline mine(String baselineToMine, boolean secondRelease, SPL spl, String pathToWhereCustomizationsAreComputed, List<Feature> allFeatures) {// CoreAssetBaseline baseline, String
         // pathToWhereCustomizationsAreComputed
         logger.info("Mining baseline : " + baselineToMine);
         RevCommit baselineCommit = RefUtils.getCommitFromRefName(baselineToMine);
         CoreAssetBaseline baseline = new CoreAssetBaseline(baselineCommit, baselineCommit.getCommitTime(),
                 baselineToMine);
-        CustomDiff.spl.addBaseline(baseline);
+        spl.addBaseline(baseline);
 
         // This is JUST FOR ONE BASELINE
-        List<SourceCodeFile> files = extractCoreAssetsAndFeaturesFromBaseline(baseline,
-                CustomDiff.pathToWhereCustomizationsAreComputed, secondRelease);
+        List<SourceCodeFile> files = extractCoreAssetsAndFeaturesFromBaseline(baseline, pathToWhereCustomizationsAreComputed, secondRelease, pathToWhereCustomizationsAreComputed, allFeatures);
 
         logger.info("Number of files in Baseline: " + files.size());
         baseline.setCoreAssetFiles(files);
@@ -67,7 +63,7 @@ public class BaselineMiner {
     }
 
     public List<SourceCodeFile> extractCoreAssetsAndFeaturesFromBaseline(CoreAssetBaseline baseline, String inPath,
-                                                                         boolean secondRelease) {
+                                                                         boolean secondRelease, String pathToWhereCustomizationsAreComputed, List<Feature> allFeatures) {
 
         ArrayList<SourceCodeFile> files = new ArrayList<>();
 
@@ -97,12 +93,12 @@ public class BaselineMiner {
                     caFile = new CoreAssetFileAnnotated(Utils.getNewAssetId(),
                             treeWalk.getNameString(), treeWalk.getPathString(), fileContent,
                             fileContent.split("\n").length, baseline,
-                            CustomDiff.pathToWhereCustomizationsAreComputed.concat(treeWalk.getPathString()
-                                    .split(CustomDiff.pathToWhereCustomizationsAreComputed)[1]));
+                            pathToWhereCustomizationsAreComputed.concat(treeWalk.getPathString()
+                                    .split(pathToWhereCustomizationsAreComputed)[1]));
 
                     // 2: extract features and variation points for the core asset
                     caFile.setFeatureToCodeMapping(VariationPointAnalysisUtils
-                            .extractFeaturesAndVPsForCoreAsset(caFile, baseline, secondRelease));
+                            .extractFeaturesAndVPsForCoreAsset(caFile, baseline, secondRelease, allFeatures));
 
                     files.add(caFile);
                     logger.info(caFile.toString());
