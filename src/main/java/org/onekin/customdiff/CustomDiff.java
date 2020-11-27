@@ -16,10 +16,10 @@ public class CustomDiff {
     /**
      * Configurable fields - arguments
      */
-    public static  String repositoryPath = "/Users/RaulMedeiros/IdeaProjects/WacLine";
+    public static String repositoryPath="/Users/RaulMedeiros/Documents/19CustomDiff/WacLine";
     public static  String baselineToMine = "2.0.7.1";
     public static  String baselineToMine2 = "2.0.7.2";
-    public static   String pathToResources = "/Users/RaulMedeiros/IdeaProjects/Git2SPLdb/src/main/resources"; // E.g.:
+    public static String pathToResources="/Users/RaulMedeiros/Documents/workspace/Git2SPLdb/src/main/resources"; //E.g.: Users/Onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resource/
     // Users/Onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resource/
     public static  String pathToWhereCustomizationsAreComputed = "marlin";// folder to look for customization effort.
     public static  String featureModelPath = "/Users/RaulMedeiros/IdeaProjects/WacLine";

@@ -202,7 +202,7 @@ public class ExportToStarDiagramProducts implements ExportTarget {
 
 
         insert = insert.concat(custom_header).concat("("+cust.getId()+","+cust.getLinesAdded()+","+cust.getLinesDeleted()+",'"+encodeToBase64(cust.getCustomdiff())+"','"+
-                cust.getCommitShas()+"','"+cust.getCommitMessagesToString()+"','"+encodeToBase64(cust.getWholediff())+"',"
+                cust.getCommitShas()+"','"+cust.getCommitMessagesToString().replaceAll("'","\"")+"','"+encodeToBase64(cust.getWholediff())+"',"
                 +idVariationPoint+","+developer_group+","+pr.getId()+",'"+cust.getType().name()+"');\n");
 
         return insert;
@@ -280,10 +280,8 @@ public class ExportToStarDiagramProducts implements ExportTarget {
         String  insert="";
         //	String product_header = "INSERT INTO product (idproduct,name) VALUES\n";
 
-        Iterator<Product> products = CustomDiffProducts.spl.getProductPortfolio(0).getProducts().iterator();
-        Product p;
-        while(products.hasNext()){
-            p=products.next();
+        List<Product> products = CustomDiffProducts.spl.getProductPortfolio(0).getProducts();
+        for(Product p: products){
             //insert = insert.concat(product_header).concat("("+p.getId()+",'"+p.getName()+"');");//introduce product
             insert = insert.concat(getInsertsForProductReleases(p));
         }

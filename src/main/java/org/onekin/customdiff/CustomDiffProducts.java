@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class CustomDiffProducts {
-    public static String repositoryPath="/Users/RaulMedeiros/IdeaProjects/WacLine";
+    public static String repositoryPath="/Users/RaulMedeiros/Documents/19CustomDiff/WacLine";
     public static String baselineToMine="v0.1.0";
-    public static String pathToResources="/Users/RaulMedeiros/IdeaProjects/Git2SPLdb/src/main/resources"; //E.g.: Users/Onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resource/
+    public static String pathToResources="/Users/RaulMedeiros/Documents/workspace/Git2SPLdb/src/main/resources"; //E.g.: Users/Onekin/Documents/workspace/SPLCustomsWithRepoDriller/src/main/resource/
     public static String pathToWhereCustomizationsAreComputed="input/app/scripts";//folder to look for customization effort.
     public static String featureModelPath="";
     public static String componentPackageRoot="input/app/scripts";

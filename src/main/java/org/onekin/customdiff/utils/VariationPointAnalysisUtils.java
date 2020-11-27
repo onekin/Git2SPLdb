@@ -175,7 +175,7 @@ public class VariationPointAnalysisUtils {
                     vp.setFeatureSibling(featureSibling);
                     vp.setFeatures(findFeaturesByNames(listFeatures, baseline));
 
-                    if (secondRelease) {
+                    if (secondRelease || file instanceof ProductAssetFileAnnotated) {
                         vp.setNewFeatures(findNewFeatures(extractAllFeaturesFromTheExpression(lines[i]), baseline)); // SET
                         // NEW
                         // FEATURES!
